@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal Inteligente - O seu dashboard premium com utilitários, finanças, clima e entretenimento em tempo real.">
+    <title>Portal Inteligente | Dashboard Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme"> <div id="toast-container" class="toast-container"></div>
+
+    <div id="global-loading" class="global-loading">
+        <div class="spinner"></div>
+        <p>Carregando Portal Inteligente...</p>
+    </div>
+
+    <div class="app-container">
+        
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-brain logo-icon"></i>
+                    <span>Portal<span class="highlight">Inteligente</span></span>
+                </div>
+                <button id="btn-toggle-sidebar" class="btn-icon" title="Recolher Menu">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="#dash"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a></li>
+                    <li><a href="#clima-moedas"><i class="fa-solid fa-cloud-sun"></i> <span>Finanças & Clima</span></a></li>
+                    <li><a href="#noticias-section"><i class="fa-solid fa-newspaper"></i> <span>Notícias</span></a></li>
+                    <li><a href="#utilitarios"><i class="fa-solid fa-toolbox"></i> <span>Utilitários & CEP</span></a></li>
+                    <li><a href="#entretenimento"><i class="fa-solid fa-face-smile"></i> <span>Entretenimento</span></a></li>
+                    <li><a href="#futebol-section"><i class="fa-solid fa-futbol"></i> <span>Futebol</span></a></li>
+                    <li><a href="#filmes-section"><i class="fa-solid fa-film"></i> <span>Filmes</span></a></li>
+                    <li><a href="#favoritos-section"><i class="fa-solid fa-star"></i> <span>Favoritos</span></a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="status-connection" id="status-connection">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="main-header">
+                <div class="header-left">
+                    <button id="btn-open-sidebar" class="btn-icon mobile-only" title="Abrir Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="global-search" placeholder="Buscar no portal (módulos, funções)...">
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="datetime-display">
+                        <span id="header-time" class="time-text">00:00:00</span>
+                        <span id="header-date" class="date-text">--/--/----</span>
+                    </div>
+                    <button id="btn-refresh-all" class="btn-action primary" title="Atualizar todos os dados">
+                        <i class="fa-solid fa-rotate"></i> <span>Atualizar Tudo</span>
+                    </button>
+                    <button id="btn-theme-toggle" class="btn-icon" title="Alternar Tema">
+                        <i class="fa-solid fa-sun"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                
+                <section id="dash" class="dashboard-section search-target">
+                    <div class="section-title-container">
+                        <h2><i class="fa-solid fa-chart-pie"></i> Painel de Controle & Estatísticas</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue"><i class="fa-solid fa-newspaper"></i></div>
+                            <div class="stat-info">
+                                <h3 id="stat-news-count">0</h3>
+                                <p>Notícias Carregadas</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple"><i class="fa-solid fa-map-location-dot"></i></div>
+                            <div class="stat-info">
+                                <h3 id="stat-cep-count">0</h3>
+                                <p>Consultas de CEP</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green"><i class="fa-solid fa-arrows-rotate"></i></div>
+                            <div class="stat-info">
+                                <h3 id="stat-refresh-count">0</h3>
+                                <p>Atualizações Realizadas</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid-2-col" id="clima-moedas">
+                    <section class="card-panel search-target" data-search-name="clima tempo meteorologia">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-cloud-sun"></i> Clima em Tempo Real</h3>
+                            <span class="badge">Auto-update</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="clima-loading" class="inner-loading"><div class="spinner small"></div></div>
+                            <div id="clima-container" class="clima-display hidden">
+                                <div class="clima-main">
+                                    <i id="clima-icon" class="fa-solid fa-sun weather-large-icon"></i>
+                                    <div>
+                                        <h4 id="clima-temp">--°C</h4>
+                                        <p id="clima-desc">Buscando dados...</p>
+                                    </div>
+                                </div>
+                                <div class="clima-details">
+                                    <div class="detail-item">
+                                        <i class="fa-solid fa-wind"></i>
+                                        <span>Vento: <strong id="clima-wind">-- km/h</strong></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <span>Fortaleza, CE</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card-panel search-target" data-search-name="moedas cotacao dolar euro bitcoin finanças">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-money-bill-trend-up"></i> Cotação de Moedas</h3>
+                            <span class="badge subtitle">A cada 5 min</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="moedas-loading" class="inner-loading"><div class="spinner small"></div></div>
+                            <div id="moedas-container" class="moedas-list hidden">
+                                <div class="currency-item">
+                                    <div class="currency-name">
+                                        <i class="fa-solid fa-dollar-sign"></i> <span>Dólar Comercial (USD)</span>
+                                    </div>
+                                    <div class="currency-value" id="moeda-dolar">R$ --</div>
+                                </div>
+                                <div class="currency-item">
+                                    <div class="currency-name">
+                                        <i class="fa-solid fa-euro-sign"></i> <span>Euro (EUR)</span>
+                                    </div>
+                                    <div class="currency-value" id="moeda-euro">R$ --</div>
+                                </div>
+                                <div class="currency-item">
+                                    <div class="currency-name">
+                                        <i class="fa-solid fa-bitcoin-sign"></i> <span>Bitcoin (BTC)</span>
+                                    </div>
+                                    <div class="currency-value" id="moeda-bitcoin">R$ --</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <section id="noticias-section" class="card-panel search-target" data-search-name="noticias jornal eventos atualidades">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-newspaper"></i> Notícias Globais</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="noticias-loading" class="inner-loading"><div class="spinner small"></div></div>
+                        <div id="noticias-grid" class="news-grid hidden">
+                            </div>
+                    </div>
+                </section>
+
+                <div class="grid-2-col" id="utilitarios">
+                    <section class="card-panel search-target" data-search-name="cep busca endereco correios">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-map-location-dot"></i> Consulta de Endereço (ViaCEP)</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="cep-form">
+                                <input type="text" id="input-cep" placeholder="Digite o CEP (ex: 60000000)" maxlength="9">
+                                <button id="btn-buscar-cep" class="btn-action primary">Buscar</button>
+                            </div>
+                            <div id="cep-result" class="cep-result-box hidden">
+                                </div>
+                        </div>
+                    </section>
+
+                    <section class="card-panel search-target" data-search-name="feriados brasil calendario agenda">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-calendar-days"></i> Próximos Feriados Nacionais</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="feriados-loading" class="inner-loading"><div class="spinner small"></div></div>
+                            <ul id="feriados-lista" class="feriados-list hidden">
+                                </ul>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="grid-3-col" id="entretenimento">
+                    <section class="card-panel search-target" data-search-name="frase motivacao pensamento">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-quote-left"></i> Inspiração</h3>
+                        </div>
+                        <div class="card-body flex-column">
+                            <blockquote id="frase-box" class="quote-text">"Carregando reflexão..."</blockquote>
+                            <p id="frase-autor" class="quote-author">--</p>
+                            <button id="btn-nova-frase" class="btn-action secondary mt-auto"><i class="fa-solid fa-arrows-rotate"></i> Nova Frase</button>
+                        </div>
+                    </section>
+
+                    <section class="card-panel search-target" data-search-name="piada humor piadas piada aleatoria">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-face-laugh-beam"></i> Quebrar o Gelo</h3>
+                        </div>
+                        <div class="card-body flex-column">
+                            <div id="joke-setup" class="joke-setup">Carregando piada...</div>
+                            <div id="joke-delivery" class="joke-delivery highlighted hidden"></div>
+                            <button id="btn-nova-piada" class="btn-action secondary mt-auto"><i class="fa-solid fa-face-laugh"></i> Nova Piada</button>
+                        </div>
+                    </section>
+
+                    <section class="card-panel search-target" data-search-name="imagem foto pet gato cachorro animais">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-image"></i> Pets Aleatórios</h3>
+                            <div class="toggle-pet-type">
+                                <button id="btn-pet-cat" class="btn-toggle active">Gatos</button>
+                                <button id="btn-pet-dog" class="btn-toggle">Cães</button>
+                            </div>
+                        </div>
+                        <div class="card-body flex-column alignment-center">
+                            <div class="image-frame">
+                                <div id="image-loading" class="inner-loading absolute"><div class="spinner small"></div></div>
+                                <img id="random-pet-img" src="" alt="Pet Aleatório" class="responsive-img hidden">
+                            </div>
+                            <button id="btn-nova-imagem" class="btn-action secondary mt-auto"><i class="fa-solid fa-image"></i> Mudar Imagem</button>
+                        </div>
+                    </section>
+                </div>
+
+                <section id="futebol-section" class="card-panel search-target" data-search-name="futebol placar jogos brasileirao esportes">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-futbol"></i> Central de Esportes (Futebol)</h3>
+                        <span class="badge alert">Modo Demonstração API-Football</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="sports-layout">
+                            <div class="matches-container">
+                                <h4>Jogos de Hoje</h4>
+                                <div id="futebol-jogos" class="futebol-list">
+                                    </div>
+                            </div>
+                            <div class="table-container">
+                                <h4>Classificação Simulada</h4>
+                                <table class="custom-table" id="tabela-futebol">
+                                    <thead>
+                                        <tr>
+                                            <th>Pos</th>
+                                            <th>Clube</th>
+                                            <th>P</th>
+                                            <th>J</th>
+                                            <th>V</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="filmes-section" class="card-panel search-target" data-search-name="filmes cinema netflix tmdb trailers sinopse">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-film"></i> Tendências do Cinema (TMDb)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="filmes-loading" class="inner-loading"><div class="spinner small"></div></div>
+                        <div id="filmes-grid" class="movies-grid hidden">
+                            </div>
+                    </div>
+                </section>
+
+                <section id="favoritos-section" class="card-panel search-target" data-search-name="favoritos itens salvos marcadores">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-star"></i> Meus Itens Favoritos</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="favoritos-container">
+                            <div class="fav-column">
+                                <h4><i class="fa-solid fa-newspaper"></i> Notícias Salvas</h4>
+                                <div id="fav-news-list" class="fav-list-wrapper">
+                                    <p class="empty-msg">Nenhuma notícia favoritada ainda.</p>
+                                </div>
+                            </div>
+                            <div class="fav-column">
+                                <h4><i class="fa-solid fa-film"></i> Filmes Salvos</h4>
+                                <div id="fav-movies-list" class="fav-list-wrapper">
+                                    <p class="empty-msg">Nenhum filme favoritado ainda.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <footer class="main-footer">
+                <p>&copy; 2026 Portal Inteligente. Todos os direitos reservados. Projetado para máxima performance.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
